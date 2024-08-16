@@ -20,8 +20,8 @@
       "is feasible let us discuss which product modality we should implement.",
       " ",
       "**NOTE**: ONLY discuss the product modality and nothing else!",
-      "Once we all agree, any of us must end the discussion by replying with one line.",
-      "Start with <INFO>, followed by our final product modality, e.g., \"<INFO> PowerPoint\"."
+      "Once we all agree, any of us must end the discussion by replying with one info line specifying the modality.",
+      "**EXAMPLE** '<INFO>Website' in this eample the modality of Website was chosen as a website was the best option."
     ]
   },
   "ChooseLanguage": {
@@ -45,8 +45,9 @@
       "Once we all have expressed our opinion(s) and agree with the results of the discussion",
       "unanimously, any of us must actively terminate the discussion and conclude the",
       "best programming language we have discussed without any other words or reasons,",
-      "return only one line using the format: \"<INFO> *\" ",
-      "where \"*\" represents a programming language."
+      "**NOTE**: ONLY discuss the product programming language and nothing else!",
+      "Once we all agree, any of us must end the discussion by replying with one info line specifying the programming language.",
+      "**EXAMPLE** '<INFO>Markdown' in this example the programming language of Markdown was chosen."
     ]
   },
   "Coding": {
@@ -127,8 +128,7 @@
       "'''",
       "Now, list as many functionally independent elements as possible."
     ]
-  }
-,
+  },
   "ArtIntegration": {
     "assistant_role_name": "Programmer",
     "user_role_name": "Chief Creative Officer",
@@ -361,7 +361,7 @@
       "**🤖 Agents**",
       "- Documentation",
       "- End-to-end Example: GPT+WolframAlpha",
-      "", 
+      "",
       "## 📖 Documentation",
       "",
       "Please see [here](https://startr.team) for full documentation on:",
