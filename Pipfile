@@ -74,6 +74,7 @@ python_version = "3.9"
 server = "python visualizer/app.py"
 run = "python run.py"
 groq = "python run.py -m LLAMA_3"
+art = "pipenv run run --config 'Art'
 trace_server = "viztracer --open visualizer/app.py"
 trace_run = "viztracer --open run.py"
 setup_dev_environment = "pipenv sync -d"
