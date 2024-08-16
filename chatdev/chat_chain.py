@@ -21,14 +21,13 @@ def check_bool(s):
     It returns True if the input is 'true' and False otherwise.
     Raises a TypeError if the input is not a string.
     """
-    
+
     # Check if the input is a string; if not, raise a TypeError
     if not isinstance(s, str):
         raise TypeError(f"Expected a string, but got {type(s).__name__} instead.")
-    
+
     # Convert the input string to lowercase using casefold and compare it to "true"
     return s.casefold() == "true"
-
 
 
 class ChatChain:
@@ -180,7 +179,7 @@ class ChatChain:
         Execute a single phase in the chain.
 
         Args:
-            phase_item: A dictionary containing the configuration for one phase 
+            phase_item: A dictionary containing the configuration for one phase
                         from the ChatChainConfig.json file.
 
         Returns:
@@ -194,19 +193,17 @@ class ChatChain:
         # Handle SimplePhase execution
         if phase_type == "SimplePhase":
             self._execute_phase(
-                phase, 
-                phase_item["max_turn_step"], 
-                check_bool(phase_item["need_reflect"])
+                phase,
+                phase_item["max_turn_step"],
+                check_bool(phase_item["need_reflect"]),
             )
-        
+
         # Handle ComposedPhase execution
         elif phase_type == "ComposedPhase":
             self._execute_composed_phase(
-                phase, 
-                phase_item["cycleNum"], 
-                phase_item["Composition"]
+                phase, phase_item["cycleNum"], phase_item["Composition"]
             )
-        
+
         # If the phase type is not recognized, raise an error
         else:
             self._raise_not_implemented_error(f"PhaseType '{phase_type}'")
@@ -246,7 +243,9 @@ class ChatChain:
         """
         compose_phase_class = getattr(self.compose_phase_module, phase, None)
         if not compose_phase_class:
-            self._raise_not_implemented_error(f"Phase '{phase}' in chatdev.compose_phase")
+            self._raise_not_implemented_error(
+                f"Phase '{phase}' in chatdev.compose_phase"
+            )
 
         compose_phase_instance = compose_phase_class(
             phase_name=phase,
@@ -271,10 +270,9 @@ class ChatChain:
         """
         raise RuntimeError(message)
 
-
     def execute_chain(self):
         """
-        Execute the entire chain based on the 
+        Execute the entire chain based on the
         configuration specified in ChatChainConfig.json.
 
         This method applies the 'execute_step' function to each item
@@ -292,21 +290,23 @@ class ChatChain:
             start_time (str): The time when the software started, formatted as 'YYYYMMDDHHMMSS'.
             log_filepath (str): The full path to the log file.
         """
-        # Capture the current time as a formatted string (e.g., '20230811142300')
-        start_time = now()
+        return now(), self._construct_log_filepath()
 
-        # Get the directory of the current file and move up one level to the root directory
-        root = os.path.dirname(os.path.dirname(__file__))
+    def _get_root_directory(self):
+        """
+        Return the root directory of the project by moving up one level from the current file.
+        """
+        return os.path.dirname(os.path.dirname(__file__))
 
-        # Define the path to the 'WareHouse' directory within the root directory
-        directory = os.path.join(root, "WareHouse")
-
-        # Create the full path to the log file using the project name, organization name, and start time
-        log_filepath = os.path.join(
-            directory, f"{self.project_name}_{self.org_name}_{start_time}.log"
+    def _construct_log_filepath(self):
+        """
+        Construct and return the full path to the log file.
+        """
+        return os.path.join(
+            self._get_root_directory(),
+            "WareHouse",
+            f"{self.project_name}_{self.org_name}_{now()}.log",
         )
-
-        return start_time, log_filepath
 
     def pre_processing(self):
         """
