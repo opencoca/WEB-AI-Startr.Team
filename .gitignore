@@ -16,6 +16,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Obsidian
+.obsidian/
+
+# Jython
+.jython_cache/
+
 # C extensions
 *.so
 
