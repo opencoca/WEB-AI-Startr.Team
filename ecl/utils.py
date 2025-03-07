@@ -88,6 +88,10 @@ class ModelBackend(ABC):
         """
         pass
 
+# Import the ModelFactory and models from camel to avoid duplication
+from camel.model_backend import ModelFactory, OpenAIModel as CamelOpenAIModel
+from camel.typing import ModelType
+
 class OpenAIModel(ModelBackend):
     r"""OpenAI API in a unified ModelBackend interface."""
 
@@ -104,66 +108,33 @@ class OpenAIModel(ModelBackend):
                                 "presence_penalty": 0.0,
                                 "logit_bias": {},
                                 }
+        # Create a camel OpenAIModel instance to handle the actual API calls
+        self.camel_model = CamelOpenAIModel(ModelType(model_type), self.model_config_dict)
         self.prompt_tokens = 0
         self.completion_tokens = 0
         self.total_tokens = 0
 
     @retry(wait=wait_exponential(multiplier=1, min=4, max=10), stop=stop_after_attempt(5))
-    def run(self, messages) :
-        if BASE_URL:
-            client = openai.OpenAI(
-                api_key=OPENAI_API_KEY,
-                base_url=BASE_URL,
-            )
-        else:
-            client = openai.OpenAI(
-                api_key=OPENAI_API_KEY
-            )
-        current_retry = 0
-        max_retry = 5
-
-        string = "\n".join([message["content"] for message in messages])
-        encoding = tiktoken.encoding_for_model(self.model_type)
-        num_prompt_tokens = len(encoding.encode(string))
-        gap_between_send_receive = 15 * len(messages)
-        num_prompt_tokens += gap_between_send_receive
-
-        num_max_token_map = {
-            "gpt-3.5-turbo": 4096,
-            "gpt-3.5-turbo-16k": 16384,
-            "gpt-3.5-turbo-0613": 4096,
-            "gpt-3.5-turbo-16k-0613": 16384,
-            "gpt-4": 8192,
-            "gpt-4-0613": 8192,
-            "gpt-4-32k": 32768,
-        }
-        response = client.chat.completions.create(messages = messages,
-        model = "gpt-3.5-turbo-16k",
-        temperature = 0.2,
-        top_p = 1.0,
-        n = 1,
-        stream = False,
-        frequency_penalty = 0.0,
-        presence_penalty = 0.0,
-        logit_bias = {},
-        ).model_dump()
+    def run(self, messages):
+        # Use the camel implementation which now has the fix
+        response = self.camel_model.run(messages=messages)
+        
+        # Convert to dict if needed (to maintain compatibility with old code)
+        if not isinstance(response, dict):
+            response = response.model_dump()
+            
+        # Extract and log usage info
         response_text = response['choices'][0]['message']['content']
-
-
-
-        num_max_token = num_max_token_map[self.model_type]
-        num_max_completion_tokens = num_max_token - num_prompt_tokens
-        self.model_config_dict['max_tokens'] = num_max_completion_tokens
+        
         log_and_print_online(
             "InstructionStar generation:\n**[OpenAI_Usage_Info Receive]**\nprompt_tokens: {}\ncompletion_tokens: {}\ntotal_tokens: {}\n".format(
                 response["usage"]["prompt_tokens"], response["usage"]["completion_tokens"],
                 response["usage"]["total_tokens"]))
+        
         self.prompt_tokens += response["usage"]["prompt_tokens"]
         self.completion_tokens += response["usage"]["completion_tokens"]
         self.total_tokens += response["usage"]["total_tokens"]
         
-        if not isinstance(response, Dict):
-            raise RuntimeError("Unexpected return from OpenAI API")
         return response
 
     

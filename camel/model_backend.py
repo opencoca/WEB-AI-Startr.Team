@@ -124,9 +124,17 @@ class OpenAIModel(ModelBackend):
         # Update max_tokens for this specific run
         run_config["max_tokens"] = max_completion_tokens
 
+        # Get the model name - using self.model_config.get("name") or fallback to self.model_type.value
+        model_name = self.model_config.get("name") or self.model_type.value
+        
+        # Log the model being used
+        logging.debug(f"Using model: {model_name}")
+        
         # NOTE self.client is an instance of openai.OpenAI set with _setup_client
         response = self.client.chat.completions.create(
-            *args, **kwargs, model=self.model_type.value, **run_config
+            model=model_name,  # Explicitly set model here
+            messages=kwargs.get("messages", []),  # Ensure messages are passed explicitly
+            **run_config  # Pass other configuration parameters
         )
 
         self._log_usage(response.usage)
