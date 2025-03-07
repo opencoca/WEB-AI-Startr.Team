@@ -1,12 +1,12 @@
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-# Licensed under the Apache License, Version 2.0 (the “License”);
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an “AS IS” BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -80,18 +80,24 @@ class OpenAIModel(ModelBackend):
             self.max_tokens = 4096
 
     def _setup_client(self):
-
-        if BASE_URL:
-            return openai.OpenAI(api_key=OPENAI_API_KEY, base_url=BASE_URL)
-        return openai.OpenAI(api_key=OPENAI_API_KEY)
+        base_url = self.model_config.get("base_url")
+        
+        # Check if we need to use GROQ API key for Llama models
+        if base_url and "groq" in base_url.lower():
+            if "GROQ_API_KEY" not in os.environ or os.environ["GROQ_API_KEY"] == "":
+                raise ValueError("GROQ_API_KEY environment variable is required for Groq models but was not found. Please set it.")
+            api_key = os.environ["GROQ_API_KEY"]
+        else:
+            api_key = OPENAI_API_KEY
+            
+        if base_url:
+            return openai.OpenAI(api_key=api_key, base_url=base_url)
+        return openai.OpenAI(api_key=api_key)
 
     def run(self, *args, **kwargs):
         messages = kwargs.get("messages", [])
         prompt = "\n".join(message["content"] for message in messages)
         # Calculate the number of tokens in the prompt
-        # See https://github.com/openai/tiktoken
-        # TODO: We need to handle the case where we're using other models
-        # TODO: We need to handle the case where we're talking to a local model
         try:
             encoding = tiktoken.encoding_for_model(self.model_type.value)
         except KeyError:
@@ -110,17 +116,13 @@ class OpenAIModel(ModelBackend):
 
         # Merge default config with model-specific config
         run_config = {**config_loader.get_default_config(), **self.model_config}
-        # Remove 'name' and 'is_openai' from run_config as they're not needed for the API call
-        run_config.pop("name", None)
-        run_config.pop("is_openai", None)
-
+        
+        # Remove fields that should not be passed to the API call
+        for key in ["base_url", "is_openai", "name"]:
+            run_config.pop(key, None)
+            
         # Update max_tokens for this specific run
         run_config["max_tokens"] = max_completion_tokens
-
-        # TODO use the base_url from the config file instead of the environment variable
-
-        if "base_url" in run_config:
-            run_config.pop("base_url")
 
         # NOTE self.client is an instance of openai.OpenAI set with _setup_client
         response = self.client.chat.completions.create(
@@ -183,9 +185,7 @@ class ModelFactory:
         if not model_config_dict:
             raise ValueError(f"No configuration found for model type: {model_type}")
 
-        if model_config_dict.get("is_openai", True):
-            return OpenAIModel(model_type, model_config_dict)
-        elif model_type == ModelType.STUB:
+        if model_type == ModelType.STUB:
             return StubModel()
         else:
-            raise ValueError(f"Unsupported model type: {model_type}")
+            return OpenAIModel(model_type, model_config_dict)

@@ -60,28 +60,18 @@ def get_model_choices() -> List[str]:
 
 def check_api_key() -> NoReturn:
     """
-    Check if the OpenAI API key is set and exit if it's not.
+    Check if the API keys are set and exit if not.
 
     Raises:
-        SystemExit: If the API key is not set or is empty.
+        SystemExit: If the required API key is not set or is empty.
     """
     if "OPENAI_API_KEY" not in os.environ or os.environ["OPENAI_API_KEY"] == "":
         # Change terminal text color to blue using ANSI escape codes
         print("\033[94m")
-
-        # Display the message to guide the user on setting the OpenAI API key
-        print(
-            """
-        To fix, please set your OpenAI API key by doing one of the following:
-        1. Run `export OPENAI_API_KEY="your-api-key-here"` in your terminal.
-        2. Add `OPENAI_API_KEY=your-api-key-here` to a new line in a `.env` file in your project's root directory.
-        If you don't have an API key, sign up at https://platform.openai.com/signup
-        """
-        )
-
-        # Reset terminal text color back to default
+        print("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+        print("You can create a key at https://platform.openai.com/account/api-keys")
+        # Reset terminal text color using ANSI escape codes
         print("\033[0m")
-
         sys.exit(1)
 
 
@@ -182,21 +172,22 @@ def parse_arguments() -> argparse.Namespace:
 
 def main():
     """
-    Main function to execute the Startr.Team ChatChain process.
+    Main function to run the software using command line arguments.
     """
+    
     args = parse_arguments()
+    # Check if the API key is set, exit if not
+    try:
+        check_api_key()
+    except SystemExit:
+        # Exit if the API key is not set
+        return
 
     if args.debug:
         # Enable debug mode if the debug flag is set
         logging_level = logging.DEBUG
     else:
         logging_level = logging.INFO
-
-    try:
-        check_api_key()
-    except SystemExit:
-        # Exit if the API key is not set
-        print("Exiting...")
 
     config_path, config_phase_path, config_role_path = get_config(args.config)
 
