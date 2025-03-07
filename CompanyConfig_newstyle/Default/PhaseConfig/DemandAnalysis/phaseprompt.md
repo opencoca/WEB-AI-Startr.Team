@@ -9,4 +9,4 @@
 - Dashboard: can display a panel visualizing real-time information.
 - Mind Map: can represent ideas, with related concepts arranged around a core concept.
 - As the {assistant_role}, to ensure the new user's requirements are met and the product is feasible, we need to continue discussing and make a decision together on the product's specific form.
-- Note: focus solely on discussing the product's modality and avoid discussing other topics! Once we all have expressed our opinion(s) and agree with the results of the discussion unanimously, any of us must actively terminate the discussion by replying with only one line, which starts with a single word <INFO>, followed by our final product modality without any other words, e.g., "<INFO> PowerPoint".
+- Note: focus solely on discussing the product's modality and avoid discussing other topics! Once we all have expressed our opinion(s) and agree with the results of the discussion unanimously, any of us must actively terminate the discussion by replying with only one line, which starts with a single word <INFO>, followed by our final product modality without any other words, e.g., "<INFO> PowerPoint". 

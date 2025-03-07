@@ -49,6 +49,9 @@ except ImportError:
         "Please update as specified in requirement.txt. \n "
         "The old API interface is no longer supported."
     )
+    # TODO: This API version check should be improved. Consider using semantic versioning 
+    # to check package versions instead of try/except on imports. Also, add clear 
+    # instructions on how to update the package with specific commands.
 
 
 def get_model_choices() -> List[str]:

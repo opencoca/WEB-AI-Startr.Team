@@ -1,3 +1,6 @@
+# TODO: Perform dependency cleanup - consider removing unused dependencies and 
+# updating to the latest stable versions. Also consider grouping dependencies by
+# their purpose (core, development, testing, etc.)
 annotated-types==0.7.0
 anyio==4.4.0
 appmap==2.1.5

@@ -14,6 +14,12 @@ from chatdev.statistics import get_info
 from camel.web_spider import modal_trans
 from chatdev.utils import log_visualize, now
 
+# TODO: Code Organization Improvements:
+# 1. Break down this large file into smaller, more focused modules
+# 2. Improve documentation with more detailed docstrings and examples
+# 3. Implement better error handling throughout the codebase
+# 4. Add unit tests for core functionality
+# 5. Consider using a more modern Python project structure (src layout)
 
 def check_bool(s):
     return s.lower() == "true"

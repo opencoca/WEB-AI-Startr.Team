@@ -15,8 +15,7 @@
 - **WEB-AI-Startr.Team** stands as a **virtual software company** that operates through various **intelligent agents** holding
   different roles, including Chief Executive Officer <img src='visualizer/static/figures/ceo.png' height=20>, Chief Product Officer <img src='visualizer/static/figures/cpo.png' height=20>, Chief Technology Officer <img src='visualizer/static/figures/cto.png' height=20>, programmer <img src='visualizer/static/figures/programmer.png' height=20>, reviewer <img src='visualizer/static/figures/reviewer.png' height=20>, tester <img src='visualizer/static/figures/tester.png' height=20>, art designer <img src='visualizer/static/figures/designer.png' height=20>. 
   
-  These
-  agents form a multi-agent organizational structure and are united by a mission to "revolutionize the digital world
+- These  agents form a multi-agent organizational structure and are united by a mission to "revolutionize the digital world
   through programming." The agents within Startr.Team **collaborate** by participating in specialized functional seminars,
   including tasks such as designing, coding, testing, and documenting.
 - The primary objective of Startr.Team is to offer an **easy-to-use**, **highly customizable** and **extendable** framework,
@@ -35,6 +34,7 @@ versatile and scalable, MacNet can be considered a more advanced version of WEB-
 Our preprint paper is available at [https://arxiv.org/abs/2406.07155](https://arxiv.org/abs/2406.07155). This technique 
 will soon be incorporated into this repository, enhancing support for diverse organizational structures and offering 
 richer solutions beyond software development (e.g., logical reasoning, data analysis, story generation, and more).
+
   <p align="center">
   <img src='./misc/macnet.png' width=500>
   </p>
@@ -222,6 +222,19 @@ See our LICENSE file for more information.
 ## 🤝 Acknowledgments
 
 We would like to express our gratitude to the following individuals and organizations for their contributions to this
+
+## 🧹 Codebase Cleanup
+
+We've identified several areas in the codebase that are candidates for cleanup and refactoring. These areas can be found by searching for `#TODO` comments in the codebase. Below is a list of the main cleanup opportunities:
+
+1. **Duplicate Configuration Files** - There are potentially redundant configurations in CompanyConfig directories
+2. **Outdated Dependencies** - Some packages in requirements.txt and Pipfile may need updates
+3. **Legacy Code Sections** - Several components have older, less optimized implementations
+4. **Incomplete Documentation** - Some sections lack proper documentation
+5. **Unused Files** - The repository contains files that may no longer be in use
+6. **Inconsistent Error Handling** - Error handling approaches vary across different modules
+
+These areas represent opportunities to streamline the codebase, improve maintainability, and enhance performance. Contributors are encouraged to address these issues when making updates to the project.
 
 ## 📬 Contact
 

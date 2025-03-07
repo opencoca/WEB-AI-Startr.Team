@@ -4,6 +4,13 @@ import os
 from flask import Flask, send_from_directory, request, jsonify
 import argparse
 
+# TODO: Modernize this Flask application:
+# 1. Use Flask application factory pattern
+# 2. Implement proper error handling and logging
+# 3. Consider using Flask Blueprints for better organization
+# 4. Add proper request validation and error responses
+# 5. Replace the simple HTTP request-based message passing with WebSockets
+
 app = Flask(__name__, static_folder='static')
 app.logger.setLevel(logging.ERROR)
 log = logging.getLogger('werkzeug')
@@ -17,6 +24,7 @@ def send_msg(role, text):
         response = requests.post(f"http://127.0.0.1:{port[-1]}/send_message", json=data)
     except:
         logging.info("flask app.py did not start for online log")
+    # TODO: Improve error handling - catch specific exceptions and provide more informative error messages
 
 
 @app.route("/")
@@ -125,5 +133,18 @@ if __name__ == "__main__":
     parser.add_argument('--port', type=int, default=8000, help="port")
     args = parser.parse_args()
     port.append(args.port)
-    print(f"Please visit http://127.0.0.1:{port[-1]}/ for the front-end display page. \nIn the event of a port conflict, please modify the port argument (e.g., python3 app.py --port 8012).")
+    print(f"""
+=====================================================================
+🚀 Startr.Team Visualizer is running!
+
+📊 Main Dashboard:       http://127.0.0.1:{port[-1]}/
+📋 Project Chain View:   http://127.0.0.1:{port[-1]}/chain_visualizer
+🔄 Log Replay Tool:      http://127.0.0.1:{port[-1]}/replay
+
+💡 Tips:
+- For Log Replay: Upload any log file from your WareHouse directory
+- For project submission: Use the form on the main dashboard
+- In case of port conflicts, use: python3 app.py --port <different_port>
+=====================================================================
+""")
     app.run(host='0.0.0.0', debug=False, port=port[-1])

@@ -1,3 +1,10 @@
+# TODO: Dependency Management Improvements:
+# 1. Organize dependencies into logical groups (core, dev, test, etc.)
+# 2. Use dependency ranges instead of pinned versions where appropriate
+# 3. Remove unused dependencies
+# 4. Consider moving to Poetry for more modern dependency management
+# 5. Add documentation for each dependency explaining its purpose
+
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
@@ -79,4 +86,3 @@ setup_dev_environment = "pipenv sync -d"
 clean_project = "git clean --exclude=!.env -Xdf"
 clean_pipenv = "pipenv run pip freeze > requirements.txt && pipenv install -r requirements.txt && rm requirements.txt"
 trace_report = "vizviewer result.json"
-
