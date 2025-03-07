@@ -57,9 +57,9 @@ models:
     max_tokens: 4096
     is_openai: false
 
-  LLAMA_31_8B:
+  LLAMA_3:
     <<: *default_config
-    name: "llama-3.1-8b-instant"
+    name: "llama-3.1-70b-versatile"
     max_tokens: 100000
     is_openai: false
     base_url: https://api.groq.com/openai/v1 

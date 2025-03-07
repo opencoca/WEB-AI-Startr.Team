@@ -4,21 +4,18 @@
     "type": "split",
     "children": [
       {
-        "id": "6590e35ac182c233",
+        "id": "bf7f07ddcda92d6c",
         "type": "tabs",
         "children": [
           {
-            "id": "237f140106703c68",
+            "id": "e8977e7b80843790",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "CompanyConfig/Default/ChatChainConfig.canvas",
-                "viewState": {
-                  "x": 17.960000000000417,
-                  "y": -81.84,
-                  "zoom": 0
-                }
+                "file": "README.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -88,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "CompanyConfig/Default/ChatChainConfig.canvas",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "CompanyConfig/Default/ChatChainConfig.canvas",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -128,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "CompanyConfig/Default/ChatChainConfig.canvas"
+                "file": "README.md"
               }
             }
           }
@@ -149,8 +146,11 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "237f140106703c68",
+  "active": "e8977e7b80843790",
   "lastOpenFiles": [
+    "README.md",
+    "visualizer/static/figures/ceo.png",
+    "CompanyConfig/Default/ChatChainConfig.canvas",
     "WareHouse/Website_DefaultOrganization_20240805163323/Website_DefaultOrganization_20240805163323.log",
     "WareHouse/Website_DefaultOrganization_20240805163323/meta.txt",
     "WareHouse/Website_DefaultOrganization_20240805163323/manual.md",
@@ -162,7 +162,6 @@
     "WareHouse/Website_DefaultOrganization_20240805163323/RoleConfig.json",
     "WareHouse/Website_DefaultOrganization_20240805163323/PhaseConfig.json",
     "WareHouse/Website_DefaultOrganization_20240805163323/ChatChainConfig.json",
-    "WareHouse/Website_DefaultOrganization_20240805163323",
     "WareHouse/Website_DefaultOrganization_20240805162311/manual.md",
     "WareHouse/Website_DefaultOrganization_20240805161239/manual.md",
     "WareHouse/Website_DefaultOrganization_20240805140713/manual.md",
@@ -179,7 +178,6 @@
     "misc/demo.png",
     "MultiAgentEbook/images/war_and_peace_(waragent)_20231128.png",
     "MultiAgentEbook/images/using_large_language_models_20220818.png",
-    "MultiAgentEbook/images/user_behavior_simulation_with_20230605.png",
     "MultiAgentEbook/README.md",
     "WareHouse/Website_StartrTeam_20240804182340/manual.md",
     "WareHouse/Website_Somma_20240804134750/manual.md",
@@ -188,8 +186,6 @@
     "WareHouse/Website_DefaultOrganization_20240804102634/manual.md",
     "WareHouse/Website_PlanteSomma_20240731182752/manual.md",
     "WareHouse/Website_DefaultOrganization_20240730180647/manual.md",
-    "README.md",
-    "CompanyConfig/Default/ChatChainConfig.canvas",
     "readme/README-Bahasa-Indonesia.md",
     "Contribution.md"
   ]

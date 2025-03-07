@@ -15,7 +15,7 @@ WORKDIR /project/
 COPY . /project/
 
 # Install necessary libraries for GUI support
-RUN apt-get update && apt-get install -y python3-tk x11-apps vim git
+RUN apt-get update && apt-get install -y git python3-tk vim x11-apps
 
 # Install the project dependencies
 RUN python -m pip install -r requirements.txt

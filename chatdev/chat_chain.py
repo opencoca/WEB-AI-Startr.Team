@@ -8,7 +8,7 @@ from datetime import datetime
 
 from camel.agents import RolePlaying
 from camel.configs import ChatGPTConfig
-from camel.typing import TaskType, ModelType
+from camel.typing import TaskType
 from chatdev.chat_env import ChatEnv, ChatEnvConfig
 from chatdev.statistics import get_info
 from camel.web_spider import modal_trans
@@ -22,7 +22,18 @@ from chatdev.utils import log_visualize, now
 # 5. Consider using a more modern Python project structure (src layout)
 
 def check_bool(s):
-    return s.lower() == "true"
+    """
+    This function checks if the input string is 'true', ignoring case.
+    It returns True if the input is 'true' and False otherwise.
+    Raises a TypeError if the input is not a string.
+    """
+
+    # Check if the input is a string; if not, raise a TypeError
+    if not isinstance(s, str):
+        raise TypeError(f"Expected a string, but got {type(s).__name__} instead.")
+
+    # Convert the input string to lowercase using casefold and compare it to "true"
+    return s.casefold() == "true"
 
 
 class ChatChain:
@@ -164,63 +175,111 @@ class ChatChain:
         Returns:
             None
         """
-        # Recruit each employee in the recruits list into the chat environment
-        [self.chat_env.recruit(agent_name=employee) for employee in self.recruits]
+        # Loop through each employee in the recruits list
+        for employee in self.recruits:
+            # Recruit the employee into the chat environment
+            self.chat_env.recruit(agent_name=employee)
 
     def execute_step(self, phase_item: dict):
         """
-        execute single phase in the chain
+        Execute a single phase in the chain.
+
         Args:
-            phase_item: single phase configuration in the ChatChainConfig.json
+            phase_item: A dictionary containing the configuration for one phase
+                        from the ChatChainConfig.json file.
 
         Returns:
-
+            None
         """
 
+        # Extract the phase name and type from the phase_item dictionary
         phase = phase_item["phase"]
         phase_type = phase_item["phaseType"]
-        # For SimplePhase, just look it up from self.phases and conduct the "Phase.execute" method
+
+        # Handle SimplePhase execution
         if phase_type == "SimplePhase":
-            max_turn_step = phase_item["max_turn_step"]
-            need_reflect = check_bool(phase_item["need_reflect"])
-            if phase in self.phases:
-                self.chat_env = self.phases[phase].execute(
-                    self.chat_env,
-                    self.chat_turn_limit_default
-                    if max_turn_step <= 0
-                    else max_turn_step,
-                    need_reflect,
-                )
-            else:
-                raise RuntimeError(
-                    f"Phase '{phase}' is not yet implemented in chatdev.phase"
-                )
-        # For ComposedPhase, we create instance here then conduct the "ComposedPhase.execute" method
-        elif phase_type == "ComposedPhase":
-            cycle_num = phase_item["cycleNum"]
-            composition = phase_item["Composition"]
-            compose_phase_class = getattr(self.compose_phase_module, phase)
-            if not compose_phase_class:
-                raise RuntimeError(
-                    f"Phase '{phase}' is not yet implemented in chatdev.compose_phase"
-                )
-            compose_phase_instance = compose_phase_class(
-                phase_name=phase,
-                cycle_num=cycle_num,
-                composition=composition,
-                config_phase=self.config_phase,
-                config_role=self.config_role,
-                model_type=self.model_type,
-                log_filepath=self.log_filepath,
+            self._execute_phase(
+                phase,
+                phase_item["max_turn_step"],
+                check_bool(phase_item["need_reflect"]),
             )
-            self.chat_env = compose_phase_instance.execute(self.chat_env)
+
+        # Handle ComposedPhase execution
+        elif phase_type == "ComposedPhase":
+            self._execute_composed_phase(
+                phase, phase_item["cycleNum"], phase_item["Composition"]
+            )
+
+        # If the phase type is not recognized, raise an error
         else:
-            raise RuntimeError(f"PhaseType '{phase_type}' is not yet implemented.")
+            self._raise_not_implemented_error(f"PhaseType '{phase_type}'")
+
+    def _execute_phase(self, phase, max_turn_step, need_reflect):
+        """
+        Execute a SimplePhase using the provided parameters.
+
+        Args:
+            phase: The name of the phase to execute.
+            max_turn_step: The maximum number of turns for this phase.
+            need_reflect: A boolean indicating whether reflection is needed.
+
+        Returns:
+            None
+        """
+        if phase in self.phases:
+            self.chat_env = self.phases[phase].execute(
+                self.chat_env,
+                self.chat_turn_limit_default if max_turn_step <= 0 else max_turn_step,
+                need_reflect,
+            )
+        else:
+            self._raise_not_implemented_error(f"Phase '{phase}' in chatdev.phase")
+
+    def _execute_composed_phase(self, phase, cycle_num, composition):
+        """
+        Execute a ComposedPhase using the provided parameters.
+
+        Args:
+            phase: The name of the composed phase to execute.
+            cycle_num: The number of cycles for the composed phase.
+            composition: The composition details for the composed phase.
+
+        Returns:
+            None
+        """
+        compose_phase_class = getattr(self.compose_phase_module, phase, None)
+        if not compose_phase_class:
+            self._raise_not_implemented_error(
+                f"Phase '{phase}' in chatdev.compose_phase"
+            )
+
+        compose_phase_instance = compose_phase_class(
+            phase_name=phase,
+            cycle_num=cycle_num,
+            composition=composition,
+            config_phase=self.config_phase,
+            config_role=self.config_role,
+            model_type=self.model_type,
+            log_filepath=self.log_filepath,
+        )
+        self.chat_env = compose_phase_instance.execute(self.chat_env)
+
+    def _raise_not_implemented_error(self, message):
+        """
+        Raise a RuntimeError indicating a phase or phase type is not implemented.
+
+        Args:
+            message: The error message to include in the RuntimeError.
+
+        Returns:
+            None
+        """
+        raise RuntimeError(message)
 
     def execute_chain(self):
         """
-        Execute the entire chain based on the c
-        onfiguration specified in ChatChainConfig.json.
+        Execute the entire chain based on the
+        configuration specified in ChatChainConfig.json.
 
         This method applies the 'execute_step' function to each item
         in the 'self.chain' list using the 'map()' function.
@@ -237,26 +296,27 @@ class ChatChain:
             start_time (str): The time when the software started, formatted as 'YYYYMMDDHHMMSS'.
             log_filepath (str): The full path to the log file.
         """
-        # Capture the current time as a formatted string (e.g., '20230811142300')
-        start_time = now()
+        return now(), self._construct_log_filepath()
 
-        # Get the directory of the current file and move up one level to the root directory
-        root = os.path.dirname(os.path.dirname(__file__))
+    def _get_root_directory(self):
+        """
+        Return the root directory of the project by moving up one level from the current file.
+        """
+        return os.path.dirname(os.path.dirname(__file__))
 
-        # Define the path to the 'WareHouse' directory within the root directory
-        directory = os.path.join(root, "WareHouse")
-
-        # Create the full path to the log file using the project name, organization name, and start time
-        log_filepath = os.path.join(
-            directory, f"{self.project_name}_{self.org_name}_{start_time}.log"
+    def _construct_log_filepath(self):
+        """
+        Construct and return the full path to the log file.
+        """
+        return os.path.join(
+            self._get_root_directory(),
+            "WareHouse",
+            f"{self.project_name}_{self.org_name}_{now()}.log",
         )
-
-        return start_time, log_filepath
-       
 
     def pre_processing(self):
         """
-        Preprocess the environment by removing unnecessary files, 
+        Preprocess the environment by removing unnecessary files,
         setting up directories, and copying configuration files.
         Returns: None
         """
@@ -268,10 +328,7 @@ class ChatChain:
         if self.chat_env.config.clear_structure:
             for filename in os.listdir(directory):
                 file_path = os.path.join(directory, filename)
-                if (
-                    os.path.isfile(file_path)
-                    and not filename.endswith((".py", ".log"))
-                ):
+                if os.path.isfile(file_path) and not filename.endswith((".py", ".log")):
                     os.remove(file_path)
                     print(f"{file_path} Removed.")
 
@@ -286,7 +343,11 @@ class ChatChain:
             self.chat_env.init_memory()
 
         # Copy essential configuration files to the software directory
-        for config_file in [self.config_path, self.config_phase_path, self.config_role_path]:
+        for config_file in [
+            self.config_path,
+            self.config_phase_path,
+            self.config_role_path,
+        ]:
             shutil.copy(config_file, software_path)
 
         # If incremental development is enabled, copy code files to the software directory
@@ -296,7 +357,9 @@ class ChatChain:
                 target_dir = os.path.join(software_path, "base", relative_path)
                 os.makedirs(target_dir, exist_ok=True)
                 for file in files:
-                    shutil.copy2(os.path.join(root_dir, file), os.path.join(target_dir, file))
+                    shutil.copy2(
+                        os.path.join(root_dir, file), os.path.join(target_dir, file)
+                    )
             self.chat_env._load_from_hardware(os.path.join(software_path, "base"))
 
         # Write the task prompt to a file in the software directory
@@ -329,9 +392,11 @@ class ChatChain:
         **ChatGPTConfig**:
         {ChatGPTConfig()}
         """
-        #clean preprocess_msg of preceding whitespace
-        preprocess_msg = "\n".join([line.strip() for line in preprocess_msg.split("\n")])
-        
+        # clean preprocess_msg of preceding whitespace
+        preprocess_msg = "\n".join(
+            [line.strip() for line in preprocess_msg.split("\n")]
+        )
+
         log_visualize(preprocess_msg)
 
         # Initialize task prompt based on configuration settings
@@ -343,8 +408,9 @@ class ChatChain:
 
         # If web spidering is enabled, convert the task prompt for web interaction
         if check_bool(self.web_spider):
-            self.chat_env.env_dict["task_description"] = modal_trans(self.task_prompt_raw)
-
+            self.chat_env.env_dict["task_description"] = modal_trans(
+                self.task_prompt_raw
+            )
 
     def post_processing(self):
         """
