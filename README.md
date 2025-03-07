@@ -239,3 +239,104 @@ These areas represent opportunities to streamline the codebase, improve maintain
 ## 📬 Contact
 
 If you have any questions, feedback, or would like to get in touch, please feel free to reach out to us via email at [contact.us@startr.team](mailto:contact.us@startr.team).
+
+## Project Architecture
+
+```mermaid
+graph LR
+    %% Main Application Flow
+    User[User Input] --> RunPy[run.py]
+    RunPy --> ChatChain[ChatChain]
+    ChatChain --> PreProcess[Pre-processing]
+    PreProcess --> Recruitment[Recruit Team]
+    Recruitment --> ExecuteChain[Execute Chain]
+    ExecuteChain --> PostProcess[Post-processing]
+    PostProcess --> Output[Generated Project in WareHouse]
+    
+    %% Main Components
+    subgraph Core Components
+        ChatChain --> ChatEnv[ChatEnv]
+        ChatChain --> Config[Configuration Files]
+        ChatChain --> PhaseExecution[Phase Execution]
+    end
+    
+    %% Configuration Files
+    subgraph Configuration
+        Config --> ChainConfig[ChatChainConfig.json]
+        Config --> PhaseConfig[PhaseConfig.json]
+        Config --> RoleConfig[RoleConfig.json]
+    end
+    
+    %% ChatEnv
+    subgraph Environment
+        ChatEnv --> Files[Files]
+        ChatEnv --> Docs[Documents]
+        ChatEnv --> Tasks[Tasks]
+        ChatEnv --> Roster[Team Roster]
+    end
+    
+    %% Phase Structure
+    subgraph Phases
+        PhaseExecution --> SimplePhase[Simple Phase]
+        PhaseExecution --> ComposedPhase[Composed Phase]
+        
+        SimplePhase --> DemandAnalysis[Demand Analysis]
+        SimplePhase --> ChooseLanguage[Choose Language]
+        SimplePhase --> Coding[Coding]
+        SimplePhase --> EnvironmentDesc[Environment Description]
+        SimplePhase --> Manual[Manual]
+        
+        ComposedPhase --> CodeThisProject[Code This Project]
+        ComposedPhase --> CodeReview[Code Review]
+        ComposedPhase --> Test[Test]
+        
+        CodeThisProject --> |Composed of| CodeThis[Code This]
+        
+        CodeReview --> |Composed of| CodeReviewComment[Code Review Comment]
+        CodeReview --> |Composed of| CodeReviewModification[Code Review Modification]
+        
+        Test --> |Composed of| TestErrorSummary[Test Error Summary]
+        Test --> |Composed of| TestModification[Test Modification]
+    end
+    
+    %% Agent Roles
+    subgraph Agents
+        Roster --> CEO[Chief Executive Officer]
+        Roster --> Counselor[Counselor]
+        Roster --> CHRO[Chief Human Resource Officer]
+        Roster --> CPO[Chief Product Officer]
+        Roster --> CTO[Chief Technology Officer]
+        Roster --> Programmer[Programmer]
+        Roster --> CodeReviewer[Code Reviewer]
+        Roster --> Tester[Software Test Engineer]
+        Roster --> CCO[Chief Creative Officer]
+    end
+    
+    %% Visualization
+    subgraph Visualization
+        Output --> Visualizer[Visualizer]
+        Visualizer --> WebApp[Web Application]
+        WebApp --> ChainViz[Chain Visualizer]
+        WebApp --> ReplayViz[Replay Visualizer]
+    end
+    
+    %% Data Flow
+    ChatEnv --- PhaseExecution
+    Agents --- PhaseExecution
+```
+
+## Identified Code Overlap Areas
+
+Based on the codebase analysis, several areas of code overlap have been identified:
+
+1. **Configuration Management**: There are multiple configuration formats (JSON and YAML) with potential duplication between `CompanyConfig/` and `CompanyConfig_yaml/` directories.
+
+2. **Phase Implementation**: The phase.py file contains numerous similar phase classes with repeated patterns that could be refactored to reduce duplication.
+
+3. **Visualization Components**: The visualization system has some redundant code for handling messages and project execution.
+
+4. **Tool Implementation**: There are overlapping functionalities between different utility modules.
+
+5. **Configuration Settings**: Many configuration parameters are duplicated across different files.
+
+These overlaps represent opportunities for code cleanup and refactoring to improve maintainability and reduce technical debt.
