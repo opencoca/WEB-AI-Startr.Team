@@ -79,41 +79,40 @@ def send_project():
     except subprocess.CalledProcessError as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# Example form for sending a project
-# <form id="send_project" action="/send_project" method="post">
-#     <input type="text" name="org" placeholder="Organization" />
-#     <input type="text" name="task" placeholder="Task" />
-#     <input type="text" name="role" placeholder="Role" />
-#     <input type="text" name="project" placeholder="Project" />
-#     <input type="text" name="port" placeholder="Port" />
-#     <input type="text" name="config" placeholder="Config" />
-#     <button type="submit">Send Project</button>
-# </form>
-# Let's override the default send_project form action and instead use js to send the project
-# document.getElementById("send_project").addEventListener("submit", function(e) {
-#     e.preventDefault();
-#     var org = document.querySelector("input[name=org]").value;
-#     var task = document.querySelector("input[name=task]").value;
-#     var role = document.querySelector("input[name=role]").value;
-#     var project = document.querySelector("input[name=project]").value;
-#     var port = document.querySelector("input[name=port]").value;
-#     var config = document.querySelector("input[name=config]").value;
-#     fetch("/send_project", {
-#         method: "POST",
-#         headers: {
-#             "Content-Type": "application/json"
-#         },
-#         body: JSON.stringify({
-#             org: org,
-#             task: task,
-#             role: role,
-#             project: project,
-#             port: port,
-#             config: config
-#         })
-#     });
-# });
-
+    # Example form for sending a project
+    # <form id="send_project" action="/send_project" method="post">
+    #     <input type="text" name="org" placeholder="Organization" />
+    #     <input type="text" name="task" placeholder="Task" />
+    #     <input type="text" name="role" placeholder="Role" />
+    #     <input type="text" name="project" placeholder="Project" />
+    #     <input type="text" name="port" placeholder="Port" />
+    #     <input type="text" name="config" placeholder="Config" />
+    #     <button type="submit">Send Project</button>
+    # </form>
+    # Let's override the default send_project form action and instead use js to send the project
+    # document.getElementById("send_project").addEventListener("submit", function(e) {
+    #     e.preventDefault();
+    #     var org = document.querySelector("input[name=org]").value;
+    #     var task = document.querySelector("input[name=task]").value;
+    #     var role = document.querySelector("input[name=role]").value;
+    #     var project = document.querySelector("input[name=project]").value;
+    #     var port = document.querySelector("input[name=port]").value;
+    #     var config = document.querySelector("input[name=config]").value;
+    #     fetch("/send_project", {
+    #         method: "POST",
+    #         headers: {
+    #             "Content-Type": "application/json"
+    #         },
+    #         body: JSON.stringify({
+    #             org: org,
+    #             task: task,
+    #             role: role,
+    #             project: project,
+    #             port: port,
+    #             config: config
+    #         })
+    #     });
+    # });
 
 
 #Define the favicon route
