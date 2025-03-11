@@ -26,7 +26,7 @@ def log_visualize(role, content=None):
         content (str, optional): The content. Defaults to None.
     """
     # Color mapping for terminal output (doesn't affect log files)
-    color_map = {
+    role_colors = {
         "Chief Executive Officer": "\033[1;31m",     # Red for CEO
         "Chief Product Officer": "\033[1;32m",       # Green for CPO
         "Chief Technology Officer": "\033[1;34m",    # Blue for CTO
@@ -35,12 +35,17 @@ def log_visualize(role, content=None):
         "Code Reviewer": "\033[1;36m",               # Cyan for reviewers 
         "Programmer": "\033[1;36m",                  # Cyan for programmers
         "User": "\033[1;37m",                        # White for User
-        "default": "\033[0;37m"                      # Light gray for others
+        "Project Manager": "\033[1;38m",             # Light blue for PM
+        "Quality Assurance": "\033[1;39m",           # Light cyan for QA
+        "Data Scientist": "\033[1;90m",              # Dark gray for Data Scientist
     }
+    default_color = "\033[0;37m"                     # Light gray for others
     reset_color = "\033[0m"
     
     # Get color for terminal output
-    role_color = color_map.get(str(role), color_map["default"])
+    # Get the color for the given role from the role_colors dictionary.
+    # If the role is not found in the dictionary, use the default color.
+    role_color = role_colors.get(role) or default_color
     
     if not content:
         # System message - log as INFO
