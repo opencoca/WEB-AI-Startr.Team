@@ -87,6 +87,8 @@ class ChatChain:
         """Construct log filepath using project details and timestamp."""
         root_dir = Path(__file__).parent.parent
         log_dir = root_dir / "WareHouse" / f"{self.project_name}_{self.org_name}_{timestamp}"
+        # Create the directory if it doesn't exist
+        os.makedirs(log_dir, exist_ok=True)
         return str(log_dir / f"{self.project_name}_{self.org_name}_{timestamp}.log")
     
     def _import_phase_modules(self):
@@ -407,11 +409,6 @@ class ChatChain:
         logging.shutdown()
         time.sleep(1)
         
-        # Move log file to project directory
-        source = self.log_filepath
-        target_dir = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)),
-            "WareHouse",
-            f"{self.project_name}_{self.org_name}_{self.start_time}"
-        )
-        shutil.move(source, os.path.join(target_dir, os.path.basename(source)))
+        # No need to move the log file since we're already writing to the correct location
+        # The old code was creating a duplicate folder and moving the log there
+        log_visualize(f"Log file finalized at: {self.log_filepath}")

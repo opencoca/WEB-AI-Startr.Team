@@ -154,6 +154,11 @@ docker-restart:
 		nohup python visualizer/app.py --port 5000 > /dev/null 2>&1 &"
 	@echo "Application restarted with updated API keys."
 
+# Open a shell in the running Docker container
+shell:
+	@echo "Opening a shell in the Docker container..."
+	@docker exec -it web-ai-startr.team-develop bash -c "source /project/.env && exec bash"
+
 # Verify that API keys are working properly
 verify-api-keys:
 	@if [ ! -f .env ]; then \

@@ -172,9 +172,16 @@ def setup_logging(log_filepath, logging_level):
         log_filepath (str): Path to the log file.
         logging_level (int): Logging level (e.g., logging.DEBUG, logging.INFO).
     """
-    log_formatter = logging.Formatter(
+    # File log formatter - standard format
+    file_log_formatter = logging.Formatter(
         fmt="[%(asctime)s %(levelname)s] %(message)s",
         datefmt="%Y-%d-%m %H:%M:%S",
+    )
+    
+    # Console log formatter - more detailed for better visibility
+    console_log_formatter = logging.Formatter(
+        fmt="\033[1;36m[%(asctime)s]\033[0m \033[1;33m%(levelname)s\033[0m: %(message)s",
+        datefmt="%H:%M:%S",
     )
     
     # Root logger
@@ -187,13 +194,20 @@ def setup_logging(log_filepath, logging_level):
     
     # Create file handler with the given path
     file_handler = logging.FileHandler(log_filepath, encoding="utf-8")
-    file_handler.setFormatter(log_formatter)
+    file_handler.setFormatter(file_log_formatter)
     root_logger.addHandler(file_handler)
     
-    # Create console handler for terminal output
+    # Create console handler for terminal output with more verbose format
     console_handler = logging.StreamHandler()
-    console_handler.setFormatter(log_formatter)
+    console_handler.setFormatter(console_log_formatter)
+    # Make sure console shows INFO level messages (more verbose than file might be)
+    console_handler.setLevel(logging.INFO)
     root_logger.addHandler(console_handler)
+    
+    # Log to console that we've started
+    print("\033[1;32m" + "="*80 + "\033[0m")
+    print("\033[1;32m" + " Starting Startr.Team with enhanced logging to console " + "\033[0m")
+    print("\033[1;32m" + "="*80 + "\033[0m")
 
 
 def log_initial_info(chat_chain, config_path, config_phase_path, config_role_path, task):

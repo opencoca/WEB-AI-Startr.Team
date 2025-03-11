@@ -24,6 +24,24 @@ def log_visualize(role, content=None):
     Returns: None
 
     """
+    # Color codes for different roles
+    color_map = {
+        "System": "\033[1;37m",  # White
+        "Chief Executive Officer": "\033[1;34m",  # Blue
+        "Chief Product Officer": "\033[1;32m",  # Green
+        "Chief Technology Officer": "\033[1;35m",  # Purple
+        "Prompt Engineer": "\033[1;33m",  # Yellow
+        "Software Test Engineer": "\033[1;36m",  # Cyan
+        "Software Developer": "\033[1;31m",  # Red
+        "default": "\033[0;37m"  # Light gray for others
+    }
+    
+    # Reset color code
+    reset_color = "\033[0m"
+    
+    # Get color for role
+    role_color = color_map.get(str(role), color_map["default"])
+    
     if not content:
         # Log without content - just a message
         message = role + "\n"
@@ -32,7 +50,10 @@ def log_visualize(role, content=None):
         for handler in logging.getLogger().handlers:
             handler.flush()
         send_msg("System", role)
-        print(message)
+        
+        # Print to console with color
+        formatted_message = f"{role_color}{message}{reset_color}"
+        print(formatted_message)
     else:
         # Log with role and content
         message = str(role) + ": " + str(content) + "\n"
@@ -40,7 +61,10 @@ def log_visualize(role, content=None):
         # Flush logs to ensure they're written to disk
         for handler in logging.getLogger().handlers:
             handler.flush()
-        print(message)
+        
+        # Print to console with color
+        formatted_message = f"{role_color}{role}{reset_color}: {str(content)}"
+        print(formatted_message)
         
         if isinstance(content, SystemMessage):
             records_kv = []

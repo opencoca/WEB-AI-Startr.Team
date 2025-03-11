@@ -295,13 +295,17 @@ class OpenAIModel(ModelBackend):
             num_prompt_tokens=usage.prompt_tokens,
             num_completion_tokens=usage.completion_tokens,
         )
-        log_visualize(
-            f"**[OpenAI_Usage_Info Receive]**\n"
-            f"prompt_tokens: {usage.prompt_tokens}\n"
-            f"completion_tokens: {usage.completion_tokens}\n"
-            f"total_tokens: {usage.total_tokens}\n"
-            f"cost: ${cost:.6f}\n"
+        # Log to file with full details
+        logging.info(
+            f"**[OpenAI_Usage_Info]** "
+            f"prompt_tokens: {usage.prompt_tokens}, "
+            f"completion_tokens: {usage.completion_tokens}, "
+            f"total_tokens: {usage.total_tokens}, "
+            f"cost: ${cost:.6f}"
         )
+        
+        # Print a more compact message to console
+        print(f"\033[0;36m[Usage] Total: {usage.total_tokens} tokens, Cost: ${cost:.6f}\033[0m")
 
 
 class StubModel(ModelBackend):
