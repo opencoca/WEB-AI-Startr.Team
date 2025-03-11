@@ -296,7 +296,14 @@ class ChatChain:
             start_time (str): The time when the software started, formatted as 'YYYYMMDDHHMMSS'.
             log_filepath (str): The full path to the log file.
         """
-        return now(), self._construct_log_filepath()
+        start_time = now()
+        log_filepath = self._construct_log_filepath()
+        
+        # Ensure log directory exists
+        log_dir = os.path.dirname(log_filepath)
+        os.makedirs(log_dir, exist_ok=True)
+        
+        return start_time, log_filepath
 
     def _get_root_directory(self):
         """
@@ -308,10 +315,16 @@ class ChatChain:
         """
         Construct and return the full path to the log file.
         """
+        timestamp = now()
+        # Store this timestamp for consistent usage
+        self._log_timestamp = timestamp
+        
+        # Construct the log file path. Example: /path/to/project/WareHouse/ProjectName_OrgName_YYYYMMDDHHMMSS/ProjectName_OrgName_YYYYMMDDHHMMSS.log
         return os.path.join(
             self._get_root_directory(),
             "WareHouse",
-            f"{self.project_name}_{self.org_name}_{now()}.log",
+            f"{self.project_name}_{self.org_name}_{timestamp}",
+            f"{self.project_name}_{self.org_name}_{timestamp}.log",
         )
 
     def pre_processing(self):

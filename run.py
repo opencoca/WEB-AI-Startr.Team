@@ -253,6 +253,29 @@ def main():
         datefmt="%Y-%d-%m %H:%M:%S",
         encoding="utf-8",
     )
+    
+    # Write initial log information to ensure the file is created and populated
+    logging.info("")
+    logging.info("**[Preprocessing]**")
+    logging.info("")
+    logging.info(f"**Startr.Team Starts** ({chat_chain.start_time})")
+    logging.info("")
+    logging.info(f"**Timestamp**: {chat_chain.start_time}")
+    logging.info("")
+    logging.info(f"**config_path**: {config_path}")
+    logging.info("")
+    logging.info(f"**config_phase_path**: {config_phase_path}")
+    logging.info("")
+    logging.info(f"**config_role_path**: {config_role_path}")
+    logging.info("")
+    logging.info(f"**task_prompt**: {args.task}")
+    logging.info("")
+    logging.info(f"**project_name**: {args.name}")
+    logging.info("")
+    logging.info(f"**Log File**: {chat_chain.log_filepath}")
+    logging.info("")
+    logging.info("**Startr.Team Config**:")
+    logging.info(f"ChatEnvConfig.with_memory: {chat_chain.chat_env_config.with_memory}")
 
     try:
         # If debug tools are available, log each step
