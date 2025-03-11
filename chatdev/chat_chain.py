@@ -79,17 +79,21 @@ class ChatChain:
     def _setup_logging(self):
         """Set up logging and return start time and log filepath."""
         start_time = now()
+        # First get the log file path without creating any directories
         log_path = self._get_log_filepath(start_time)
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        # We'll let run.py setup_logging create the necessary directories
         return start_time, log_path
     
     def _get_log_filepath(self, timestamp):
-        """Construct log filepath using project details and timestamp."""
+        """Construct log filepath using project details and timestamp.
+        
+        IMPORTANT: This method should NOT create directories, only return the path.
+        Directories will be created in pre_processing to avoid duplicates.
+        """
         root_dir = Path(__file__).parent.parent
         log_dir = root_dir / "WareHouse" / f"{self.project_name}_{self.org_name}_{timestamp}"
-        # Create the directory if it doesn't exist
-        os.makedirs(log_dir, exist_ok=True)
-        return str(log_dir / f"{self.project_name}_{self.org_name}_{timestamp}.log")
+        # Use a simpler filename: "chat_log.log" inside the project directory
+        return str(log_dir / "chat_log.log")
     
     def _import_phase_modules(self):
         """Import required phase modules."""
@@ -187,7 +191,8 @@ class ChatChain:
         if self.chat_env.config.clear_structure:
             self._cleanup_warehouse(warehouse_dir)
         
-        # Set up software directory
+        # Set up software directory - this is where we'll put both code and logs
+        os.makedirs(software_dir, exist_ok=True)
         self.chat_env.set_directory(str(software_dir))
         
         # Initialize memory if needed
@@ -210,6 +215,10 @@ class ChatChain:
         
         # Process task prompt
         self._process_task_prompt()
+        
+        # Print info about the project setup
+        print(f"\033[1;32mProject directory: {software_dir}\033[0m")
+        print(f"\033[1;32mLog file: {self.log_filepath}\033[0m")
     
     def _cleanup_warehouse(self, warehouse_dir):
         """Remove unnecessary files from warehouse directory."""
@@ -409,6 +418,6 @@ class ChatChain:
         logging.shutdown()
         time.sleep(1)
         
-        # No need to move the log file since we're already writing to the correct location
-        # The old code was creating a duplicate folder and moving the log there
-        log_visualize(f"Log file finalized at: {self.log_filepath}")
+        # IMPORTANT: No need to move the log file or create duplicate directory
+        # Just announce where the log file is
+        print(f"\033[1;32mLog file finalized at: {self.log_filepath}\033[0m")

@@ -159,6 +159,12 @@ shell:
 	@echo "Opening a shell in the Docker container..."
 	@docker exec -it web-ai-startr.team-develop bash -c "source /project/.env && exec bash"
 
+# Run inside Docker with direct logging to the host machine 
+docker-run-with-log:
+	@echo "Running in Docker with logging to WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S).log..."
+	@mkdir -p WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python run.py" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
+
 # Verify that API keys are working properly
 verify-api-keys:
 	@if [ ! -f .env ]; then \
@@ -191,6 +197,12 @@ docker-verify-api-keys:
 run-visualizer:
 	@echo "Starting visualizer on http://localhost:8080..."
 	python visualizer/app.py --port 8080
+
+# Direct run with guaranteed logging
+run-with-log:
+	@echo "Running with direct logging to output.log..."
+	@mkdir -p WareHouse/$(shell date +%Y%m%d_%H%M%S)_run
+	@python run.py | tee WareHouse/$(shell date +%Y%m%d_%H%M%S)_run/output.log
 
 # List all WareHouse projects with log files
 list-logs:

@@ -19,6 +19,8 @@ import argparse
 import logging
 import os
 import sys
+import re
+import time
 from typing import NoReturn, Tuple, List
 
 from camel.typing import ModelType
@@ -166,48 +168,50 @@ def parse_arguments() -> argparse.Namespace:
 
 def setup_logging(log_filepath, logging_level):
     """
-    Set up logging to file AND console.
+    Set up logging to both stdout and a log file in the task directory.
     
     Args:
         log_filepath (str): Path to the log file.
         logging_level (int): Logging level (e.g., logging.DEBUG, logging.INFO).
+    
+    Returns:
+        tuple: Original stdout and log file handle (for compatibility)
     """
-    # File log formatter - standard format
-    file_log_formatter = logging.Formatter(
-        fmt="[%(asctime)s %(levelname)s] %(message)s",
-        datefmt="%Y-%d-%m %H:%M:%S",
+    # Create the directory for the log file if it doesn't exist
+    log_dir = os.path.dirname(log_filepath)
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Create a formatter for the logs
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(levelname)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
     )
     
-    # Console log formatter - more detailed for better visibility
-    console_log_formatter = logging.Formatter(
-        fmt="\033[1;36m[%(asctime)s]\033[0m \033[1;33m%(levelname)s\033[0m: %(message)s",
-        datefmt="%H:%M:%S",
-    )
-    
-    # Root logger
+    # Configure the root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(logging_level)
     
-    # Clear any existing handlers to avoid duplication
+    # Remove any existing handlers to avoid duplicates
     for handler in root_logger.handlers[:]:
         root_logger.removeHandler(handler)
     
-    # Create file handler with the given path
-    file_handler = logging.FileHandler(log_filepath, encoding="utf-8")
-    file_handler.setFormatter(file_log_formatter)
-    root_logger.addHandler(file_handler)
-    
-    # Create console handler for terminal output with more verbose format
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(console_log_formatter)
-    # Make sure console shows INFO level messages (more verbose than file might be)
-    console_handler.setLevel(logging.INFO)
+    # Add a stream handler for stdout
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formatter)
     root_logger.addHandler(console_handler)
     
-    # Log to console that we've started
-    print("\033[1;32m" + "="*80 + "\033[0m")
-    print("\033[1;32m" + " Starting Startr.Team with enhanced logging to console " + "\033[0m")
-    print("\033[1;32m" + "="*80 + "\033[0m")
+    # Add a file handler for the log file
+    file_handler = logging.FileHandler(log_filepath, mode='a', encoding='utf-8')
+    file_handler.setFormatter(formatter)
+    root_logger.addHandler(file_handler)
+    
+    # Print welcome message
+    logging.info("=" * 80)
+    logging.info(" Starting Startr.Team ")
+    logging.info(f" Logging to: {log_filepath}")
+    logging.info("=" * 80)
+    
+    return sys.stdout, file_handler  # Return values for compatibility
 
 
 def log_initial_info(chat_chain, config_path, config_phase_path, config_role_path, task):
@@ -318,22 +322,7 @@ def main():
     # Enable debug mode if requested
     if args.debug and debug_tools_available:
         os.environ["STARTR_DEBUG"] = "true"
-        debug_log("Debug mode enabled in run.py", "info")
         
-        # Log model type information
-        debug_log(f"Using model type: {args.model}", "info")
-        try:
-            model_info = {"model_name": args.model}
-            debug_inspect("run_py_model_info", model_info)
-            
-            # Map model name if needed
-            mapped_model = map_model_name(args.model)
-            if mapped_model != args.model:
-                debug_log(f"Mapped model name from '{args.model}' to '{mapped_model}'", "info")
-        except Exception as e:
-            debug_log(f"Error during model validation: {e}", "error")
-            print(f"Warning: Error validating model: {e}")
-
     # Get configuration paths
     config_path, config_phase_path, config_role_path = get_config(args.config)
 
@@ -351,13 +340,36 @@ def main():
     )
 
     # Set up logging
-    setup_logging(chat_chain.log_filepath, logging_level)
+    stdout, file_handler = setup_logging(chat_chain.log_filepath, logging_level)
     
-    # Log initial information
-    log_initial_info(chat_chain, config_path, config_phase_path, config_role_path, args.task)
+    try:
+        # Log initial information
+        log_initial_info(chat_chain, config_path, config_phase_path, config_role_path, args.task)
 
-    # Execute the ChatChain
-    execute_chat_chain(chat_chain)
+        # Execute the ChatChain
+        execute_chat_chain(chat_chain)
+        
+        # Log completion message
+        logging.info("\nTask completed successfully!")
+    except Exception as e:
+        # Log error information
+        logging.error(f"\nError during execution: {str(e)}")
+        import traceback
+        error_trace = traceback.format_exc()
+        logging.error(error_trace)
+        print(error_trace)
+    finally:
+        # Ensure all logs are flushed and handlers are closed
+        flush_log_handlers()
+        
+        # Close the file handler explicitly
+        if file_handler:
+            file_handler.close()
+            logging.getLogger().removeHandler(file_handler)
+        
+        # Print task completion message
+        print(f"\nTask processing completed.")
+        logging.info("Task processing completed.")
 
 
 if __name__ == "__main__":

@@ -96,21 +96,18 @@ class ChatEnv:
         self.requirements.directory = directory
         self.manuals.directory = directory
 
-        if (
-            os.path.exists(self.env_dict["directory"])
-            and len(os.listdir(directory)) > 0
-        ):
-            new_directory = "{}.{}".format(
-                directory, time.strftime("%Y%m%d%H%M%S", time.localtime())
-            )
-            shutil.copytree(directory, new_directory)
-            print("{} Copied to {}".format(directory, new_directory))
+        # Create or clean the directory without creating a backup copy
         if os.path.exists(self.env_dict["directory"]):
-            shutil.rmtree(self.env_dict["directory"])
-            os.mkdir(self.env_dict["directory"])
-            print("{} Created".format(directory))
+            # Directory exists - but we don't want to back it up with a timestamp suffix anymore
+            if len(os.listdir(directory)) > 0:
+                # Just clean the existing directory
+                shutil.rmtree(self.env_dict["directory"])
+                os.mkdir(self.env_dict["directory"])
+                print(f"{directory} cleaned and recreated")
         else:
+            # Directory doesn't exist, create it
             os.mkdir(self.env_dict["directory"])
+            print(f"{directory} created")
 
     def init_memory(self):
         self.memory.id_enabled = True

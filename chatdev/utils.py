@@ -1,7 +1,10 @@
+import base64
+import functools
 import html
 import logging
 import re
 import time
+import sys
 
 import markdown
 import inspect
@@ -15,69 +18,51 @@ def now():
 
 def log_visualize(role, content=None):
     """
-    send the role and content to visualizer server to show log on webpage in real-time
-    You can leave the role undefined and just pass the content, i.e. log_visualize("messages"), where the role is "System".
-    Args:
-        role: the agent that sends message
-        content: the content of message
-
-    Returns: None
-
-    """
-    # Color codes for different roles
-    color_map = {
-        "System": "\033[1;37m",  # White
-        "Chief Executive Officer": "\033[1;34m",  # Blue
-        "Chief Product Officer": "\033[1;32m",  # Green
-        "Chief Technology Officer": "\033[1;35m",  # Purple
-        "Prompt Engineer": "\033[1;33m",  # Yellow
-        "Software Test Engineer": "\033[1;36m",  # Cyan
-        "Software Developer": "\033[1;31m",  # Red
-        "default": "\033[0;37m"  # Light gray for others
-    }
+    Log the role and content with visualization.
+    This function uses the logging module to ensure output goes to both console and log file.
     
-    # Reset color code
+    Args:
+        role (str): The role.
+        content (str, optional): The content. Defaults to None.
+    """
+    # Color mapping for terminal output (doesn't affect log files)
+    color_map = {
+        "Chief Executive Officer": "\033[1;31m",     # Red for CEO
+        "Chief Product Officer": "\033[1;32m",       # Green for CPO
+        "Chief Technology Officer": "\033[1;34m",    # Blue for CTO
+        "Chief Human Resource Officer": "\033[1;35m",# Magenta for CHRO
+        "Chief Legal Officer": "\033[1;33m",         # Yellow for CLO 
+        "Code Reviewer": "\033[1;36m",               # Cyan for reviewers 
+        "Programmer": "\033[1;36m",                  # Cyan for programmers
+        "User": "\033[1;37m",                        # White for User
+        "default": "\033[0;37m"                      # Light gray for others
+    }
     reset_color = "\033[0m"
     
-    # Get color for role
+    # Get color for terminal output
     role_color = color_map.get(str(role), color_map["default"])
     
     if not content:
-        # Log without content - just a message
-        message = role + "\n"
+        # System message - log as INFO
+        message = f"[SYSTEM] {role}"
         logging.info(message)
-        # Flush logs to ensure they're written to disk
-        for handler in logging.getLogger().handlers:
-            handler.flush()
-        send_msg("System", role)
-        
-        # Print to console with color
-        formatted_message = f"{role_color}{message}{reset_color}"
-        print(formatted_message)
+        # Also print to console with color (for terminal)
+        print(f"{role_color}[SYSTEM] {role}{reset_color}")
     else:
-        # Log with role and content
-        message = str(role) + ": " + str(content) + "\n"
-        logging.info(message)
-        # Flush logs to ensure they're written to disk
-        for handler in logging.getLogger().handlers:
-            handler.flush()
+        # Agent message with a header and indented content - log as INFO
+        header = f"\n[{role}]"
+        logging.info(header)
         
-        # Print to console with color
-        formatted_message = f"{role_color}{role}{reset_color}: {str(content)}"
-        print(formatted_message)
+        # Log content with line indentation
+        lines = str(content).split('\n')
+        for line in lines:
+            indented_line = f"  {line}"
+            logging.info(indented_line)
         
-        if isinstance(content, SystemMessage):
-            records_kv = []
-            content.meta_dict["content"] = content.content
-            for key in content.meta_dict:
-                value = content.meta_dict[key]
-                value = escape_string(value)
-                records_kv.append([key, value])
-            content = "**[SystemMessage**]\n\n" + convert_to_markdown_table(records_kv)
-        else:
-            role = str(role)
-            content = str(content)
-        send_msg(role, content)
+        # Also print to console with color (for terminal)
+        print(f"{role_color}{header}{reset_color}")
+        for line in lines:
+            print(f"{role_color}  {line}{reset_color}")
 
 
 def convert_to_markdown_table(records_kv):
