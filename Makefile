@@ -15,6 +15,49 @@ help:
 	@LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/(^|\n)# Files(\n|$$)/,/(^|\n)# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | grep -E -v -e '^[^[:alnum:]]' -e '^$@$$'
 	@echo ""
 
+# Debug targets
+debug-setup:
+	@echo "Setting up debugging environment"
+	@chmod +x debug_run.py
+	@echo "Debug environment setup complete"
+
+debug-run:
+	@echo "Running with debugging enabled"
+	@./debug_run.py --model-debug --interactive --log-level info
+
+debug-model:
+	@echo "Running model verification"
+	@./debug_run.py --check-model --model $(MODEL)
+
+debug-inspect:
+	@echo "Running with interactive debugging and breakpoints"
+	@./debug_run.py --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain,Phase.execute" --model-debug
+
+debug-fallback:
+	@echo "Running with fallback model (GPT-4)"
+	@./debug_run.py --model GPT_4 --model-debug
+
+debug-api-test:
+	@echo "Testing API connectivity with minimal request"
+	@python -c "import os, openai; client = openai.OpenAI(api_key=os.environ['OPENAI_API_KEY']); print(client.chat.completions.create(model='gpt-3.5-turbo', messages=[{'role': 'user', 'content': 'Hello'}], max_tokens=5))"
+
+debug-help:
+	@echo "Debug targets:"
+	@echo "  debug-setup     - Set up debugging environment"
+	@echo "  debug-run       - Run with debugging enabled"
+	@echo "  debug-model     - Run model verification (use MODEL=model_name)"
+	@echo "  debug-inspect   - Run with interactive debugging and breakpoints"
+	@echo "  debug-fallback  - Run with fallback model (GPT-4)"
+	@echo "  debug-api-test  - Test API connectivity with minimal request"
+	@echo "  debug-help      - Show this help message"
+	@echo ""
+	@echo "Example usage:"
+	@echo "  make debug-model MODEL=LLAMA_3"
+	@echo "  make debug-run"
+
+# Add debug targets to help
+help: debug-help
+
 minor_release:
 	git flow release start $$(git describe --tags --abbrev=0 | awk -F'[v.]' '{print $$2"."$$3+1".0"}').$$(date +'_%Y-%m-%d')
 

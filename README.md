@@ -340,3 +340,51 @@ Based on the codebase analysis, several areas of code overlap have been identifi
 5. **Configuration Settings**: Many configuration parameters are duplicated across different files.
 
 These overlaps represent opportunities for code cleanup and refactoring to improve maintainability and reduce technical debt.
+
+## 🐞 Debugging Tools
+
+To help diagnose and resolve issues with WEB-AI-Startr.Team, we've added comprehensive debugging tools:
+
+### Quick Debugging
+
+If you encounter errors like the "model not found" issue, you can use these commands:
+
+```bash
+# Check a specific model configuration
+python debug_model.py LLAMA_3
+
+# List all available models
+python debug_model.py --list
+
+# Fix common configuration issues
+python debug_model.py --fix
+```
+
+### Advanced Debugging
+
+For more in-depth debugging with interactive breakpoints and detailed logging:
+
+```bash
+# Run with interactive debugging
+./debug_run.py --interactive --model-debug
+
+# Run with specific breakpoints
+./debug_run.py --breakpoints "OpenAIModel.run,ChatChain.execute_chain"
+```
+
+### Makefile Targets
+
+We've added convenient Makefile targets:
+
+```bash
+# Run with debugging enabled
+make debug-run
+
+# Test a specific model
+make debug-model MODEL=LLAMA_3
+
+# Run with interactive debugging and breakpoints
+make debug-inspect
+```
+
+For detailed instructions, see the [DEBUG.md](DEBUG.md) file.

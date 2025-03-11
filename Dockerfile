@@ -1,5 +1,5 @@
-# Start with a Python 3.10 base image
-FROM python:3.10
+# Start with a Python 3.11 base image
+FROM python:3.12
 
 # TODO: Docker Configuration Improvements:
 # 1. Use multi-stage builds to reduce image size
@@ -15,7 +15,21 @@ WORKDIR /project/
 COPY . /project/
 
 # Install necessary libraries for GUI support
-RUN apt-get update && apt-get install -y git python3-tk vim x11-apps
+# Update the package lists with the --allow-releaseinfo-change option
+# Set timezone and date
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates ntp git python3-tk vim && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+RUN pip install --upgrade distutils-pytest
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install --no-build-isolation numpy
 
 # Install the project dependencies
 RUN python -m pip install -r requirements.txt
