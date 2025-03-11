@@ -10,7 +10,7 @@ def prompt_cost(
         "gpt-3.5-turbo": 0.0005,
         "gpt-3.5-turbo-16k": 0.003,
         "gpt-3.5-turbo-0613": 0.0015,
-        "gpt-4": 0.03,
+        "gpt-4o": 0.03,
         "gpt-4-0613": 0.03,
         "gpt-4-32k": 0.06,
         "gpt-4-turbo": 0.01,
@@ -22,7 +22,7 @@ def prompt_cost(
         "gpt-3.5-turbo": 0.0015,
         "gpt-3.5-turbo-16k": 0.004,
         "gpt-3.5-turbo-0613": 0.002,
-        "gpt-4": 0.06,
+        "gpt-4o": 0.06,
         "gpt-4-0613": 0.06,
         "gpt-4-32k": 0.12,
         "gpt-4-turbo": 0.03,
@@ -150,7 +150,7 @@ def get_info(dir, log_filepath):
             if model_type == "GPT_3_5_TURBO" or model_type == "GPT_3_5_TURBO_NEW":
                 model_type = "gpt-3.5-turbo"
             elif model_type == "GPT_4":
-                model_type = "gpt-4"
+                model_type = "gpt-4o"
             elif model_type == "GPT_4_32k":
                 model_type = "gpt-4-32k"
             elif model_type == "GPT_4_TURBO":

@@ -25,9 +25,9 @@ from typing import Dict, Any, List, Optional, Tuple
 
 # Configure fallback models for problematic ones
 MODEL_FALLBACKS = {
-    "llama-3.3-70b-versatile": "gpt-4",
-    "llama-3-70b-versatile": "gpt-4", 
-    "llama-3.1-70b-versatile": "gpt-4"
+    "llama-3.3-70b-versatile": "GPT-4o",
+    "llama-3-70b-versatile": "GPT-4o, 
+    "llama-3.1-70b-versatile": "GPT-4o"
 }
 
 def print_header(text: str) -> None:

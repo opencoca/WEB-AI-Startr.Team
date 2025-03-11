@@ -23,7 +23,7 @@ models:
 
   GPT_4:
     <<: *default_config
-    name: "gpt-4"
+    name: "gpt-4o"
     max_tokens: 8192
 
   GPT_4_32K:
@@ -62,7 +62,7 @@ models:
   LLAMA_3:
     <<: *default_config
     # Using gpt-4 as fallback since llama-3.3-70b-versatile is not accessible
-    name: "gpt-4"
+    name: "gpt-4o"
     max_tokens: 8192
     is_openai: true
     # Using default OpenAI base URL instead of Groq

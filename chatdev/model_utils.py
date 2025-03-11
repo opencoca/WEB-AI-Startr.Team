@@ -10,7 +10,7 @@ from chatdev.debug_utils import debug_log, debug_inspect, debug_decorator
 OPENAI_MODELS = [
     "gpt-3.5-turbo",
     "gpt-3.5-turbo-16k",
-    "gpt-4",
+    "gpt-4o",
     "gpt-4-32k",
     "gpt-4o",
     "gpt-4o-mini",
@@ -188,13 +188,13 @@ def map_model_name(model_name: str) -> str:
     """
     # Special case mapping for LLAMA_3 model which appears to be causing issues
     if model_name.upper() == "LLAMA_3":
-        debug_log("Mapping LLAMA_3 to gpt-4", "info")
-        return "gpt-4"
+        debug_log("Mapping LLAMA_3 to gpt-4o", "info")
+        return "gpt-4o"
     
     model_mapping = {
         # Add known mappings here
         "GPT_3_5_TURBO": "gpt-3.5-turbo",
-        "GPT_4": "gpt-4",
+        "GPT_4": "gpt-4o",
         "GPT_4_TURBO": "gpt-4-turbo",
         "GPT_4O": "gpt-4o",
         "CLAUDE_INSTANT": "claude-instant-1",
