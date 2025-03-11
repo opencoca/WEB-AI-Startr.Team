@@ -13,13 +13,21 @@ import markdown
 #from visualizer.app import send_msg
 
 # --------------------------------------------------------------------
-# 1. Basic logging setup: console output with a simple format
+# 1. Logging setup: console output with a simple format
 # --------------------------------------------------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
-)
+# Create and configure the console handler.
+
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(logging.Formatter("%(message)s"))
+
+# Create and configure the file handler.
+file_handler = logging.FileHandler("my_app.log", mode="a")
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+
+# Configure the logging system with both handlers.
+logging.basicConfig(level=logging.INFO, handlers=[console_handler, file_handler])
 
 # --------------------------------------------------------------------
 # 2. Monkey patch the logging system to colorize messages automatically
