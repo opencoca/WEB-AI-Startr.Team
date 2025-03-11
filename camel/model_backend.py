@@ -226,7 +226,7 @@ class OpenAIModel(ModelBackend):
         
         # If the model is LLAMA_3, which is causing issues, use a fallback model
         if model_name.upper() == "LLAMA_3" or "llama-3" in model_name.lower():
-            fallback_model = "gpt-4"
+            fallback_model = "gpt-4o"
             debug_log(f"LLAMA_3 model detected, falling back to {fallback_model}", "warning")
             if VERBOSE_MODEL_DEBUG:
                 print(f"\n*** MODEL FALLBACK: Replacing {model_name} with {fallback_model} ***")
@@ -258,11 +258,11 @@ class OpenAIModel(ModelBackend):
                 
                 if VERBOSE_MODEL_DEBUG:
                     print(f"\n*** MODEL NOT FOUND: {error_model} ***")
-                    print("Attempting to use fallback model: gpt-4")
+                    print("Attempting to use fallback model: gpt-4o")
                 
                 # Try again with a fallback model
                 try:
-                    fallback_model = "gpt-4"
+                    fallback_model = "gpt-4o"
                     debug_log(f"Trying fallback model: {fallback_model}", "info")
                     
                     response = self.client.chat.completions.create(

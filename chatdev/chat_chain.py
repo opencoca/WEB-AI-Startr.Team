@@ -5,381 +5,240 @@ import os
 import shutil
 import time
 from datetime import datetime
+from pathlib import Path
 
 from camel.agents import RolePlaying
 from camel.configs import ChatGPTConfig
 from camel.typing import TaskType
+from camel.web_spider import modal_trans
 from chatdev.chat_env import ChatEnv, ChatEnvConfig
 from chatdev.statistics import get_info
-from camel.web_spider import modal_trans
 from chatdev.utils import log_visualize, now
 
-# TODO: Code Organization Improvements:
-# 1. Break down this large file into smaller, more focused modules
-# 2. Improve documentation with more detailed docstrings and examples
-# 3. Implement better error handling throughout the codebase
-# 4. Add unit tests for core functionality
-# 5. Consider using a more modern Python project structure (src layout)
 
-def check_bool(s):
-    """
-    This function checks if the input string is 'true', ignoring case.
-    It returns True if the input is 'true' and False otherwise.
-    Raises a TypeError if the input is not a string.
-    """
-
-    # Check if the input is a string; if not, raise a TypeError
+def is_true(s):
+    """Check if string value represents 'true', case-insensitive."""
     if not isinstance(s, str):
-        raise TypeError(f"Expected a string, but got {type(s).__name__} instead.")
-
-    # Convert the input string to lowercase using casefold and compare it to "true"
+        raise TypeError(f"Expected a string, but got {type(s).__name__}.")
     return s.casefold() == "true"
 
 
 class ChatChain:
-    def __init__(self, **kwargs) -> None:
-        """
-        Initialize the ChatChain with various settings.
-
-        This class manages configuration paths and user inputs needed for the chat software.
-
-        Args (Keyword Arguments):
-            config_path (str): Path to the main configuration file (ChatChainConfig.json).
-            config_phase_path (str): Path to the phase configuration file (PhaseConfig.json).
-            config_role_path (str): Path to the role configuration file (RoleConfig.json).
-            task_prompt (str): The user input prompt for the software.
-            project_name (str): The name of the project provided by the user.
-            org_name (str): The organization name of the user.
-            model_type (ModelType): The type of model to use (default: GPT-3.5 Turbo).
-            code_path (str): Path to the code used by the software.
-            use_ollama (bool): Whether to use the Ollama service (default: False).
-        """
-
-        for key in sorted(kwargs.keys()):
-            value = kwargs[key]
-            setattr(
-                self, key, value
-            )  # Create an instance variable for each key and assign its value
-
-        self.load_json_configs()
-
-        # print dir of self exclusive of __ locals __ and 'self' and ''
-        print(
-            [
-                attr
-                for attr in dir(self)
-                if not attr.startswith("__") and attr != "self" and attr != ""
-            ]
-        )
-
-        # init chatchain config and recruits
+    """Manages the execution flow of a chat-based software development process."""
+    
+    def __init__(self, **kwargs):
+        """Initialize ChatChain with configuration settings."""
+        # Set instance variables from kwargs
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+            
+        # Load configuration files
+        self._load_configs()
+        
+        # Initialize core components
         self.chain = self.config["chain"]
         self.recruits = self.config["recruits"]
         self.web_spider = self.config["web_spider"]
-
-        # init default max chat turn
         self.chat_turn_limit_default = 10
-
-        # init ChatEnv
+        
+        # Initialize chat environment
         self.chat_env_config = ChatEnvConfig(
-            clear_structure=check_bool(self.config["clear_structure"]),
-            gui_design=check_bool(self.config["gui_design"]),
-            git_management=check_bool(self.config["git_management"]),
-            incremental_develop=check_bool(self.config["incremental_develop"]),
+            clear_structure=is_true(self.config["clear_structure"]),
+            gui_design=is_true(self.config["gui_design"]),
+            git_management=is_true(self.config["git_management"]),
+            incremental_develop=is_true(self.config["incremental_develop"]),
             background_prompt=self.config["background_prompt"],
-            with_memory=check_bool(self.config["with_memory"]),
+            with_memory=is_true(self.config["with_memory"]),
         )
-
         self.chat_env = ChatEnv(self.chat_env_config)
-
-        # the user input prompt will be self-improved (if set "self_improve": "True" in ChatChainConfig.json)
-        # the self-improvement is done in self.preprocess
-
-        # init task prompt if task_prompt is not empty
-        task_prompt = self.task_prompt
-        self.task_prompt_raw = task_prompt
+        
+        # Save original task prompt
+        self.task_prompt_raw = self.task_prompt
         self.task_prompt = ""
-
-        # Initialize role prompts by joining lines for each role into a single string
-        self.role_prompts = {}
-        for role, lines in self.config_role.items():
-            self.role_prompts[role] = "\n".join(lines)
-
-        # Initialize logging and get the start time and log file path
-        self.start_time, self.log_filepath = self.get_log_filepath()
-
-        # Import the phase modules
-        # SimplePhases are defined in PhaseConfig.json and imported from chatdev.phase
-        # ComposedPhases are defined in ChatChainConfig.json and will be imported when needed
+        
+        # Prepare role prompts
+        self.role_prompts = {role: "\n".join(lines) for role, lines in self.config_role.items()}
+        
+        # Set up logging
+        self.start_time, self.log_filepath = self._setup_logging()
+        
+        # Import phase modules
+        self._import_phase_modules()
+        
+        # Initialize phases
+        self._init_phases()
+        
+    def _load_configs(self):
+        """Load JSON configuration files."""
+        for attr in dir(self):
+            if attr.startswith("config_") and attr.endswith("_path"):
+                config_attr = attr.replace("_path", "")
+                with open(getattr(self, attr), "r", encoding="utf8") as file:
+                    setattr(self, config_attr, json.load(file))
+    
+    def _setup_logging(self):
+        """Set up logging and return start time and log filepath."""
+        start_time = now()
+        log_path = self._get_log_filepath(start_time)
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        return start_time, log_path
+    
+    def _get_log_filepath(self, timestamp):
+        """Construct log filepath using project details and timestamp."""
+        root_dir = Path(__file__).parent.parent
+        log_dir = root_dir / "WareHouse" / f"{self.project_name}_{self.org_name}_{timestamp}"
+        return str(log_dir / f"{self.project_name}_{self.org_name}_{timestamp}.log")
+    
+    def _import_phase_modules(self):
+        """Import required phase modules."""
         self.phase_module = importlib.import_module("chatdev.phase")
         self.compose_phase_module = importlib.import_module("chatdev.composed_phase")
-
-        # Prepare a dictionary to store phase instances
+    
+    def _init_phases(self):
+        """Initialize all phases from configuration."""
         self.phases = {}
-
-        # Iterate over each phase in the configuration
         for phase_name, phase_config in self.config_phase.items():
-            # Retrieve role names for the assistant and user
-            assistant_role_name = phase_config["assistant_role_name"]
-            user_role_name = phase_config["user_role_name"]
-
-            # Retrieve and combine prompts for the current phase into one string
-            prompts = phase_config["phase_prompt"]
-            phase_prompt = "\n\n".join(
-                prompts
-            )  # Join prompts with two newlines to separate them
-
-            # Dynamically get the class associated with the current phase
+            # Get phase parameters
+            assistant_role = phase_config["assistant_role_name"]
+            user_role = phase_config["user_role_name"]
+            phase_prompt = "\n\n".join(phase_config["phase_prompt"])
+            
+            # Create phase instance
             phase_class = getattr(self.phase_module, phase_name)
-
-            # Create an instance of the phase class with the appropriate parameters
-            phase_instance = phase_class(
-                assistant_role_name=assistant_role_name,
-                user_role_name=user_role_name,
+            self.phases[phase_name] = phase_class(
+                assistant_role_name=assistant_role,
+                user_role_name=user_role,
                 phase_prompt=phase_prompt,
                 role_prompts=self.role_prompts,
                 phase_name=phase_name,
                 model_type=self.model_type,
                 log_filepath=self.log_filepath,
             )
-
-            # Store the phase instance in the phases dictionary
-            self.phases[phase_name] = phase_instance
-
-    def load_json_configs(self):
-        """
-        Load JSON data from files into instance variables.
-        Finds attributes that start with 'config_' and end with '_path'.
-        """
-        print("Loading JSON configuration files...")
-        for attr in dir(self):
-            if attr.startswith("config_") and attr.endswith("_path"):
-                print(f"Loading {attr}...")
-                # Remove '_path' from the attribute name and strip trailing underscore if present
-                config_attr = attr.replace("_path", "").rstrip("_")
-
-                # Load the JSON data from the file and set it to the instance variable
-                with open(getattr(self, attr), "r", encoding="utf8") as file:
-                    print(f"Setting {config_attr}...")
-                    setattr(
-                        self, config_attr, json.load(file)
-                    )  # Store JSON data in the instance variable
-
+    
     def recruit_team(self):
-        """
-        Recruit all employees listed in 'self.recruits' into the chat environment.
-
-        This method recruits each employee in the 'self.recruits' list by calling
-        the 'recruit' method on the 'chat_env' to add them to the chat environment.
-
-        Returns:
-            None
-        """
-        # Loop through each employee in the recruits list
+        """Recruit all team members specified in config."""
         for employee in self.recruits:
-            # Recruit the employee into the chat environment
             self.chat_env.recruit(agent_name=employee)
-
-    def execute_step(self, phase_item: dict):
-        """
-        Execute a single phase in the chain.
-
-        Args:
-            phase_item: A dictionary containing the configuration for one phase
-                        from the ChatChainConfig.json file.
-
-        Returns:
-            None
-        """
-
-        # Extract the phase name and type from the phase_item dictionary
+    
+    def execute_chain(self):
+        """Execute all phases in the chain sequence."""
+        for phase_item in self.chain:
+            self.execute_step(phase_item)
+    
+    def execute_step(self, phase_item):
+        """Execute a single phase in the chain."""
         phase = phase_item["phase"]
         phase_type = phase_item["phaseType"]
-
-        # Handle SimplePhase execution
+        
         if phase_type == "SimplePhase":
-            self._execute_phase(
-                phase,
-                phase_item["max_turn_step"],
-                check_bool(phase_item["need_reflect"]),
-            )
-
-        # Handle ComposedPhase execution
+            self._run_simple_phase(phase, phase_item)
         elif phase_type == "ComposedPhase":
-            self._execute_composed_phase(
-                phase, phase_item["cycleNum"], phase_item["Composition"]
-            )
-
-        # If the phase type is not recognized, raise an error
+            self._run_composed_phase(phase, phase_item)
         else:
-            self._raise_not_implemented_error(f"PhaseType '{phase_type}'")
-
-    def _execute_phase(self, phase, max_turn_step, need_reflect):
-        """
-        Execute a SimplePhase using the provided parameters.
-
-        Args:
-            phase: The name of the phase to execute.
-            max_turn_step: The maximum number of turns for this phase.
-            need_reflect: A boolean indicating whether reflection is needed.
-
-        Returns:
-            None
-        """
-        if phase in self.phases:
-            self.chat_env = self.phases[phase].execute(
-                self.chat_env,
-                self.chat_turn_limit_default if max_turn_step <= 0 else max_turn_step,
-                need_reflect,
-            )
-        else:
-            self._raise_not_implemented_error(f"Phase '{phase}' in chatdev.phase")
-
-    def _execute_composed_phase(self, phase, cycle_num, composition):
-        """
-        Execute a ComposedPhase using the provided parameters.
-
-        Args:
-            phase: The name of the composed phase to execute.
-            cycle_num: The number of cycles for the composed phase.
-            composition: The composition details for the composed phase.
-
-        Returns:
-            None
-        """
-        compose_phase_class = getattr(self.compose_phase_module, phase, None)
-        if not compose_phase_class:
-            self._raise_not_implemented_error(
-                f"Phase '{phase}' in chatdev.compose_phase"
-            )
-
-        compose_phase_instance = compose_phase_class(
+            raise ValueError(f"Unknown phase type: {phase_type}")
+    
+    def _run_simple_phase(self, phase, config):
+        """Execute a simple phase."""
+        if phase not in self.phases:
+            raise ValueError(f"Phase '{phase}' not found")
+            
+        max_turns = config["max_turn_step"]
+        need_reflect = is_true(config["need_reflect"])
+        
+        # Use default turn limit if not specified
+        if max_turns <= 0:
+            max_turns = self.chat_turn_limit_default
+            
+        self.chat_env = self.phases[phase].execute(
+            self.chat_env,
+            max_turns,
+            need_reflect
+        )
+    
+    def _run_composed_phase(self, phase, config):
+        """Execute a composed phase."""
+        # Get the composed phase class
+        phase_class = getattr(self.compose_phase_module, phase, None)
+        if not phase_class:
+            raise ValueError(f"Composed phase '{phase}' not found")
+        
+        # Create and execute the composed phase
+        phase_instance = phase_class(
             phase_name=phase,
-            cycle_num=cycle_num,
-            composition=composition,
+            cycle_num=config["cycleNum"],
+            composition=config["Composition"],
             config_phase=self.config_phase,
             config_role=self.config_role,
             model_type=self.model_type,
             log_filepath=self.log_filepath,
         )
-        self.chat_env = compose_phase_instance.execute(self.chat_env)
-
-    def _raise_not_implemented_error(self, message):
-        """
-        Raise a RuntimeError indicating a phase or phase type is not implemented.
-
-        Args:
-            message: The error message to include in the RuntimeError.
-
-        Returns:
-            None
-        """
-        raise RuntimeError(message)
-
-    def execute_chain(self):
-        """
-        Execute the entire chain based on the
-        configuration specified in ChatChainConfig.json.
-
-        This method applies the 'execute_step' function to each item
-        in the 'self.chain' list using the 'map()' function.
-
-        The 'list()' function is used to ensure that all steps are executed immediately.
-        """
-        list(map(self.execute_step, self.chain))
-
-    def get_log_filepath(self):
-        """
-        Get the log file path under the software's main directory.
-
-        Returns:
-            start_time (str): The time when the software started, formatted as 'YYYYMMDDHHMMSS'.
-            log_filepath (str): The full path to the log file.
-        """
-        start_time = now()
-        log_filepath = self._construct_log_filepath()
-        
-        # Ensure log directory exists
-        log_dir = os.path.dirname(log_filepath)
-        os.makedirs(log_dir, exist_ok=True)
-        
-        return start_time, log_filepath
-
-    def _get_root_directory(self):
-        """
-        Return the root directory of the project by moving up one level from the current file.
-        """
-        return os.path.dirname(os.path.dirname(__file__))
-
-    def _construct_log_filepath(self):
-        """
-        Construct and return the full path to the log file.
-        """
-        timestamp = now()
-        # Store this timestamp for consistent usage
-        self._log_timestamp = timestamp
-        
-        # Construct the log file path. Example: /path/to/project/WareHouse/ProjectName_OrgName_YYYYMMDDHHMMSS/ProjectName_OrgName_YYYYMMDDHHMMSS.log
-        return os.path.join(
-            self._get_root_directory(),
-            "WareHouse",
-            f"{self.project_name}_{self.org_name}_{timestamp}",
-            f"{self.project_name}_{self.org_name}_{timestamp}.log",
-        )
-
+        self.chat_env = phase_instance.execute(self.chat_env)
+    
     def pre_processing(self):
-        """
-        Preprocess the environment by removing unnecessary files,
-        setting up directories, and copying configuration files.
-        Returns: None
-        """
-        # Get the root directory of the software
-        root = os.path.dirname(os.path.dirname(__file__))
-        directory = os.path.join(root, "WareHouse")
-
-        # Clear out unnecessary files from the WareHouse directory
+        """Prepare the environment before execution."""
+        # Get directories
+        root_dir = Path(__file__).parent.parent
+        warehouse_dir = root_dir / "WareHouse"
+        software_dir = warehouse_dir / f"{self.project_name}_{self.org_name}_{self.start_time}"
+        
+        # Clean up existing files if needed
         if self.chat_env.config.clear_structure:
-            for filename in os.listdir(directory):
-                file_path = os.path.join(directory, filename)
-                if os.path.isfile(file_path) and not filename.endswith((".py", ".log")):
-                    os.remove(file_path)
-                    print(f"{file_path} Removed.")
-
-        # Set up the directory for storing software-related files
-        software_path = os.path.join(
-            directory, f"{self.project_name}_{self.org_name}_{self.start_time}"
-        )
-        self.chat_env.set_directory(software_path)
-
-        # Initialize memory if the configuration requires it
+            self._cleanup_warehouse(warehouse_dir)
+        
+        # Set up software directory
+        self.chat_env.set_directory(str(software_dir))
+        
+        # Initialize memory if needed
         if self.chat_env.config.with_memory:
             self.chat_env.init_memory()
-
-        # Copy essential configuration files to the software directory
-        for config_file in [
-            self.config_path,
-            self.config_phase_path,
-            self.config_role_path,
-        ]:
-            shutil.copy(config_file, software_path)
-
-        # If incremental development is enabled, copy code files to the software directory
-        if check_bool(self.config["incremental_develop"]):
-            for root_dir, dirs, files in os.walk(self.code_path):
-                relative_path = os.path.relpath(root_dir, self.code_path)
-                target_dir = os.path.join(software_path, "base", relative_path)
-                os.makedirs(target_dir, exist_ok=True)
-                for file in files:
-                    shutil.copy2(
-                        os.path.join(root_dir, file), os.path.join(target_dir, file)
-                    )
-            self.chat_env._load_from_hardware(os.path.join(software_path, "base"))
-
-        # Write the task prompt to a file in the software directory
-        with open(os.path.join(software_path, f"{self.project_name}.prompt"), "w") as f:
+        
+        # Copy config files
+        self._copy_configs_to_software_dir(software_dir)
+        
+        # Set up code base if incremental development is enabled
+        if is_true(self.config["incremental_develop"]):
+            self._setup_code_base(software_dir)
+        
+        # Save task prompt
+        with open(software_dir / f"{self.project_name}.prompt", "w") as f:
             f.write(self.task_prompt_raw)
-
-        # Prepare a message summarizing the preprocessing steps and log it
+        
+        # Log preprocessing info
+        self._log_preprocessing_info()
+        
+        # Process task prompt
+        self._process_task_prompt()
+    
+    def _cleanup_warehouse(self, warehouse_dir):
+        """Remove unnecessary files from warehouse directory."""
+        for filename in os.listdir(warehouse_dir):
+            file_path = warehouse_dir / filename
+            if file_path.is_file() and not filename.endswith((".py", ".log")):
+                os.remove(file_path)
+    
+    def _copy_configs_to_software_dir(self, software_dir):
+        """Copy configuration files to software directory."""
+        for config_file in [self.config_path, self.config_phase_path, self.config_role_path]:
+            shutil.copy(config_file, software_dir)
+    
+    def _setup_code_base(self, software_dir):
+        """Copy existing code base for incremental development."""
+        base_dir = software_dir / "base"
+        
+        # Copy all files from code_path to base directory
+        for root, _, files in os.walk(self.code_path):
+            rel_path = os.path.relpath(root, self.code_path)
+            target_dir = base_dir / rel_path
+            os.makedirs(target_dir, exist_ok=True)
+            
+            for file in files:
+                shutil.copy2(os.path.join(root, file), target_dir / file)
+        
+        # Load code base into chat environment
+        self.chat_env._load_from_hardware(str(base_dir))
+    
+    def _log_preprocessing_info(self):
+        """Log preprocessing information."""
         preprocess_msg = f"""
         **[Preprocessing]**
 
@@ -405,157 +264,154 @@ class ChatChain:
         **ChatGPTConfig**:
         {ChatGPTConfig()}
         """
-        # clean preprocess_msg of preceding whitespace
-        preprocess_msg = "\n".join(
-            [line.strip() for line in preprocess_msg.split("\n")]
-        )
-
+        # Clean whitespace
+        preprocess_msg = "\n".join(line.strip() for line in preprocess_msg.split("\n"))
         log_visualize(preprocess_msg)
-
-        # Initialize task prompt based on configuration settings
-        self.chat_env.env_dict["task_prompt"] = (
-            self.self_task_improve(self.task_prompt_raw)
-            if check_bool(self.config["self_improve"])
-            else self.task_prompt_raw
+    
+    def _process_task_prompt(self):
+        """Process and enhance task prompt if needed."""
+        # Determine if task prompt should be improved
+        if is_true(self.config["self_improve"]):
+            self.chat_env.env_dict["task_prompt"] = self._improve_task_prompt(self.task_prompt_raw)
+        else:
+            self.chat_env.env_dict["task_prompt"] = self.task_prompt_raw
+        
+        # Process for web spider if enabled
+        if is_true(self.web_spider):
+            self.chat_env.env_dict["task_description"] = modal_trans(self.task_prompt_raw)
+    
+    def _improve_task_prompt(self, original_prompt):
+        """Improve task prompt using an AI agent."""
+        improve_prompt = (
+            "I will give you a short description of a software design requirement, "
+            "please rewrite it into a detailed prompt that can make large language model know how to make this software better based this prompt, "
+            "the prompt should ensure LLMs build a software that can be run correctly, which is the most import part you need to consider. "
+            f"remember that the revised prompt should not contain more than 200 words, here is the short description:\"{original_prompt}\". "
+            "If the revised prompt is revised_version_of_the_description, "
+            "then you should return a message in a format like \"<INFO> revised_version_of_the_description\", do not return messages in other formats."
         )
-
-        # If web spidering is enabled, convert the task prompt for web interaction
-        if check_bool(self.web_spider):
-            self.chat_env.env_dict["task_description"] = modal_trans(
-                self.task_prompt_raw
-            )
-
-    def post_processing(self):
-        """
-        summarize the production and move log files to the software directory
-        Returns: None
-
-        """
-
-        self.chat_env.write_meta()
-        filepath = os.path.dirname(__file__)
-        root = os.path.dirname(filepath)
-
-        if self.chat_env_config.git_management:
-            log_git_info = "**[Git Information]**\n\n"
-
-            self.chat_env.codes.version += 1
-            os.system("cd {}; git add .".format(self.chat_env.env_dict["directory"]))
-            log_git_info += "cd {}; git add .\n".format(
-                self.chat_env.env_dict["directory"]
-            )
-            os.system(
-                'cd {}; git commit -m "v{} Final Version"'.format(
-                    self.chat_env.env_dict["directory"], self.chat_env.codes.version
-                )
-            )
-            log_git_info += 'cd {}; git commit -m "v{} Final Version"\n'.format(
-                self.chat_env.env_dict["directory"], self.chat_env.codes.version
-            )
-            log_visualize(log_git_info)
-
-            git_info = "**[Git Log]**\n\n"
-            import subprocess
-
-            # execute git log
-            command = "cd {}; git log".format(self.chat_env.env_dict["directory"])
-            completed_process = subprocess.run(
-                command, shell=True, text=True, stdout=subprocess.PIPE
-            )
-
-            if completed_process.returncode == 0:
-                log_output = completed_process.stdout
-            else:
-                log_output = "Error when executing " + command
-
-            git_info += log_output
-            log_visualize(git_info)
-
-        post_info = "**[Post Info]**\n\n"
-        now_time = now()
-        time_format = "%Y%m%d%H%M%S"
-        datetime1 = datetime.strptime(self.start_time, time_format)
-        datetime2 = datetime.strptime(now_time, time_format)
-        duration = (datetime2 - datetime1).total_seconds()
-
-        post_info += "Software Info: {}".format(
-            get_info(self.chat_env.env_dict["directory"], self.log_filepath)
-            + "\n\n🕑**duration**={:.2f}s\n\n".format(duration)
-        )
-
-        post_info += "Startr.Team Starts ({})".format(self.start_time) + "\n\n"
-        post_info += "Startr.Team Ends ({})".format(now_time) + "\n\n"
-
-        directory = self.chat_env.env_dict["directory"]
-        if self.chat_env.config.clear_structure:
-            for filename in os.listdir(directory):
-                file_path = os.path.join(directory, filename)
-                if os.path.isdir(file_path) and file_path.endswith("__pycache__"):
-                    shutil.rmtree(file_path, ignore_errors=True)
-                    post_info += "{} Removed.".format(file_path) + "\n\n"
-
-        log_visualize(post_info)
-
-        logging.shutdown()
-        time.sleep(1)
-
-        shutil.move(
-            self.log_filepath,
-            os.path.join(
-                root + "/WareHouse",
-                "_".join([self.project_name, self.org_name, self.start_time]),
-                os.path.basename(self.log_filepath),
-            ),
-        )
-
-    # @staticmethod
-    def self_task_improve(self, task_prompt):
-        """
-        ask agent to improve the user query prompt
-        Args:
-            task_prompt: original user query prompt
-
-        Returns:
-            revised_task_prompt: revised prompt from the prompt engineer agent
-
-        """
-        self_task_improve_prompt = """I will give you a short description of a software design requirement, 
-please rewrite it into a detailed prompt that can make large language model know how to make this software better based this prompt,
-the prompt should ensure LLMs build a software that can be run correctly, which is the most import part you need to consider.
-remember that the revised prompt should not contain more than 200 words, 
-here is the short description:\"{}\". 
-If the revised prompt is revised_version_of_the_description, 
-then you should return a message in a format like \"<INFO> revised_version_of_the_description\", do not return messages in other formats.""".format(
-            task_prompt
-        )
-
-        role_play_session = RolePlaying(
+        
+        # Create role-playing session
+        role_play = RolePlaying(
             assistant_role_name="Prompt Engineer",
             assistant_role_prompt="You are an professional prompt engineer that can improve user input prompt to make LLM better understand these prompts.",
-            user_role_prompt="You are an user that want to use LLM to build software.",
             user_role_name="User",
+            user_role_prompt="You are an user that want to use LLM to build software.",
             task_type=TaskType.STARTR_TEAM,
             task_prompt="Do prompt engineering on user query",
             with_task_specify=False,
             model_type=self.model_type,
         )
-
-        # log_visualize("System", role_play_session.assistant_sys_msg)
-        # log_visualize("System", role_play_session.user_sys_msg)
-
-        _, input_user_msg = role_play_session.init_chat(
-            None, None, self_task_improve_prompt
-        )
-        assistant_response, user_response = role_play_session.step(input_user_msg, True)
-        revised_task_prompt = (
-            assistant_response.msg.content.split("<INFO>")[-1].lower().strip()
-        )
+        
+        # Run the conversation
+        _, user_msg = role_play.init_chat(None, None, improve_prompt)
+        assistant_response, _ = role_play.step(user_msg, True)
+        
+        # Extract improved prompt
+        improved_prompt = assistant_response.msg.content.split("<INFO>")[-1].lower().strip()
+        
+        # Log the improvement
+        log_visualize(role_play.assistant_agent.role_name, assistant_response.msg.content)
         log_visualize(
-            role_play_session.assistant_agent.role_name, assistant_response.msg.content
+            "**[Task Prompt Self Improvement]**\n"
+            f"**Original Task Prompt**: {original_prompt}\n"
+            f"**Improved Task Prompt**: {improved_prompt}"
         )
-        log_visualize(
-            "**[Task Prompt Self Improvement]**\n**Original Task Prompt**: {}\n**Improved Task Prompt**: {}".format(
-                task_prompt, revised_task_prompt
-            )
+        
+        return improved_prompt
+    
+    def post_processing(self):
+        """Finalize the project and clean up."""
+        # Write metadata
+        self.chat_env.write_meta()
+        
+        # Handle Git operations if enabled
+        if self.chat_env_config.git_management:
+            self._handle_git_operations()
+        
+        # Generate and log post-processing info
+        self._log_post_processing_info()
+        
+        # Clean up cache files if needed
+        self._cleanup_cache_files()
+        
+        # Shut down logging and move log file
+        self._finalize_logging()
+    
+    def _handle_git_operations(self):
+        """Perform Git operations for version control."""
+        log_info = "**[Git Information]**\n\n"
+        
+        # Increment version
+        self.chat_env.codes.version += 1
+        version = self.chat_env.codes.version
+        directory = self.chat_env.env_dict["directory"]
+        
+        # Add all files to Git
+        os.system(f"cd {directory}; git add .")
+        log_info += f"cd {directory}; git add .\n"
+        
+        # Commit with version number
+        os.system(f'cd {directory}; git commit -m "v{version} Final Version"')
+        log_info += f'cd {directory}; git commit -m "v{version} Final Version"\n'
+        
+        # Log Git info
+        log_visualize(log_info)
+        
+        # Log Git history
+        import subprocess
+        command = f"cd {directory}; git log"
+        process = subprocess.run(command, shell=True, text=True, stdout=subprocess.PIPE)
+        
+        git_log = "**[Git Log]**\n\n"
+        git_log += process.stdout if process.returncode == 0 else f"Error executing: {command}"
+        log_visualize(git_log)
+    
+    def _log_post_processing_info(self):
+        """Log post-processing information and statistics."""
+        post_info = "**[Post Info]**\n\n"
+        
+        # Calculate duration
+        end_time = now()
+        time_format = "%Y%m%d%H%M%S"
+        start_datetime = datetime.strptime(self.start_time, time_format)
+        end_datetime = datetime.strptime(end_time, time_format)
+        duration = (end_datetime - start_datetime).total_seconds()
+        
+        # Get project statistics
+        directory = self.chat_env.env_dict["directory"]
+        stats = get_info(directory, self.log_filepath)
+        post_info += f"Software Info: {stats}\n\n🕑**duration**={duration:.2f}s\n\n"
+        
+        # Add timestamp info
+        post_info += f"Startr.Team Starts ({self.start_time})\n\n"
+        post_info += f"Startr.Team Ends ({end_time})\n\n"
+        
+        log_visualize(post_info)
+    
+    def _cleanup_cache_files(self):
+        """Remove __pycache__ directories if clear_structure is enabled."""
+        if not self.chat_env.config.clear_structure:
+            return
+            
+        directory = self.chat_env.env_dict["directory"]
+        for root, dirs, _ in os.walk(directory):
+            for dir_name in dirs:
+                if dir_name == "__pycache__":
+                    cache_path = os.path.join(root, dir_name)
+                    shutil.rmtree(cache_path, ignore_errors=True)
+                    log_visualize(f"{cache_path} Removed.\n\n")
+    
+    def _finalize_logging(self):
+        """Shut down logging and move log file to final location."""
+        logging.shutdown()
+        time.sleep(1)
+        
+        # Move log file to project directory
+        source = self.log_filepath
+        target_dir = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            "WareHouse",
+            f"{self.project_name}_{self.org_name}_{self.start_time}"
         )
-        return revised_task_prompt
+        shutil.move(source, os.path.join(target_dir, os.path.basename(source)))

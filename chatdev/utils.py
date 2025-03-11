@@ -25,12 +25,23 @@ def log_visualize(role, content=None):
 
     """
     if not content:
-        logging.info(role + "\n")
+        # Log without content - just a message
+        message = role + "\n"
+        logging.info(message)
+        # Flush logs to ensure they're written to disk
+        for handler in logging.getLogger().handlers:
+            handler.flush()
         send_msg("System", role)
-        print(role + "\n")
+        print(message)
     else:
-        print(str(role) + ": " + str(content) + "\n")
-        logging.info(str(role) + ": " + str(content) + "\n")
+        # Log with role and content
+        message = str(role) + ": " + str(content) + "\n"
+        logging.info(message)
+        # Flush logs to ensure they're written to disk
+        for handler in logging.getLogger().handlers:
+            handler.flush()
+        print(message)
+        
         if isinstance(content, SystemMessage):
             records_kv = []
             content.meta_dict["content"] = content.content
