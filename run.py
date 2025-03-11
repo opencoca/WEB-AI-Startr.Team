@@ -22,6 +22,24 @@ from typing import NoReturn, Tuple, List
 from camel.typing import ModelType  # imports our models from model_config.yaml
 from chatdev.chat_chain import ChatChain
 
+# Add support for debug utilities if available
+try:
+    from chatdev.debug_utils import debug_log, debug_inspect, debug_decorator, DEBUG_ENABLED
+    from chatdev.model_utils import map_model_name, verify_model_config
+    debug_tools_available = True
+except ImportError:
+    debug_tools_available = False
+    DEBUG_ENABLED = False
+    
+    # Create dummy debug functions to avoid errors
+    def debug_log(msg, level="debug"):
+        pass
+    
+    def debug_inspect(*args, **kwargs):
+        pass
+    
+    def debug_decorator(func):
+        return func
 
 # Constants
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -186,10 +204,35 @@ def main():
     if args.debug:
         # Enable debug mode if the debug flag is set
         logging_level = logging.DEBUG
+        if debug_tools_available:
+            # Enable debug utilities if available
+            os.environ["STARTR_DEBUG"] = "true"
+            debug_log("Debug mode enabled in run.py", "info")
     else:
         logging_level = logging.INFO
 
     config_path, config_phase_path, config_role_path = get_config(args.config)
+
+    # Log model type information if debug is enabled
+    if debug_tools_available and args.debug:
+        debug_log(f"Using model type: {args.model}", "info")
+        try:
+            # Attempt to validate the model configuration
+            model_info = {"model_name": args.model}
+            debug_inspect("run_py_model_info", model_info)
+            
+            # Map model name if needed
+            mapped_model = map_model_name(args.model)
+            if mapped_model != args.model:
+                debug_log(f"Mapped model name from '{args.model}' to '{mapped_model}'", "info")
+                # Check if we need to create a ModelType.MAPPED_MODEL
+                if mapped_model != args.model and hasattr(ModelType, args.model):
+                    debug_log(f"Model type {args.model} exists, using as-is", "info")
+                else:
+                    debug_log(f"Model type {args.model} not found, checking alternatives", "warning")
+        except Exception as e:
+            debug_log(f"Error during model validation: {e}", "error")
+            print(f"Warning: Error validating model: {e}")
 
     chat_chain = ChatChain(
         use_ollama=args.local,
@@ -211,10 +254,40 @@ def main():
         encoding="utf-8",
     )
 
-    chat_chain.pre_processing()
-    chat_chain.recruit_team()
-    chat_chain.execute_chain()
-    chat_chain.post_processing()
+    try:
+        # If debug tools are available, log each step
+        if debug_tools_available and args.debug:
+            debug_log("Starting pre-processing", "info")
+        
+        chat_chain.pre_processing()
+        
+        if debug_tools_available and args.debug:
+            debug_log("Starting team recruitment", "info")
+            
+        chat_chain.recruit_team()
+        
+        if debug_tools_available and args.debug:
+            debug_log("Starting chain execution", "info")
+            
+        chat_chain.execute_chain()
+        
+        if debug_tools_available and args.debug:
+            debug_log("Starting post-processing", "info")
+            
+        chat_chain.post_processing()
+        
+        if debug_tools_available and args.debug:
+            debug_log("Execution completed successfully", "info")
+            
+    except Exception as e:
+        if debug_tools_available and args.debug:
+            debug_log(f"Error in execution: {str(e)}", "error")
+            import traceback
+            debug_log(traceback.format_exc(), "error")
+        logging.error(f"Error during execution: {str(e)}")
+        print(f"Error: {str(e)}")
+        print("For more detailed debugging, try: python debug_run.py --model-debug")
+        raise
 
 
 if __name__ == "__main__":

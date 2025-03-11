@@ -57,9 +57,21 @@ models:
     max_tokens: 4096
     is_openai: false
 
+  # Updated LLAMA_3 configuration with fallback to a supported model
+  # Original configuration caused "model not found" errors
   LLAMA_3:
     <<: *default_config
-    name: "llama-3.3-70b-versatile"
-    max_tokens: 4096
+    # Using gpt-4 as fallback since llama-3.3-70b-versatile is not accessible
+    name: "gpt-4"
+    max_tokens: 8192
     is_openai: true
-    base_url: https://api.groq.com/openai/v1 
+    # Using default OpenAI base URL instead of Groq
+    # Comment out this fallback and uncomment the next section if you have Groq access
+    
+  # Original LLAMA_3 configuration - uncomment if you have Groq API access
+  # LLAMA_3_GROQ:
+  #   <<: *default_config
+  #   name: "llama-3.1-70b-versatile"  # Updated to latest available model
+  #   max_tokens: 4096
+  #   is_openai: true
+  #   base_url: https://api.groq.com/openai/v1 
