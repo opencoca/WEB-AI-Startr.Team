@@ -1,7 +1,7 @@
 # SRDD (Software Requirement Description Dataset)
 
 <p align="center">
-  <img src='./cover.png' width=800>
+  <img src='./dither.ordered.cover.gif' width=800>
 </p>
 
 Welcome to SRDD (Software Requirement Description Dataset), a large prompted dataset tailored for Natural Language to Software (NL2Software) research. This repository contains a rich collection of prompts organized into 5 major categories and further subdivided into 40 subcategories. In total, the dataset comprises 1200 high-quality prompt samples extracted from ChatGPT 3.5, specifically curated to facilitate research in NL2Software.
@@ -20,5 +20,13 @@ Welcome to SRDD (Software Requirement Description Dataset), a large prompted dat
   <img src='./SRDD_Category.png' width=800>
 </p>
 
-# License
-The SRDD dataset is licensed under **CC BY-NC 4.0**. This license explicitly permits non-commercial use of the data. We would like to emphasize that any models trained using these datasets should strictly adhere to the non-commercial usage restriction and should be employed exclusively for research purposes.
+# License  
+
+The SRDD dataset is in the public domain under U.S. law. It contains AI-generated content and is free to use, modify, and distribute without restrictions.  
+
+## Ethical Guidelines  
+We encourage users to:  
+- Cite the dataset for transparency.  
+- Avoid commercial exploitation or harmful applications.  
+
+*Disclaimer: Creators are not liable for any use of this dataset.*  
