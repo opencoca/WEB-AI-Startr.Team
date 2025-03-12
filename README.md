@@ -86,91 +86,86 @@ richer solutions beyond software development (e.g., logical reasoning, data anal
 
 ## ❓ What Can Startr.Team Do?
 
+## 🔄 Project Structure
+
+The project now uses a clean module structure with:
+
+- Core functionality moved to the `startr.team` package
+- Main entry points:
+  - `python -m startr.team` - Run the main application
+  - `python -m startr.team.debug_run` - Run with debugging features
+- Legacy compatibility scripts:
+  - `./run.py` - Wrapper for backward compatibility
+  - `./debug_run.py` - Debug wrapper for backward compatibility
+
 ## ⚡️ Quickstart
 
-### 💻️ Quickstart with Web
+> **IMPORTANT:** This project is currently designed to run in Docker. This is the only supported and tested method of deployment. Future updates will add improved support for direct pipenv or uv installations.
 
-#TODO: Add web start guide
+### 🐳 Running with Docker (Recommended)
 
-### 🖥️ Quickstart with terminal
+We use Startr.sh for Docker deployment, which is the simplest and most reliable way to run WEB-AI-Startr.Team:
 
-To get started, follow these steps:
+```bash
+bash <(curl -sL startr.sh) run
+```
 
-1. **Clone the GitHub Repository:** Begin by cloning the repository using the command:
+This command:
+1. Pulls the latest Docker image
+2. Sets up the container with proper configuration
+3. Runs the application with all dependencies included
+4. Makes the web interface available at http://localhost:8080/
 
+After running this command, you can access the web page for visualization and configuration at http://localhost:8080/.
+
+#### Docker Benefits
+- **Consistency**: Ensures the same environment across all deployments
+- **Isolation**: Prevents conflicts with other Python packages on your system
+- **Dependencies**: All required packages are pre-installed
+- **Performance**: Optimized configuration for better performance
+- **Security**: Runs in an isolated container
+
+### Alternative Methods (Not Recommended)
+
+> **Note:** The following methods are not fully supported in the current version and may encounter issues. We strongly recommend using the Docker method above.
+
+<details>
+<summary>Alternative Installation Methods (click to expand)</summary>
+
+#### 💻️ Terminal Installation (For Development Only)
+
+These instructions are primarily for developers who need to modify the core codebase:
+
+1. **Clone the GitHub Repository:** 
    ```
-   git clone 
+   git clone https://github.com/OpenCoca/WEB-AI-Startr.Team.git
    ```
 
-2. **Set Up Python Environment:** 
-
-   ```
-
-   ```
-
-3. **Install Dependencies:** Move into the `Startr.Team` directory and install the necessary dependencies by running:
-
+2. **Set Up Python Environment and Install Dependencies:** 
    ```
    cd WEB-AI-Startr.Team
    pipenv install
    ```
 
-4. **Set OpenAI API Key:** Export your OpenAI API key as an environment variable. Replace `"your_OpenAI_API_key"` with
-   your actual API key. Remember that this environment variable is session-specific, so you need to set it again if you
-   open a new terminal session.
+3. **Set OpenAI API Key:** 
+   Copy the .env.example file to .env and add your API keys to it.
 
-  Alternativly and for a more permanent solution, copy the .env.example file to .env and add your API keys to it.
-
-   On Unix/Linux:
-
+4. **Build Your Software:** 
    ```
-   export OPENAI_API_KEY="your_OpenAI_API_key"
+   pipenv run python -m startr.team --task "[description_of_your_idea]" --name "[project_name]"
    ```
 
-   On Windows:
+5. **Run Your Software:** 
+   Once generated, you can find your software in the `WareHouse` directory.
 
-   ```
-   $env:OPENAI_API_KEY="your_OpenAI_API_key"
-   ```
-
-5. **Build Your Software:** Use the following command to initiate the building of your software,
-   replacing `[description_of_your_idea]` with your idea's description and `[project_name]` with your desired project
-   name:
- 
-
-   ```
-   pipenv run python run.py --task "[description_of_your_idea]" --name "[project_name]"
-   ```
-
-  
-
-6. **Run Your Software:** Once generated, you can find your software in the `WareHouse` directory under a specific
-   project folder, such as `project_name_DefaultOrganization_timestamp`. 
-   
-   It's best to follow the generated README.md file for further instructions.
-
-   For static sites, you can run the following command to start a local server:
-
-   ```
-    cd WareHouse/project_name_DefaultOrganization_timestamp
-    python3 -m http.server
-    ```
-
-
-### 🐳 Quickstart with Docker
-
-- We use Startr.sh for Docker deployment. To get started, follow these steps:
-
-`bash <(curl -sL startr.sh) run` 
-
-Startr.sh quickly deploys the WEB-AI-Startr.Team Docker container. You can access the web page for visualization and configuration at http://localhost:5000/.
+</details>
 
 ## ✨️ Advanced Skills
 
 For more detailed information, please refer to our [Wiki](wiki.md), where you can find:
 
 - An introduction to all command run parameters.
-- A straightforward guide for setting up a local web visualizer demo, which can visualize real-time logs, replayed logs, and ChatChain.
+- A guide for using the Docker-based web visualizer, which can visualize real-time logs, replayed logs, and ChatChain.
 - An overview of the Startr.Team framework.
 - A comprehensive introduction to all advanced parameters in ChatChain configuration.
 - Guides for customizing WEB-AI-Startr.Team, including:
@@ -343,48 +338,29 @@ These overlaps represent opportunities for code cleanup and refactoring to impro
 
 ## 🐞 Debugging Tools
 
-To help diagnose and resolve issues with WEB-AI-Startr.Team, we've added comprehensive debugging tools:
-
-### Quick Debugging
-
-If you encounter errors like the "model not found" issue, you can use these commands:
+The Docker environment includes comprehensive debugging tools to help diagnose and resolve issues:
 
 ```bash
 # Check a specific model configuration
-python debug_model.py LLAMA_3
+docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --check-model MODEL_NAME
 
-# List all available models
-python debug_model.py --list
-
-# Fix common configuration issues
-python debug_model.py --fix
-```
-
-### Advanced Debugging
-
-For more in-depth debugging with interactive breakpoints and detailed logging:
-
-```bash
-# Run with interactive debugging
-./debug_run.py --interactive --model-debug
-
-# Run with specific breakpoints
-./debug_run.py --breakpoints "OpenAIModel.run,ChatChain.execute_chain"
-```
-
-### Makefile Targets
-
-We've added convenient Makefile targets:
-
-```bash
 # Run with debugging enabled
-make debug-run
-
-# Test a specific model
-make debug-model MODEL=LLAMA_3
+docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --model-debug
 
 # Run with interactive debugging and breakpoints
-make debug-inspect
+docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain"
 ```
 
 For detailed instructions, see the [DEBUG.md](DEBUG.md) file.
+
+## 🔄 Project Structure
+
+The project now uses a clean module structure with:
+
+- Core functionality moved to the `startr.team` package
+- Main entry points:
+  - `python -m startr.team` - Run the main application
+  - `python -m startr.team.debug_run` - Run with debugging features
+- Legacy compatibility scripts:
+  - `./run.py` - Wrapper for backward compatibility
+  - `./debug_run.py` - Debug wrapper for backward compatibility

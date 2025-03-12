@@ -34,6 +34,9 @@ RUN pip install --no-build-isolation numpy
 # Install the project dependencies
 RUN python -m pip install -r requirements.txt
 
+# Install the project as a module for the new directory structure
+RUN pip install -e .
+
 # Set default environment variables (these will be overridden when running with -e)
 # Instead of hardcoding placeholders, use ARG with defaults that can be overridden
 ARG OPENAI_API_KEY=""
@@ -61,7 +64,9 @@ ENV CHOKIDAR_USEPOLLING=1
 # Use the entrypoint script to source .env file if it exists
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Run visualizer by default
+# Run visualizer by default using the module
 CMD ["python", "visualizer/app.py", "--port", "8080"]
+# Alternative using module structure (uncomment to use)
+# CMD ["python", "-m", "startr.team.visualizer", "--port", "8080"]
 # Run bash to debug
 #CMD ["bash"]

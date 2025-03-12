@@ -23,19 +23,19 @@ debug-setup:
 
 debug-run:
 	@echo "Running with debugging enabled"
-	@./debug_run.py --model-debug --interactive --log-level info
+	@python -m startr.team.debug_run --model-debug --interactive --log-level info
 
 debug-model:
 	@echo "Running model verification"
-	@./debug_run.py --check-model --model $(MODEL)
+	@python -m startr.team.debug_run --check-model --model $(MODEL)
 
 debug-inspect:
 	@echo "Running with interactive debugging and breakpoints"
-	@./debug_run.py --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain,Phase.execute" --model-debug
+	@python -m startr.team.debug_run --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain,Phase.execute" --model-debug
 
 debug-fallback:
 	@echo "Running with fallback model (GPT-4)"
-	@./debug_run.py --model GPT_4 --model-debug
+	@python -m startr.team.debug_run --model GPT_4 --model-debug
 
 debug-api-test:
 	@echo "Testing API connectivity with minimal request"
@@ -163,7 +163,7 @@ shell:
 docker-run-with-log:
 	@echo "Running in Docker with logging to WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S).log..."
 	@mkdir -p WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)
-	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python run.py" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python -m startr.team" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
 
 # Verify that API keys are working properly
 verify-api-keys:
@@ -202,7 +202,7 @@ run-visualizer:
 run-with-log:
 	@echo "Running with direct logging to output.log..."
 	@mkdir -p WareHouse/$(shell date +%Y%m%d_%H%M%S)_run
-	@python run.py | tee WareHouse/$(shell date +%Y%m%d_%H%M%S)_run/output.log
+	@python -m startr.team | tee WareHouse/$(shell date +%Y%m%d_%H%M%S)_run/output.log
 
 # List all WareHouse projects with log files
 list-logs:
@@ -231,3 +231,33 @@ docker-fix-visualization:
 
 # Restart visualizer to apply changes
 docker-restart-visualizer: docker-fix-visualization docker-restart
+
+# Docker-specific targets
+docker-run:
+	@echo "Running WEB-AI-Startr.Team in Docker..."
+	@bash -c 'bash <(curl -sL startr.sh) run'
+
+docker-debug:
+	@echo "Running debug commands in Docker container..."
+	@docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --model-debug --interactive --log-level info
+
+docker-shell:
+	@echo "Opening a shell in the Docker container..."
+	@docker exec -it web-ai-startr.team-develop bash
+
+docker-test-model:
+	@echo "Testing model in Docker container..."
+	@docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --check-model --model $(MODEL)
+
+# Add Docker targets to help
+help: 
+	@echo "Docker commands:"
+	@echo "  docker-run       - Run WEB-AI-Startr.Team in Docker (recommended)"
+	@echo "  docker-debug     - Run debugging tools in Docker"
+	@echo "  docker-shell     - Open a shell in the Docker container"
+	@echo "  docker-test-model- Test a model in Docker (use MODEL=model_name)"
+	@echo ""
+	@echo "Example: make docker-test-model MODEL=LLAMA_3"
+	@echo ""
+	@echo "IMPORTANT: Docker is the recommended way to run this project"
+	@echo ""

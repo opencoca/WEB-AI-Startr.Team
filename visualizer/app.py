@@ -60,14 +60,14 @@ def send_message():
     return jsonify(message)
 
 # Define rout to send team a project
-# to run a project we must call run.py 
-# run.py [-h] [--config CONFIG] [--org ORG] [--task TASK] [--name NAME] [--model MODEL] [--path PATH]
+# to run a project we must call the startr.team module
+# python -m startr.team [-h] [--config CONFIG] [--org ORG] [--task TASK] [--name NAME] [--model MODEL] [--path PATH]
 import subprocess
 
 @app.route("/send_project", methods=["POST"])
 def send_project():
     data = request.get_json()
-    cmd = ["python3", "run.py"]
+    cmd = ["python3", "-m", "startr.team"]
     
     for arg in ["task", "config", "org", "name", "model", "path"]:
         if data.get(arg):

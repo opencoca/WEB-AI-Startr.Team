@@ -2,7 +2,67 @@
 
 This guide provides comprehensive instructions for debugging the WEB-AI-Startr.Team system, focusing on model validation, interactive debugging, and runtime inspection.
 
-## Quick Start
+> **IMPORTANT:** The project is designed to run primarily in Docker. All debugging should be performed within the Docker container unless you are specifically working on the core codebase.
+
+## Quick Start with Docker (Recommended)
+
+### 1. Access the Docker Container
+
+First, make sure the Docker container is running:
+
+```bash
+bash <(curl -sL startr.sh) run
+```
+
+Then open a shell into the container:
+
+```bash
+docker exec -it web-ai-startr.team-develop bash
+```
+
+### 2. Validate Model Configuration
+
+Check if your model configuration is valid:
+
+```bash
+# Inside the Docker container
+python -m startr.team.debug_run --check-model --model LLAMA_3
+```
+
+### 3. Run with Debugging Enabled
+
+Run the system with full debugging capabilities:
+
+```bash
+# Inside the Docker container
+python -m startr.team.debug_run --model-debug --interactive --log-level info
+```
+
+### 4. Direct Execution
+
+You can run the main application using the module structure:
+
+```bash
+# Inside the Docker container
+python -m startr.team
+```
+
+## Docker Debugging Commands (External)
+
+You can also run debugging commands directly from your host machine without entering the container:
+
+# Run model verification
+docker exec -it web-ai-startr.team-develop python /project/startr.team/debug_run.py --check-model --model LLAMA_3
+
+# Run with debugging enabled
+docker exec -it web-ai-startr.team-develop python /project/startr.team/debug_run.py --model-debug --interactive
+
+## Development Environment Only
+
+<details>
+<summary>Alternative Debugging Outside Docker (Development Only)</summary>
+
+> **Note:** These instructions are only for developers working on the core codebase
 
 ### 1. Setup
 
@@ -20,6 +80,12 @@ Check if your model configuration is valid:
 make debug-model MODEL=LLAMA_3
 ```
 
+Or directly:
+
+```bash
+python -m startr.team.debug_run --check-model --model LLAMA_3
+```
+
 ### 3. Run with Debugging Enabled
 
 Run the system with full debugging capabilities:
@@ -27,6 +93,14 @@ Run the system with full debugging capabilities:
 ```bash
 make debug-run
 ```
+
+Or directly:
+
+```bash
+python -m startr.team.debug_run --model-debug --interactive --log-level info
+```
+
+</details>
 
 ## Common Issues and Solutions
 
