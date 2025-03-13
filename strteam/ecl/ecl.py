@@ -1,9 +1,9 @@
 
 import argparse
-from graph import Graph
-from experience import Experience
-from utils import get_easyDict_from_filepath,now ,log_and_print_online
-from memory import Memory
+from .graph import Graph
+from .experience import Experience
+from .utils import get_easyDict_from_filepath,now ,log_and_print_online
+from .memory import Memory
 import sys
 import os 
 import logging

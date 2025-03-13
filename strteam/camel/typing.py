@@ -1,5 +1,5 @@
 from enum import Enum
-from camel.config_loader import config_loader, ModelType
+from .config_loader import config_loader, ModelType
 
 # The ModelType enum is now dynamically created in ConfigLoader
 

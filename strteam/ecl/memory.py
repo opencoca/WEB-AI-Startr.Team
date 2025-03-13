@@ -11,9 +11,8 @@ import faiss
 import numpy as np
 from datetime import datetime
 sys.path.append(os.path.join(os.getcwd(),"ecl"))
-#from utils import get_code_embedding,get_text_embedding
-from utils import get_easyDict_from_filepath,log_and_print_online
-from embedding import OpenAIEmbedding
+from .utils import get_easyDict_from_filepath, log_and_print_online
+from .embedding import OpenAIEmbedding
 
 class MemoryBase(ABC):
     def __init__(self, directory: str) -> None:

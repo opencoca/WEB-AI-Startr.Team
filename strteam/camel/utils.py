@@ -10,9 +10,9 @@ from typing import Any, Callable, List, Optional, Set, TypeVar
 import requests
 import tiktoken
 
-from camel.messages import OpenAIMessage
-from camel.typing import ModelType, TaskType
-from camel.config_loader import ConfigLoader
+from .messages import OpenAIMessage
+from .typing import ModelType, TaskType
+from .config_loader import ConfigLoader
 
 F = TypeVar("F", bound=Callable[..., Any])
 
