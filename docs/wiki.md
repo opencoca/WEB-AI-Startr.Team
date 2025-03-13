@@ -74,18 +74,18 @@ python3 visualizer/app.py
 
 then start building a software by ``python3 run.py`` and go to [Visualizer Website](http://127.0.0.1:8000/) to see an real-time visualized version of logs such as
 
-![demo](misc/demo.png)
+![demo](./misc/demo.png)
 
 - You can also go to the [ChatChain Visualizer](http://127.0.0.1:8000/static/chain_visualizer.html) on this page and
   upload any ``ChatChainConfig.json`` under ``config/CompanyConfig/`` to get a visualization on this chain, such as:
 
-![ChatChain Visualizer](misc/chatchain_vis.png)
+![ChatChain Visualizer](./misc/chatchain_vis.png)
 
 - You can also go to the [Chat Replay page](http://127.0.0.1:8000/static/replay.html) to replay the log file in the software folder
     - click the ``File Upload`` bottom to upload a log, then click ``Replay``
     - The replay only shows the dialogues in natural languages between agents, it will not contain debug logs.
 
-![Replay](misc/replay.gif)
+![Replay](./misc/replay.gif)
 
 ## Docker Start
 - You can use docker for a quick and safe use of WEB-AI-Startr.Team. You will need some extra steps to allow the execution of the GUI program in docker since Startr.Team often creates software with GUI and executes it in the Test Phase.
@@ -100,7 +100,7 @@ then start building a software by ``python3 run.py`` and go to [Visualizer Websi
   brew install socat xquartz
   ```
   - Open Xquartz and go into the settings, allow connections from network clients
-    - ![xquartz](misc/xquartz.jpg)
+    - ![xquartz](./misc/xquartz.jpg)
   - run the following command on the host computer and keep it.
   ```commandline
    socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"
@@ -218,7 +218,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
     - Customize Role
 - Here is the overview architecture of WEB-AI-Startr.Team, which illustrates the relationships among the above three classes:
 
-![arch](misc/arch.png)
+![arch](./misc/arch.png)
 
 - All the configuration content related to Startr.Team (such as the background prompt of the agent employee, the work content of each Phase, and how the Phase is combined into a ChatChain), are called a **config/CompanyConfig** (because Startr.Team is like a virtual software company). These config/CompanyConfigs are in the Startr.Team project Under ``config/CompanyConfig/``. You can check this [directory](https://github.com/OpenCoca/WEB-AI-Startr.Team/tree/main/config/CompanyConfig). In this directory, you will see different config/CompanyConfig (such as Default, Art, Human). Generally speaking, each config/CompanyConfig will contain 3 configuration files.
   1. ChatChainConfig.json, which controls the overall development process of WEB-AI-Startr.Team, including which Phase each step is, how many times each Phase needs to be cycled, whether reflection is needed, etc.
@@ -356,7 +356,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 ├── camel # Camel RolePlay Component
 ├── WEB-AI-Startr.Team # Startr.Team Core Code
 ├── ecl # Experiential Co-Learning Module
-├── misc # Assets of Example and Demo
+├── docs/misc # Assets of Example and Demo
 ├── visualizer # Visualizer Folder
 ├── run.py # Entry of WEB-AI-Startr.Team
 ├── requirements.txt
@@ -367,7 +367,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 ## config/CompanyConfig
 
 ### Default
-![demo](misc/ChatChain_Visualization_Default.png)
+![demo](./misc/ChatChain_Visualization_Default.png)
 - As shown in the ChatChain visualization of the Default setting, Startr.Team will produce software in the order of:
   - Demand Analysis: decide the modality of the software
   - Choose Language: decide what language to build with
@@ -380,26 +380,26 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 - You can use default setting using ``python3 run.py --config "Default"``.
 
 ### Art
-![demo](misc/ChatChain_Visualization_Art.png)
+![demo](./misc/ChatChain_Visualization_Art.png)
 - Compared to Default, the Art setting adds a phase before CodeThisProject called Art
 - The Art phase will first discuss the name and description of the images assets, then use ``openai.Image.create`` to generate the images based on the description.
 - You can use default setting using ``python3 run.py --config "Art"`` or just ignore the config parameter.
 
 ### Human-Agent Interaction
-![demo](misc/ChatChain_Visualization_Human.png)
+![demo](./misc/ChatChain_Visualization_Human.png)
 - Compared to Default, in ***Human-Agent-Interaction*** mode you can play as a reviewer and ask the programmer agent to modify the code based on your comments.
 - It adds a Phase called HumanAgentInteraction after the  dCodeReview Phase.
 - You can use ***Human-Agent-Interaction*** setting using ``python3 run.py --config "Human"``.
 - When WEB-AI-Startr.Team executes to this Phase, on the command interface you will see a hint that asks for input.
 - You can run your software in the ``WareHouse/`` and see if it satisfies your needs. Then you can type anything you want (bug fix or new feature) in the command interface, then press Enter:
-![Human_command](misc/Human_command.png)
+![Human_command](./misc/Human_command.png)
 - For example
   - We first run the Startr.Team with the task "design a gomoku game"
   - Then we type "Please add a restart button" in the HumanAgentInteraction Phase, adding the first feature
   - In the second loop of HumanAgentInteraction, we add another feature by typing "Please add a current status bar showing whose turn it is".
   - At last, we early exit this mode by typing "End".
   - Below are all three versions.
-    - <img src='misc/Human_v1.png' height=250>&nbsp;&nbsp;&nbsp;&nbsp;<img src='misc/Human_v2.png' height=250>&nbsp;&nbsp;&nbsp;&nbsp;<img src='misc/Human_v3.png' height=250>
+    - <img src='./misc/Human_v1.png' height=250>&nbsp;&nbsp;&nbsp;&nbsp;<img src='./misc/Human_v2.png' height=250>&nbsp;&nbsp;&nbsp;&nbsp;<img src='./misc/Human_v3.png' height=250>
 
 ### Git Mode
 - Simply set ``"git_management"`` to ``"True"`` in ``ChatChainConfig.json`` to open the Git Mode, in which Startr.Team will make the generated software folder a git repository and automatically make all commits.
@@ -412,14 +412,14 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
   - Complete ``TestModification`` phase, with a commit message ``Test #1/2/3 Finished``(if the TestModification is executed in three loops).
   - All phases completed, with a commit message ``Final Version``.
 - On the terminal and online log UI you can see the git summary at the end of the process.
-  -  <img src='misc/git_summary_terminal.png' height=250>&nbsp;&nbsp;&nbsp;&nbsp;<img src='misc/git_summary_onlinelog.png' height=250>
+  -  <img src='./misc/git_summary_terminal.png' height=250>&nbsp;&nbsp;&nbsp;&nbsp;<img src='./misc/git_summary_onlinelog.png' height=250>
   - You can also search ``git Information`` in the log file to see when did commit happened.
 - ⚠️ There are a few things worth noting about Git Mode:
   - Startr.Team is a git project, and we need to create another git project in the generated software folder, so we use ``git submodule`` to make this "git over git" function. A ``.gitmodule`` file will be created.
     - under the software folder, you can add/commit/push/checkout the software project just like a normal git project, and your commits would not modify the Startr.Team git history.
     - under the Startr.Team folder, the new software has been added to the Startr.Team as a whole folder.
   - The generated log file would not be added into the software git project, since the log is closed and moved to the software folder after the final commit. We have to do this because the log should record all the git commits, including the final one. So the git operations must be done before the log is finalized. You will always see a log file to be added and committed in the software folder, like:
-    - ![img.png](misc/the_log_left.png)
+    - ![img.png](./misc/the_log_left.png)
   - When you perform ``git add .`` under the Startr.Team project, There will be information like (taking Gomoku for example):
     ```commandline
     Changes to be committed:

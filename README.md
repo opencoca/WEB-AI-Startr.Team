@@ -1,7 +1,7 @@
 # Communicative Agents for Software Development
 
 <p align="center">
-  <img src='./misc/logo1.png' width=550>
+  <img src='./docs/misc/logo1.png' width=550>
 </p>
 
 
@@ -22,7 +22,7 @@
   which is based on large language models (LLMs) and serves as an ideal scenario for studying collective intelligence.
 
 <p align="center">
-  <img src='./misc/company.png' width=600>
+  <img src='./docs/misc/company.png' width=600>
 </p>
 
 ## 🎉 News
@@ -36,7 +36,7 @@ will soon be incorporated into this repository, enhancing support for diverse or
 richer solutions beyond software development (e.g., logical reasoning, data analysis, story generation, and more).
 
   <p align="center">
-  <img src='./misc/macnet.png' width=500>
+  <img src='./docs/misc/macnet.png' width=500>
   </p>
 
 <details>
@@ -44,35 +44,35 @@ richer solutions beyond software development (e.g., logical reasoning, data anal
 
 * May 07, 2024, we introduced "Iterative Experience Refinement" (IER), a novel method where instructor and assistant agents enhance shortcut-oriented experiences to efficiently adapt to new tasks. This approach encompasses experience acquisition, utilization, propagation, and elimination across a series of tasks. Our preprint paper is available at https://arxiv.org/abs/2405.04219, and this technique will soon be incorporated into WEB-AI-Startr.Team.
   <p align="center">
-  <img src='./misc/ier.png' width=220>
+  <img src='./docs/misc/ier.png' width=220>
   </p>
 
 * January 25, 2024: We have integrated Experiential Co-Learning Module into WEB-AI-Startr.Team. Please see the [Experiential Co-Learning Guide](wiki.md#co-tracking).
 
 * December 28, 2023: We present Experiential Co-Learning, an innovative approach where instructor and assistant agents accumulate shortcut-oriented experiences to effectively solve new tasks, reducing repetitive errors and enhancing efficiency.  Check out our preprint paper at https://arxiv.org/abs/2312.17025 and this technique will soon be integrated into WEB-AI-Startr.Team.
   <p align="center">
-  <img src='./misc/ecl.png' width=860>
+  <img src='./docs/misc/ecl.png' width=860>
   </p>
 
 * December 15, 2023: We have introduced the **Experiential Co-Learning Module** into WEB-AI-Startr.Team. Please see the [Experiential Co-Learning Guide](wiki.md#co-tracking).
 
 * November 2, 2023: Startr.Team is now supported with a new feature: incremental development, which allows agents to develop upon existing codes. Try `--config "incremental" --path "[source_code_directory_path]"` to start it.
   <p align="center">
-  <img src='./misc/increment.png' width=700>
+  <img src='./docs/misc/increment.png' width=700>
   </p>
 
 * October 26, 2023: Startr.Team is now supported with Docker for safe execution (thanks to contribution from [ManindraDeMel](https://github.com/ManindraDeMel)). Please see [Docker Start Guide](wiki.md#docker-start).
   <p align="center">
-  <img src='./misc/docker.png' width=400>
+  <img src='./docs/misc/docker.png' width=400>
   </p>
 * September 25, 2023: The **Git** mode is now available, enabling the programmer <img src='visualizer/static/figures/programmer.png' height=20> to utilize Git for version control. To enable this feature, simply set ``"git_management"`` to ``"True"`` in ``ChatChainConfig.json``. See [guide](wiki.md#git-mode).
   <p align="center">
-  <img src='./misc/github.png' width=600>
+  <img src='./docs/misc/github.png' width=600>
   </p>
 - September 20, 2023: The **Human-Agent-Interaction** mode is now available! You can get involved with the Startr.Team team by playing the role of reviewer <img src='visualizer/static/figures/reviewer.png' height=20> and making suggestions to the programmer <img src='visualizer/static/figures/programmer.png' height=20>;
   try ``python3 run.py --task [description_of_your_idea] --config "Human"``. See [guide](wiki.md#human-agent-interaction) and [example](WareHouse/Website_HumanAgentInteraction_20230920135038).
   <p align="center">
-  <img src='./misc/Human_intro.png' width=600>
+  <img src='./docs/misc/Human_intro.png' width=600>
   </p>
 - September 1, 2023: The **Art** mode is available now! You can activate the designer agent <img src='visualizer/static/figures/designer.png' height=20> to generate images used in the software;
   try ``python3 run.py --task [description_of_your_idea] --config "Art"``. See [guide](wiki.md#art) and [example](WareHouse/gomokugameArtExample_THUNLP_20230831122822).
