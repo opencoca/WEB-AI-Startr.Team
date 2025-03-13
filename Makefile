@@ -146,6 +146,8 @@ docker-update-keys:
 docker-update-and-restart: docker-update-keys docker-restart
 
 # Restart the application inside Docker to use new API keys
+# The nohup command is used to run the application in the background
+# and allows it to continue running even after the terminal is closed.
 docker-restart:
 	@echo "Restarting application inside Docker container..."
 	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
@@ -163,7 +165,7 @@ shell:
 docker-run-with-log:
 	@echo "Running in Docker with logging to WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S).log..."
 	@mkdir -p WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)
-	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python -m startr.team" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python startr.team/__main__.py" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
 
 # Verify that API keys are working properly
 verify-api-keys:
