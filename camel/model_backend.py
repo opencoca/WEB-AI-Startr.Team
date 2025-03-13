@@ -79,11 +79,13 @@ class OpenAIModel(ModelBackend):
         
         try:
             # Make the API call
+            logging.debug(f"Prompt sent to {model_name}: {prompt}")
             response = self.client.chat.completions.create(
                 model=model_name,
                 messages=messages,
                 **run_config
             )
+            logging.debug(f"Model response: {response}")
             self._log_usage(response.usage)
             return response
         except Exception as e:
@@ -100,6 +102,7 @@ class OpenAIModel(ModelBackend):
                         messages=messages,
                         **run_config
                     )
+                    logging.debug(f"Model response: {response}")
                     self._log_usage(response.usage)
                     self.model_config["name"] = fallback_model
                     return response
