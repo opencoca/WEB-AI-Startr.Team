@@ -89,8 +89,8 @@ class ModelBackend(ABC):
         pass
 
 # Import the ModelFactory and models from camel to avoid duplication
-from camel.model_backend import ModelFactory, OpenAIModel as CamelOpenAIModel
-from camel.typing import ModelType
+from ..camel.model_backend import ModelFactory, OpenAIModel as CamelOpenAIModel
+from ..camel.typing import ModelType
 
 class OpenAIModel(ModelBackend):
     r"""OpenAI API in a unified ModelBackend interface."""

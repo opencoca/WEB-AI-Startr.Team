@@ -1,3 +1,19 @@
+# =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
+#  Enhanced by the  Startr Team (2023 - 2025)
+# =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
+
 import os
 import re
 import sys
@@ -5,22 +21,17 @@ import time
 import zipfile
 import inspect
 from functools import wraps
-from typing import Any, Callable, List, Optional, Set, TypeVar
 
-import requests
+from typing import Callable, Dict, List, Optional, Set
+
 import tiktoken
-
 from .messages import OpenAIMessage
 from .typing import ModelType, TaskType
 from .config_loader import ConfigLoader
 
-F = TypeVar("F", bound=Callable[..., Any])
-
 # Load the model configurations
 config_loader = ConfigLoader()
 model_configs = config_loader.get_all_model_configs()
-
-# camel/utils.py
 
 
 def pretty_format(value):
@@ -75,7 +86,7 @@ def log_all_vars(exit_after_log=False):
 
 
 def count_tokens_openai_chat_models(
-    messages: List[OpenAIMessage], encoding: Any
+    messages: List[OpenAIMessage], encoding: any
 ) -> int:
     """Count the number of tokens required to generate an OpenAI chat based on a given list of messages."""
     num_tokens = 0
@@ -108,7 +119,7 @@ def get_model_token_limit(model: ModelType) -> int:
         raise ValueError(f"Unknown model type: {model}")
 
 
-def openai_api_key_required(func: F) -> F:
+def openai_api_key_required(func: Callable) -> Callable:
     """Decorator that checks if the OpenAI API key is available in the environment variables."""
 
     @wraps(func)
@@ -159,3 +170,16 @@ def download_tasks(task: TaskType, folder_path: str) -> None:
         zip_ref.extractall(folder_path)
 
     os.remove(zip_file_path)
+
+
+def message_to_dict(message) -> Dict:
+    """Convert a message to a dictionary."""
+    if isinstance(message, dict):
+        return message
+        
+    # Fix circular import by using type checking instead
+    if hasattr(message, 'to_openai_message'):
+        return message.to_openai_message()
+    else:
+        # Handle unexpected message types
+        raise ValueError(f"Unexpected message type: {type(message)}")

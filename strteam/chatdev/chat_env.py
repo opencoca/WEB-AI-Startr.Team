@@ -9,11 +9,11 @@ from typing import Dict
 import openai
 import requests
 
-from chatdev.codes import Codes
-from chatdev.documents import Documents
-from chatdev.roster import Roster
-from chatdev.utils import log_visualize
-from ecl.memory import Memory
+from .codes import Codes
+from .documents import Documents
+from .roster import Roster
+from .utils import log_visualize
+from ..ecl.memory import Memory
 
 try:
     pass
@@ -34,7 +34,7 @@ class ChatEnvConfig:
         with_memory,
     ):
         self.clear_structure = clear_structure  # Whether to clear non-software files in the WareHouse and cache files in generated software path
-        self.gui_design = gui_design  # Encourage Startr.Team generate software with GUI
+        self.gui_design = gui_design  # Encourage strteam generate software with GUI
         self.git_management = git_management  # Whether to use git to manage the creation and changes of generated software
         self.incremental_develop = incremental_develop  # Whether to use incremental develop on an existing project
         self.background_prompt = background_prompt  # background prompt that will be added to every inquiry to LLM

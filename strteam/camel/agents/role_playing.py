@@ -1,31 +1,31 @@
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-# Licensed under the Apache License, Version 2.0 (the “License”);
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an “AS IS” BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by Startr.Team (2024)
-# =========== Copyright 2024 @  Startr LLC   All Rights Reserved. ===========
+#  Enhanced by the  Startr Team (2023 - 2025)
+# =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 import copy
 from typing import Dict, List, Optional, Sequence, Tuple
 
-from camel.agents import (
+from ..agents import (
     ChatAgent,
     TaskPlannerAgent,
     TaskSpecifyAgent,
 )
-from camel.agents.chat_agent import ChatAgentResponse
-from camel.messages import ChatMessage, UserChatMessage
-from camel.messages import SystemMessage
-from camel.typing import ModelType, RoleType, TaskType, PhaseType
-from chatdev.utils import log_arguments, log_visualize
+from .chat_agent import ChatAgentResponse
+from ..messages import ChatMessage, UserChatMessage
+from ..messages import SystemMessage
+from ..typing import ModelType, RoleType, TaskType, PhaseType
+from ...chatdev.utils import log_arguments, log_visualize
 
 
 @log_arguments
@@ -211,7 +211,7 @@ class RolePlaying:
         self.assistant_agent.reset()
         self.user_agent.reset()
 
-        # refactored Startr.Team
+        # refactored strteam
         content = phase_prompt.format(
             **({"assistant_role": self.assistant_agent.role_name} | placeholders)
         )
@@ -343,3 +343,29 @@ class RolePlaying:
             ),
             ChatAgentResponse([user_msg], user_response.terminated, user_response.info),
         )
+
+
+def main():
+    print("Testing RolePlaying from the command line...")
+
+    # Minimal example instantiation
+    rp = RolePlaying(
+        assistant_role_name="Assistant",
+        user_role_name="User",
+        task_prompt="Explain the benefits of meditation.",
+    )
+
+    # Initialize the chat
+    init_output, user_msg = rp.init_chat()
+
+    # Simulate a user message
+    user_msg.content = "Hello, I'd like more details."
+    assistant_response, user_response = rp.step(user_msg, assistant_only=False)
+
+    if assistant_response and assistant_response.msgs:
+        print("Assistant response:", assistant_response.msgs[0].content)
+    if user_response and user_response.msgs:
+        print("User response:", user_response.msgs[0].content)
+
+if __name__ == "__main__":
+    main()

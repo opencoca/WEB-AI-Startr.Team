@@ -2,12 +2,12 @@ import os
 import re
 from abc import ABC, abstractmethod
 
-from camel.agents import RolePlaying
-from camel.messages import ChatMessage
-from camel.typing import TaskType, ModelType
-from chatdev.chat_env import ChatEnv
-from chatdev.statistics import get_info
-from chatdev.utils import log_visualize, log_arguments
+from ..camel.agents import RolePlaying
+from ..camel.messages import ChatMessage
+from ..camel.typing import TaskType, ModelType
+from .chat_env import ChatEnv
+from .statistics import get_info
+from .utils import log_visualize, log_arguments
 
 
 class Phase(ABC):

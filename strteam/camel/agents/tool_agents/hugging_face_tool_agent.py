@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by Startr.Team (2024)
-# =========== Copyright 2024 @  Startr LLC   All Rights Reserved. ===========
+#  Enhanced by the  Startr Team (2023 - 2025)
+# =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 from typing import Any, Optional
 
-from camel.agents.tool_agents import BaseToolAgent
+from ...agents.tool_agents import BaseToolAgent
 
 
 # flake8: noqa :E501

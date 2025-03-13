@@ -1,32 +1,26 @@
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-# Licensed under the Apache License, Version 2.0 (the “License”);
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an “AS IS” BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by Startr.Team (2024)
-# =========== Copyright 2024 @  Startr LLC   All Rights Reserved. ===========
-
-
+#  Enhanced by the  Startr Team (2023 - 2025)
+# =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
+from typing import Dict, List, Optional, Tuple, TypeVar, Union, Any
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple, Union
 
-from camel.messages import (
-    OpenAIAssistantMessage,
-    OpenAIChatMessage,
-    OpenAIMessage,
-    OpenAISystemMessage,
-    OpenAIUserMessage,
-)
-from camel.prompts import CodePrompt, TextPrompt
-from camel.typing import ModelType, RoleType
+# Import OpenAI message types directly without MessageType
+from . import OpenAIMessage, OpenAIChatMessage, OpenAISystemMessage, OpenAIUserMessage, OpenAIAssistantMessage
+
+from ..prompts import CodePrompt, TextPrompt
+from ..typing import ModelType, RoleType
 
 try:
     from openai.types.chat.chat_completion_message_tool_call import (
@@ -131,11 +125,19 @@ class BaseMessage:
         """Check if an item is in the message content."""
         return item in self.content
 
-    def token_len(self, model: ModelType = ModelType.GPT_3_5_TURBO) -> int:
-        """Calculate the token length of the message for the specified model."""
-        from camel.utils import num_tokens_from_messages
+    def get_token_len(self, model_type: ModelType) -> int:
+        r"""Get the number of tokens in the message for a model.
 
-        return num_tokens_from_messages([self.to_openai_chat_message()], model)
+        Args:
+            model_type (ModelType): The type of the model to count the
+                tokens in using its token encoder.
+
+        Returns:
+            int: The number of tokens in the message.
+        """
+        from ..utils import num_tokens_from_messages
+
+        return num_tokens_from_messages([self.to_openai_message()], model_type)
 
     def extract_text_and_code_prompts(
         self,

@@ -11,13 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by Startr.Team (2024)
-# =========== Copyright 2024 @  Startr LLC   All Rights Reserved. ===========
+#  Enhanced by the  Startr Team (2023 - 2025)
+# =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from camel.messages import BaseMessage
-from camel.typing import RoleType
+from ..messages import BaseMessage
+from ..typing import RoleType
 
 try:
     from openai.types.chat.chat_completion_message_tool_call import (

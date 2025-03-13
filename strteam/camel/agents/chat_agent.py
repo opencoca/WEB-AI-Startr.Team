@@ -1,40 +1,38 @@
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-# Licensed under the Apache License, Version 2.0 (the “License”);
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an “AS IS” BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by Startr.Team (2024)
-# =========== Copyright 2024 @  Startr LLC   All Rights Reserved. ===========
+#  Enhanced by the  Startr Team (2023 - 2025)
+# =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
-
 from tenacity import retry
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_exponential
 
-from camel.agents import BaseAgent
-from camel.configs import ChatGPTConfig
-from camel.messages import ChatMessage, MessageType, SystemMessage
-from camel.model_backend import ModelBackend, ModelFactory
-from camel.typing import ModelType, RoleType
-from camel.utils import (
+from ..agents import BaseAgent
+from ..configs import ChatGPTConfig
+from ..messages import ChatMessage, MessageType, SystemMessage
+from ..model_backend import ModelBackend, ModelFactory
+from ..typing import ModelType, RoleType
+from ..utils import (
     get_model_token_limit,
     num_tokens_from_messages,
     openai_api_key_required,
 )
-from chatdev.utils import log_visualize
+from ...chatdev.utils import log_visualize
 
 try:
     from openai.types.chat import ChatCompletion
-
     openai_new_api = True  # new openai api version
 except ImportError:
     openai_new_api = False  # old openai api version

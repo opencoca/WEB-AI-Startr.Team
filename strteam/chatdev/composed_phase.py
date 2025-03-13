@@ -3,9 +3,9 @@ import os
 from abc import ABC, abstractmethod
 from collections import defaultdict
 
-from camel.typing import ModelType
-from chatdev.chat_env import ChatEnv
-from chatdev.utils import log_visualize
+from ..camel.typing import ModelType
+from .chat_env import ChatEnv
+from .utils import log_visualize
 
 
 def check_bool(s):

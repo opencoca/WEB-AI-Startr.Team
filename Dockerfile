@@ -54,7 +54,7 @@ fi\n\
 exec "$@"\n\
 ' > /entrypoint.sh && chmod +x /entrypoint.sh
 
-# Expose the port for visualizer/app.py
+# Expose the port for the visualizer
 EXPOSE 8080
 
 # Set environment variables
@@ -64,9 +64,10 @@ ENV CHOKIDAR_USEPOLLING=1
 # Use the entrypoint script to source .env file if it exists
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Run visualizer by default using the module
-CMD ["python", "visualizer/app.py", "--port", "8080"]
-# Alternative using module structure (uncomment to use)
-# CMD ["python", "-m", "startr.team.visualizer", "--port", "8080"]
-# Run bash to debug
-#CMD ["bash"]
+# Run visualizer using the module
+CMD ["python", "-m", "strteam.visualizer", "--port", "8080"]
+
+# Alternative approaches (commented out)
+# CMD ["python", "-m", "strteam.visualizer.app", "--port", "8080"]
+# Debug with bash
+# CMD ["bash"]

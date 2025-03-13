@@ -24,7 +24,7 @@ class TaskType(Enum):
 
 class RoleType(Enum):
     """
-    Enumeration of different role types, including general and Startr.Team specific roles.
+    Enumeration of different role types, including general and strteam specific roles.
 
     An enum for roles helps in access control, task assignment, and workflow management
     by providing a standardized set of roles that can be easily referenced and validated.

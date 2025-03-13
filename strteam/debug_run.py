@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Debug runner for WEB-AI-Startr.Team
+Debug runner for WEB-AI-strteam
 
-This script enables debugging capabilities for the WEB-AI-Startr.Team system.
+This script enables debugging capabilities for the WEB-AI-strteam system.
 It allows you to run the system with extensive logging, breakpoints, and
 interactive debugging.
 
 Usage:
-    python -m startr.team.debug_run --task "build a simple website" --name "TestSite" --debug --interactive
+    python -m strteam.debug_run --task "build a simple website" --name "TestSite" --debug --interactive
     
     Additional flags:
     --model-debug: Enable verbose model debugging
@@ -35,7 +35,7 @@ from chatdev.debug_utils import (
 )
 
 # Import __main__ functionality
-from startr.team.__main__ import (
+from strteam.__main__ import (
     get_model_choices,
     check_api_key,
     get_config,
@@ -80,7 +80,7 @@ def parse_debug_arguments() -> argparse.Namespace:
     standard_parser = parse_arguments()
     
     # Create a new parser with debug-specific arguments
-    parser = argparse.ArgumentParser(description="Startr.Team Debug Runner")
+    parser = argparse.ArgumentParser(description="strteam Debug Runner")
     
     # Standard arguments from run.py
     args_config = {

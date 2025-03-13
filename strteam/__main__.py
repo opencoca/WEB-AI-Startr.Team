@@ -22,9 +22,8 @@ import sys
 import re
 import time
 from typing import NoReturn, Tuple, List
-
-from camel.typing import ModelType
-from chatdev.chat_chain import ChatChain
+from .camel.typing import ModelType
+from .chatdev.chat_chain import ChatChain
 
 # Add support for debug utilities if available
 try:
@@ -129,12 +128,12 @@ def get_company_configs() -> List[str]:
 
 def parse_arguments() -> argparse.Namespace:
     """
-    Parse command-line arguments for the Startr.Team ChatChain.
+    Parse command-line arguments for the strteam ChatChain.
 
     Returns:
         argparse.Namespace: Parsed command-line arguments.
     """
-    parser = argparse.ArgumentParser(description="Startr.Team ChatChain")
+    parser = argparse.ArgumentParser(description="strteam ChatChain")
 
     # Dictionary to hold argument configurations
     args_config = {
@@ -207,7 +206,7 @@ def setup_logging(log_filepath, logging_level):
     
     # Print welcome message
     logging.info("=" * 80)
-    logging.info(" Starting Startr.Team ")
+    logging.info(" Starting strteam ")
     logging.info(f" Logging to: {log_filepath}")
     logging.info("=" * 80)
     
@@ -228,7 +227,7 @@ def log_initial_info(chat_chain, config_path, config_phase_path, config_role_pat
     logging.info("")
     logging.info("**[Preprocessing]**")
     logging.info("")
-    logging.info(f"**Startr.Team Starts** ({chat_chain.start_time})")
+    logging.info(f"**strteam Starts** ({chat_chain.start_time})")
     logging.info("")
     logging.info(f"**Timestamp**: {chat_chain.start_time}")
     logging.info("")
@@ -244,7 +243,7 @@ def log_initial_info(chat_chain, config_path, config_phase_path, config_role_pat
     logging.info("")
     logging.info(f"**Log File**: {chat_chain.log_filepath}")
     logging.info("")
-    logging.info("**Startr.Team Config**:")
+    logging.info("**strteam Config**:")
     logging.info(f"ChatEnvConfig.with_memory: {chat_chain.chat_env_config.with_memory}")
 
 
@@ -300,7 +299,7 @@ def execute_chat_chain(chat_chain):
             debug_log(traceback.format_exc(), "error")
         logging.error(f"Error during execution: {str(e)}")
         print(f"Error: {str(e)}")
-        print("For more detailed debugging, try: python -m startr.team.debug_run --model-debug")
+        print("For more detailed debugging, try: python -m strteam.debug_run --model-debug")
         raise
 
 
@@ -373,4 +372,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -7,7 +7,7 @@ setup(
     description="An AI-powered software development framework",
     author="Startr.LLC & CAMEL-AI.org",
     author_email="info@startr.cloud",
-    url="https://github.com/startr-team/WEB-AI-Startr.Team",
+    url="https://github.com/startr-team/WEB-AI-strteam",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

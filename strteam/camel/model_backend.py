@@ -1,17 +1,26 @@
-import openai
-import tiktoken
-import os
-import logging
-from abc import ABC, abstractmethod
-from typing import Any, Dict
+# =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
+from typing import Any, Dict, List, Optional, Union
+import json
+import warnings
 
-from camel.typing import ModelType
-from camel.config_loader import config_loader
+from .typing import ModelType
+from .config_loader import config_loader
 
-class ModelBackend(ABC):
+class ModelBackend:
     """Base class for different model backends (OpenAI API, local LLM, test stubs, etc.)"""
 
-    @abstractmethod
     def run(self, *args, **kwargs):
         """Runs the query to the backend model.
         
@@ -36,7 +45,6 @@ class OpenAIModel(ModelBackend):
         
         # Set max tokens with fallback to default
         self.max_tokens = self.model_config.get("max_tokens", 4096)
-        logging.debug(f"Initialized OpenAIModel: {model_type}, max_tokens: {self.max_tokens}")
 
     def _setup_client(self):
         """Set up and return the OpenAI client."""
@@ -86,51 +94,17 @@ class OpenAIModel(ModelBackend):
                 **run_config
             )
             logging.debug(f"Model response: {response}")
-            self._log_usage(response.usage)
-            return response
+
         except Exception as e:
-            logging.error(f"API call failed with model {model_name}: {str(e)}")
-            
-            # Try fallback model if model not found
-            if "model_not_found" in str(e) or "does not exist" in str(e):
-                try:
-                    fallback_model = "gpt-4o-mini"
-                    logging.info(f"Trying fallback model: {fallback_model}")
-                    
-                    response = self.client.chat.completions.create(
-                        model=fallback_model,
-                        messages=messages,
-                        **run_config
-                    )
-                    logging.debug(f"Model response: {response}")
-                    self._log_usage(response.usage)
-                    self.model_config["name"] = fallback_model
-                    return response
-                except Exception as fallback_error:
-                    logging.error(f"Fallback model also failed: {str(fallback_error)}")
-            
+            logging.error(f"API call failed with model {model_name}: {str(e)}")  # Improved error logging
+            # Handle specific errors related to token limits and formatting
+            if "context_length_exceeded" in str(e) or "not in the tokenizer vocabulary" in str(e):
+                raise ValueError(f"Prompt exceeds the context size, reduce tokens: {str(e)}")
+
             # Re-raise the original exception
             raise
 
-    def _log_usage(self, usage):
-        """Log token usage and cost information."""
-        from chatdev.statistics import prompt_cost
-        
-        cost = prompt_cost(
-            self.model_type.value,
-            num_prompt_tokens=usage.prompt_tokens,
-            num_completion_tokens=usage.completion_tokens,
-        )
-        
-        print(
-            f"[OpenAI_Usage_Info] "
-            f"prompt_tokens: {usage.prompt_tokens}, "
-            f"completion_tokens: {usage.completion_tokens}, "
-            f"total_tokens: {usage.total_tokens}, "
-            f"cost: ${cost:.6f}"
-        )
-        print(f"\n💰 Usage: {usage.prompt_tokens}+{usage.completion_tokens}={usage.total_tokens} tokens, Cost: ${cost:.4f}\n")
-
+        return response
 
 class StubModel(ModelBackend):
     """A dummy model used for unit tests."""

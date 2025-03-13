@@ -7,13 +7,13 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from camel.agents import RolePlaying
-from camel.configs import ChatGPTConfig
-from camel.typing import TaskType
-from camel.web_spider import modal_trans
-from chatdev.chat_env import ChatEnv, ChatEnvConfig
-from chatdev.statistics import get_info
-from chatdev.utils import log_visualize, now
+from ..camel.agents import RolePlaying
+from ..camel.configs import ChatGPTConfig
+from ..camel.typing import TaskType
+from ..camel.web_spider import modal_trans
+from .chat_env import ChatEnv, ChatEnvConfig
+from .statistics import get_info
+from .utils import log_visualize, now
 
 
 def is_true(s):
@@ -253,7 +253,7 @@ class ChatChain:
         preprocess_msg = f"""
         **[Preprocessing]**
 
-        **Startr.Team Starts** ({self.start_time})
+        **strteam Starts** ({self.start_time})
 
         **Timestamp**: {self.start_time}
 
@@ -269,7 +269,7 @@ class ChatChain:
 
         **Log File**: {self.log_filepath}
 
-        **Startr.Team Config**:
+        **strteam Config**:
         {self.chat_env.config}
 
         **ChatGPTConfig**:
@@ -395,8 +395,8 @@ class ChatChain:
         post_info += f"Software Info: {stats}\n\n🕑**duration**={duration:.2f}s\n\n"
         
         # Add timestamp info
-        post_info += f"Startr.Team Starts ({self.start_time})\n\n"
-        post_info += f"Startr.Team Ends ({end_time})\n\n"
+        post_info += f"strteam Starts ({self.start_time})\n\n"
+        post_info += f"strteam Ends ({end_time})\n\n"
         
         log_visualize(post_info)
     
