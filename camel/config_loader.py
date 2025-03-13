@@ -4,7 +4,7 @@ import logging
 
 
 class ConfigLoader:
-    def __init__(self, config_path="model_config.yaml"):
+    def __init__(self, config_path="config/model_config.yaml"):
         self.config_path = config_path
         self.config = self.load_config()
         self.ModelType = self.create_model_type_enum()
