@@ -97,8 +97,8 @@ class ChatChain:
     
     def _import_phase_modules(self):
         """Import required phase modules."""
-        self.phase_module = importlib.import_module("chatdev.phase")
-        self.compose_phase_module = importlib.import_module("chatdev.composed_phase")
+        self.phase_module = importlib.import_module("strteam.chatdev.phase")
+        self.compose_phase_module = importlib.import_module("strteam.chatdev.composed_phase")
     
     def _init_phases(self):
         """Initialize all phases from configuration."""
