@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="startr.team",
+    name="startr-team",
     version="0.1.0",
     packages=find_packages(),
     description="An AI-powered software development framework",

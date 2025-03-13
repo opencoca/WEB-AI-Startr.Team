@@ -12,5 +12,5 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     
     # Import and run the main function from startr.team.__main__
-    from startr.team.__main__ import main
+    from strteam.__main__ import main
     main()
