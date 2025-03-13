@@ -47,7 +47,7 @@ except ImportError:
 
 # Constants
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Updated to point to the parent directory
-CONFIG_DIR = os.path.join(ROOT_DIR, "CompanyConfig")
+CONFIG_DIR = os.path.join(ROOT_DIR, "config/CompanyConfig")
 DEFAULT_CONFIG_DIR = os.path.join(CONFIG_DIR, "Default")
 
 CONFIG_FILES = ["ChatChainConfig.json", "PhaseConfig.json", "RoleConfig.json"]
@@ -115,7 +115,7 @@ def get_config(company: str) -> Tuple[str, str, str]:
 
 def get_company_configs() -> List[str]:
     """
-    Get a list of company names from the CompanyConfig directory.
+    Get a list of company names from the config/CompanyConfig directory.
 
     Returns:
         List[str]: A list of company names as strings.
@@ -140,7 +140,7 @@ def parse_arguments() -> argparse.Namespace:
     args_config = {
         "debug": ("store_true", False, "Enable debug mode"),
         "local": ("store_true", False, "Use local Ollama API instead of OpenAI API"),
-        "config": (str, "Default", "CompanyConfig name loading settings (Choices: {})".format(", ".join(get_company_configs()))),
+        "config": (str, "Default", "config/CompanyConfig name loading settings (Choices: {})".format(", ".join(get_company_configs()))),
         "org": (str, "DefaultOrganization", "Organization name for software generation"),
         "task": (str, "Develop simple static Website using only html and css.", "Software prompt"),
         "name": (str, "Website", "Software name for generation"),

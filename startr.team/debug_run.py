@@ -39,7 +39,7 @@ from startr.team.__main__ import (
     get_model_choices,
     check_api_key,
     get_config,
-    get_company_configs as get_CompanyConfigs,
+    get_company_configs as get_config/CompanyConfigs,
     execute_chat_chain,
     parse_arguments,
     setup_logging,
@@ -86,7 +86,7 @@ def parse_debug_arguments() -> argparse.Namespace:
     args_config = {
         "debug": ("store_true", False, "Enable debug mode"),
         "local": ("store_true", False, "Use local Ollama API instead of OpenAI API"),
-        "config": (str, "Default", "CompanyConfig name loading settings (Choices: {})".format(", ".join(get_CompanyConfigs()))),
+        "config": (str, "Default", "config/CompanyConfig name loading settings (Choices: {})".format(", ".join(get_config/CompanyConfigs()))),
         "org": (str, "DefaultOrganization", "Organization name for software generation"),
         "task": (str, "Develop simple static Website using only html and css.", "Software prompt"),
         "name": (str, "Website", "Software name for generation"),

@@ -100,19 +100,19 @@ it_build:
 # This is needed because standard JSON doesn't support comments
 fix-json-configs:
 	@echo "Creating backups of original configuration files..."
-	@cp CompanyConfig/Default/ChatChainConfig.json CompanyConfig/Default/ChatChainConfig.json.bak
+	@cp config/CompanyConfig/Default/ChatChainConfig.json config/CompanyConfig/Default/ChatChainConfig.json.bak
 	@echo "Removing comments from JSON configuration files..."
-	@cat CompanyConfig/Default/ChatChainConfig.json | grep -v '//' | jq . > fixed_config.json
-	@cp fixed_config.json CompanyConfig/Default/ChatChainConfig.json
+	@cat config/CompanyConfig/Default/ChatChainConfig.json | grep -v '//' | jq . > fixed_config.json
+	@cp fixed_config.json config/CompanyConfig/Default/ChatChainConfig.json
 	@echo "Fixed JSON configuration files. Originals backed up with .bak extension."
 
 # Same operation for Docker environment
 docker-fix-json-configs:
 	@echo "Fixing JSON configuration files in Docker container..."
 	docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
-		cp CompanyConfig/Default/ChatChainConfig.json CompanyConfig/Default/ChatChainConfig.json.bak && \
-		cat CompanyConfig/Default/ChatChainConfig.json | grep -v '//' | jq . > fixed_config.json && \
-		cp fixed_config.json CompanyConfig/Default/ChatChainConfig.json"
+		cp config/CompanyConfig/Default/ChatChainConfig.json config/CompanyConfig/Default/ChatChainConfig.json.bak && \
+		cat config/CompanyConfig/Default/ChatChainConfig.json | grep -v '//' | jq . > fixed_config.json && \
+		cp fixed_config.json config/CompanyConfig/Default/ChatChainConfig.json"
 	@echo "Fixed JSON configuration files in Docker container."
 
 # ==========================================================================

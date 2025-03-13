@@ -58,7 +58,7 @@ The Makefile includes several targets to simplify API key management:
 As noted in the README.md, the following areas have been identified for potential cleanup:
 
 1. **Duplicate Configuration Files**
-   - Review and consolidate redundant configurations in CompanyConfig directories
+   - Review and consolidate redundant configurations in config/CompanyConfig directories
    - Target: Streamline configuration management
 
 2. **Outdated Dependencies**

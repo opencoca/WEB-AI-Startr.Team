@@ -182,7 +182,7 @@ prepared to share your work with us! Your contributions are highly valued. Pleas
 you need assistance!
 
 **Company**: Creating your own customized "Startr.Team Company" is a breeze. This personalized setup involves three simple
-configuration JSON files. Check out the example provided in the ``CompanyConfig/Default`` directory. For detailed
+configuration JSON files. Check out the example provided in the ``config/CompanyConfig/Default`` directory. For detailed
 instructions on customization, refer to our [Wiki](wiki.md).
 
 **Software**: Whenever you develop software using WEB-AI-Startr.Team, a corresponding folder is generated containing all the
@@ -192,7 +192,7 @@ create a software package and generate a folder named ``/WareHouse/2048_THUNLP_t
 
 - All the files and documents related to the 2048 game software
 - Configuration files of the company responsible for this software, including the three JSON config files
-  from ``CompanyConfig/Default``
+  from ``config/CompanyConfig/Default``
 - A comprehensive log detailing the software's building process that can be used to replay (``timestamp.log``)
 - The initial prompt used to create this software (``2048.prompt``)
 
@@ -222,7 +222,7 @@ We would like to express our gratitude to the following individuals and organiza
 
 We've identified several areas in the codebase that are candidates for cleanup and refactoring. These areas can be found by searching for `#TODO` comments in the codebase. Below is a list of the main cleanup opportunities:
 
-1. **Duplicate Configuration Files** - There are potentially redundant configurations in CompanyConfig directories
+1. **Duplicate Configuration Files** - There are potentially redundant configurations in config/CompanyConfig directories
 2. **Outdated Dependencies** - Some packages in requirements.txt and Pipfile may need updates
 3. **Legacy Code Sections** - Several components have older, less optimized implementations
 4. **Incomplete Documentation** - Some sections lack proper documentation
@@ -324,7 +324,7 @@ graph LR
 
 Based on the codebase analysis, several areas of code overlap have been identified:
 
-1. **Configuration Management**: There are multiple configuration formats (JSON and YAML) with potential duplication between `CompanyConfig/` and `CompanyConfig_yaml/` directories.
+1. **Configuration Management**: There are multiple configuration formats (JSON and YAML) with potential duplication between `config/CompanyConfig/` and `config/CompanyConfig_yaml/` directories.
 
 2. **Phase Implementation**: The phase.py file contains numerous similar phase classes with repeated patterns that could be refactored to reduce duplication.
 

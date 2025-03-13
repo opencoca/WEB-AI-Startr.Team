@@ -1,6 +1,6 @@
 # Configuration Cleanup Notes
 
-## CompanyConfig/Default/ChatChainConfig.json
+## config/CompanyConfig/Default/ChatChainConfig.json
 
 ### Current Issues
 - Uses string values ("True"/"False") for booleans instead of actual JSON booleans

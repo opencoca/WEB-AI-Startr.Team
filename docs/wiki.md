@@ -25,7 +25,7 @@
 
     optional arguments:
       -h, --help       show this help message and exit
-      --config CONFIG  Name of config, which is used to load configuration under CompanyConfig/; Please see CompanyConfig Section below
+      --config CONFIG  Name of config, which is used to load configuration under config/CompanyConfig/; Please see config/CompanyConfig Section below
       --org ORG        Name of organization, your software will be generated in WareHouse/name_org_timestamp
       --task TASK      Prompt of your idea
       --name NAME      Name of software, your software will be generated in WareHouse/name_org_timestamp
@@ -77,7 +77,7 @@ then start building a software by ``python3 run.py`` and go to [Visualizer Websi
 ![demo](misc/demo.png)
 
 - You can also go to the [ChatChain Visualizer](http://127.0.0.1:8000/static/chain_visualizer.html) on this page and
-  upload any ``ChatChainConfig.json`` under ``CompanyConfig/`` to get a visualization on this chain, such as:
+  upload any ``ChatChainConfig.json`` under ``config/CompanyConfig/`` to get a visualization on this chain, such as:
 
 ![ChatChain Visualizer](misc/chatchain_vis.png)
 
@@ -180,7 +180,7 @@ After this process, the experiences have been extracted from the production of s
 > **Notice:** By default, the `MemoryCards.json` is set to be empty. You can customize your own experience pool for agents following steps above. And we have also provided our `MemoryCards.json` used in our experiment in [MemoryCards.json](https://drive.google.com/drive/folders/1czsR4swQyqpoN8zwN0-rSFcTVl68zTDY?usp=sharing). You can download the json file through the link and put it under `ecl/memory` folder. This allows you to directly proceed to the Co-Reasoning phase without needing to redo the Co-Tracking and Co-Memorizing steps.
 ### Co-Reasoning
 - **Memory Usage Configuration**:
-  In the `CompanyConfig/Default/ChatChainConfig.json` file, the `with_memory` option should be set **True**. \
+  In the `config/CompanyConfig/Default/ChatChainConfig.json` file, the `with_memory` option should be set **True**. \
   In the `ecl/config.yaml` file, you can adjust the settings for **top k** and **similarity threshold** for both code and text retrieval. 
   By default, `with_memory` is set as False and the system is configured to retrieve the top 1 result with a similarity threshold of zero for both code and text.
 - **Start Co-Reasoning**: Once you have completed memory usage configuration, similar to the Co-Tracking phase, you can use the command below to start the software building process. Replace `[description_of_your_idea]` with the task description from the test set and `[project_name]` with the project name from the test set:
@@ -220,18 +220,18 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 
 ![arch](misc/arch.png)
 
-- All the configuration content related to Startr.Team (such as the background prompt of the agent employee, the work content of each Phase, and how the Phase is combined into a ChatChain), are called a **CompanyConfig** (because Startr.Team is like a virtual software company). These CompanyConfigs are in the Startr.Team project Under ``CompanyConfig/``. You can check this [directory](https://github.com/OpenCoca/WEB-AI-Startr.Team/tree/main/CompanyConfig). In this directory, you will see different CompanyConfig (such as Default, Art, Human). Generally speaking, each CompanyConfig will contain 3 configuration files.
+- All the configuration content related to Startr.Team (such as the background prompt of the agent employee, the work content of each Phase, and how the Phase is combined into a ChatChain), are called a **config/CompanyConfig** (because Startr.Team is like a virtual software company). These config/CompanyConfigs are in the Startr.Team project Under ``config/CompanyConfig/``. You can check this [directory](https://github.com/OpenCoca/WEB-AI-Startr.Team/tree/main/config/CompanyConfig). In this directory, you will see different config/CompanyConfig (such as Default, Art, Human). Generally speaking, each config/CompanyConfig will contain 3 configuration files.
   1. ChatChainConfig.json, which controls the overall development process of WEB-AI-Startr.Team, including which Phase each step is, how many times each Phase needs to be cycled, whether reflection is needed, etc.
   2. PhaseConfig.json, which controls each Phase, and corresponds to ``WEB-AI-Startr.Team/phase.py`` or ``WEB-AI-Startr.Team/composed_phase.py`` in the Startr.Team project. The Python file realizes the specific working logic of each phase. The JSON file here contains the configuration of each phase, such as the background prompt, which employees are participating in the phase, etc.
   3. RoleConfig.json contains the configuration of each employee (agent). Currently, it only contains the background prompt of each employee, which is a bunch of text containing placeholders.
-- If a CompanyConfig does not contain all three configuration files (such as Art and Human), it means that the configuration files missing from this CompanyConfig are set according to Default. The official CompanyConfigs currently provided include:
+- If a config/CompanyConfig does not contain all three configuration files (such as Art and Human), it means that the configuration files missing from this config/CompanyConfig are set according to Default. The official config/CompanyConfigs currently provided include:
   1. Default, default configuration
   2. Art, allows Startr.Team to create image files according to needs, automatically generate image description prompts and call the OpenAI API to generate images
   3. Human, allowing human users to participate in WEB-AI-Startr.Team’s code review process
 
 ### Customize ChatChain
 
-- see ``CompanyConfig/Default/ChatChainConfig.json``
+- see ``config/CompanyConfig/Default/ChatChainConfig.json``
 - You can easily pick and organize phases to formulate a ChatChain from all phases (from ``WEB-AI-Startr.Team/phase.py``
   or ``WEB-AI-Startr.Team/composed_phase.py``)
   by modifying the JSON file
@@ -244,7 +244,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
       class
     - config this phase in ``PhaseConfig.json``, including writing phase prompt and assigning roles for this phase
 - Customize SimplePhase
-    - see ``CompanyConfig/Default/PhaseConfig.json`` for configuration, see ``WEB-AI-Startr.Team/phase.py`` for implementing your
+    - see ``config/CompanyConfig/Default/PhaseConfig.json`` for configuration, see ``WEB-AI-Startr.Team/phase.py`` for implementing your
       own phase
     - each phase contains three steps:
         - generate phase environment from the whole ChatChain environment
@@ -274,7 +274,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
           }
           ```
     - Customize ComposePhase
-        - see ``CompanyConfig/Default/ChatChainConfig.json`` for configuration and see ``WEB-AI-Startr.Team/composed_phase.py`` for
+        - see ``config/CompanyConfig/Default/ChatChainConfig.json`` for configuration and see ``WEB-AI-Startr.Team/composed_phase.py`` for
           implementation.
         - **⚠️ Attention** We do not support Nested Composition yet so do not put ComposePhase in ComposePhase.
         - ComposePhase contains multiple SimplePhase, and can be conducted in loop.
@@ -325,7 +325,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 
 ### Customize Role
 
-- see ``CompanyConfig/Default/RoleConfig.json``
+- see ``config/CompanyConfig/Default/RoleConfig.json``
 - you can use placeholders for using phase environment, which is the same as PhaseConfig.json
 - **⚠️ Attention** You need to keep at least "Chief Executive Officer" and "Counselor" in your own ``RoleConfig.json``
   to make Reflection work.
@@ -351,7 +351,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 ## Project Structure
 
 ```commandline
-├── CompanyConfig # Configuration Files for WEB-AI-Startr.Team, including ChatChain, Phase and Role config json.
+├── config/CompanyConfig # Configuration Files for WEB-AI-Startr.Team, including ChatChain, Phase and Role config json.
 ├── WareHouse # Folder for Generated Software
 ├── camel # Camel RolePlay Component
 ├── WEB-AI-Startr.Team # Startr.Team Core Code
@@ -364,7 +364,7 @@ Detailed descriptions and experiment results about this Experiential Co-Evolving
 └── wiki.md
 ```
 
-## CompanyConfig
+## config/CompanyConfig
 
 ### Default
 ![demo](misc/ChatChain_Visualization_Default.png)
