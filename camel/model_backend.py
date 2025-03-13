@@ -226,7 +226,7 @@ class OpenAIModel(ModelBackend):
         
         # If the model is LLAMA_3, which is causing issues, use a fallback model
         if model_name.upper() == "LLAMA_3" or "llama-3" in model_name.lower():
-            fallback_model = "gpt-4o"
+            fallback_model = "gpt-4o-mini"
             debug_log(f"LLAMA_3 model detected, falling back to {fallback_model}", "warning")
             if VERBOSE_MODEL_DEBUG:
                 print(f"\n*** MODEL FALLBACK: Replacing {model_name} with {fallback_model} ***")
