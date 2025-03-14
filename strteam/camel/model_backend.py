@@ -15,12 +15,9 @@ from typing import Any, Dict, List, Optional, Union
 import json
 import warnings
 import os
-
 import logging
-
 import openai
 import tiktoken
-
 
 from .typing import ModelType
 from .config_loader import config_loader
@@ -48,70 +45,101 @@ class OpenAIModel(ModelBackend):
         super().__init__()
         self.model_type = model_type
         self.model_config = model_config_dict
-        self.client = self._setup_client()
         
         # Set max tokens with fallback to default
         self.max_tokens = self.model_config.get("max_tokens", 4096)
+        
+        # Get the model name directly from config with a fallback
+        self.model_name = self.model_config.get("name")
+        if self.model_name is None:
+            # Fallback to the model_type value if name is not in config
+            self.model_name = self.model_type.value if self.model_type else "gpt-3.5-turbo"
+            logging.warning(f"Model name not found in config, using fallback: {self.model_name}")
+        
+        # Initialize the client immediately
+        self.client = self._setup_client()
 
     def _setup_client(self):
         """Set up and return the OpenAI client."""
-        api_key = os.environ["OPENAI_API_KEY"]
+        # Get base URL from config, printing it for debugging
         base_url = self.model_config.get("base_url")
+        api_key = os.environ["OPENAI_API_KEY"]
         
-        # Check if we need to use a different API key for specific providers
+        # Explicit log for debugging
+        logging.info(f"Model {self.model_name}: Using base_url: '{base_url}'")
+        
+        # Handle Groq-specific API key
         if base_url and "groq" in base_url.lower():
-            if "GROQ_API_KEY" not in os.environ or not os.environ["GROQ_API_KEY"]:
-                raise ValueError("GROQ_API_KEY environment variable is required for Groq models")
-            api_key = os.environ["GROQ_API_KEY"]
+            if "GROQ_API_KEY" in os.environ and os.environ.get("GROQ_API_KEY"):
+                api_key = os.environ.get("GROQ_API_KEY")
+                logging.info(f"Model {self.model_name}: Using GROQ_API_KEY")
+            else:
+                logging.warning(f"Model {self.model_name}: GROQ_API_KEY not found, using OPENAI_API_KEY")
         
-        # Create and return the client
-        return openai.OpenAI(api_key=api_key, base_url=base_url) if base_url else openai.OpenAI(api_key=api_key)
+        # Create client with explicit base_url to ensure it's passed
+        client = openai.OpenAI(
+            api_key=api_key,
+            base_url=base_url
+        )
+        
+        # Log the client's actual base_url for verification
+        logging.info(f"Model {self.model_name}: Client configured with base_url: {client.base_url}")
+        
+        return client
 
     def run(self, *args, **kwargs):
         """Run the model with the provided arguments."""
         messages = kwargs.get("messages", [])
-        prompt = "\n".join(message["content"] for message in messages)
         
-        # Calculate tokens in the prompt
+        # Ensure model_name is not None
+        if self.model_name is None:
+            self.model_name = "gpt-3.5-turbo"
+            logging.warning(f"Model name is None, using default model: {self.model_name}")
+        
+        # Calculate tokens for max_tokens limit
         try:
-            encoding = tiktoken.encoding_for_model(self.model_type.value)
+            encoding = tiktoken.encoding_for_model(self.model_name)
         except KeyError:
-            logging.warning(f"No tokenizer for {self.model_type.value}, using default")
+            logging.warning(f"No tokenizer for {self.model_name}, using default")
             encoding = tiktoken.get_encoding("cl100k_base")
-            
+        except Exception as e:
+            # Handle any other exceptions with tiktoken
+            logging.warning(f"Error getting tokenizer: {str(e)}, using default")
+            encoding = tiktoken.get_encoding("cl100k_base")
+        
+        prompt = "\n".join(message["content"] for message in messages)
         prompt_tokens = len(encoding.encode(prompt)) + 15 * len(messages)
+        
+        # Set safe max_tokens value
+        if self.max_tokens is None:
+            self.max_tokens = 4096
+            logging.warning(f"max_tokens is None, setting to default {self.max_tokens}")
+        
         max_completion_tokens = max(0, self.max_tokens - prompt_tokens)
         
-        # Prepare run configuration
-        run_config = {**config_loader.get_default_config(), **self.model_config}
-        # Remove fields that should not be passed to the API
-        for key in ["base_url", "is_openai", "name"]:
-            run_config.pop(key, None)
+        # Prepare parameters for the API call
+        run_config = {**config_loader.get_default_config()}
+        
+        # Add config parameters, but skip non-API params
+        for key, value in self.model_config.items():
+            if key not in ["base_url", "is_openai", "name"]:
+                run_config[key] = value
+                
         run_config["max_tokens"] = max_completion_tokens
         
-        # Get model name with fallback
-        model_name = self.model_config.get("name") or self.model_type.value
-        
         try:
-            # Make the API call
-            logging.debug(f"Prompt sent to {model_name}: {prompt}")
+            # Make the API call with explicit model name from config
+            logging.info(f"Making API call to model: {self.model_name}")
             response = self.client.chat.completions.create(
-                model=model_name,
+                model=self.model_name,
                 messages=messages,
                 **run_config
             )
-            logging.debug(f"Model response: {response}")
-
+            return response
+            
         except Exception as e:
-            logging.error(f"API call failed with model {model_name}: {str(e)}")  # Improved error logging
-            # Handle specific errors related to token limits and formatting
-            if "context_length_exceeded" in str(e) or "not in the tokenizer vocabulary" in str(e):
-                raise ValueError(f"Prompt exceeds the context size, reduce tokens: {str(e)}")
-
-            # Re-raise the original exception
+            logging.error(f"API call failed with model {self.model_name}: {str(e)}")
             raise
-
-        return response
 
 class StubModel(ModelBackend):
     """A dummy model used for unit tests."""
