@@ -144,7 +144,12 @@ class LocalAI:
             self.parent = parent
             self.completions = self.Completions(self)
 
-    def __init__(self, base_url=None, decentralize=False):
+    def __init__(self, base_url=None):
+        """
+        Initialize the LocalAI instance.
+
+        :param base_url: The base URL for the API. Defaults to "http://localhost:11434/".
+        """
         self.base_url = base_url if base_url else "http://localhost:11434/"
         self.model = "phi3"
 
