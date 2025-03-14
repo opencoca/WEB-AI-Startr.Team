@@ -251,7 +251,9 @@ Would you like me to proceed with any of these next steps?
 ---
 
 Apply the Configuration System
+
 Implement the Phase System Refactoring
+
 Let me first get some context about our existing schema and phase system:
 
 Read schema.yaml
