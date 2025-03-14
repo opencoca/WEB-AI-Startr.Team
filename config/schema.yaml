@@ -1,24 +1,86 @@
 version: 1.0
 definitions:
-  phase:
+  phase_base:
     type: object
+    required: ["name", "phaseType"]
     properties:
       name: { type: string }
-      recursive: { type: boolean }
-      inputs: { type: array, items: { type: string } }
-      outputs: { type: array, items: { type: string } }
-      agents: { type: array, items: { $ref: "#/definitions/agent" } }
-      subphases: { type: array, items: { $ref: "#/definitions/phase" } }
+      phaseType: 
+        type: string
+        enum: ["SimplePhase", "ComposedPhase"]
+      max_turn_step: { type: integer, default: -1 }
+      need_reflect: { type: boolean }
+
+  simple_phase:
+    allOf:
+      - $ref: "#/definitions/phase_base"
+      - type: object
+        properties:
+          roles:
+            type: object
+            required: ["assistant", "user"]
+            properties:
+              assistant: { type: string }
+              user: { type: string }
+          inputs: 
+            type: array
+            items: { type: string }
+          outputs:
+            type: array 
+            items: { type: string }
+
+  composed_phase:
+    allOf:
+      - $ref: "#/definitions/phase_base"
+      - type: object
+        required: ["cycleNum", "Composition"]
+        properties:
+          cycleNum: { type: integer, minimum: 1 }
+          Composition:
+            type: array
+            items: { $ref: "#/definitions/simple_phase" }
 
   agent:
     type: object
+    required: ["role", "model"]
     properties:
       role: { type: string }
       model: { type: string }
-      temperature: { type: number }
-      max_tokens: { type: integer }
+      temperature: { type: number, minimum: 0, maximum: 2, default: 0.7 }
+      max_tokens: { type: integer, minimum: 1, default: 2048 }
+      stop_tokens: { type: array, items: { type: string } }
+      system_message: { type: string }
 
 required:
+  - version
   - phases
+  - agents
   - default_model
   - company_name
+  - settings
+
+properties:
+  version: { type: string }
+  company_name: { type: string }
+  default_model: { type: string }
+  background_prompt: { type: string }
+  phases:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/definitions/simple_phase"
+        - $ref: "#/definitions/composed_phase"
+  agents:
+    type: array
+    items: { $ref: "#/definitions/agent" }
+  settings:
+    type: object
+    properties:
+      clear_structure: { type: boolean, default: true }
+      gui_design: { type: boolean, default: false }
+      git_management: { type: boolean, default: false }
+      incremental_develop: { type: boolean, default: false }
+      self_improve: { type: boolean, default: false }
+      with_memory: { type: boolean, default: false }
+      web_spider: { type: boolean, default: false }
+    additionalProperties: false

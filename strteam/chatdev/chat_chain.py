@@ -1,12 +1,11 @@
 import importlib
+import json
 import logging
 import os
-import sys
 import shutil
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
 
 from ..camel.agents import RolePlaying
 from ..camel.configs import ChatGPTConfig
@@ -16,14 +15,13 @@ from .chat_env import ChatEnv, ChatEnvConfig
 from .statistics import get_info
 from .utils import log_visualize, now
 
-# Import our new config reader
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from utils.config_reader import (
-    load_company_config, 
-    get_phase_config, 
-    get_recursive_flow_config,
-    normalize_boolean
-)
+
+def is_true(s):
+    """Check if string value represents 'true', case-insensitive."""
+    if not isinstance(s, str):
+        raise TypeError(f"Expected a string, but got {type(s).__name__}.")
+    return s.casefold() == "true"
+
 
 class ChatChain:
     """Manages the execution flow of a chat-based software development process."""
@@ -34,23 +32,23 @@ class ChatChain:
         for key, value in kwargs.items():
             setattr(self, key, value)
             
-        # Default company name if not provided
-        self.company_name = getattr(self, 'company_name', 'Default')
-        
         # Load configuration files
         self._load_configs()
         
         # Initialize core components
+        self.chain = self.config["chain"]
+        self.recruits = self.config["recruits"]
+        self.web_spider = self.config["web_spider"]
         self.chat_turn_limit_default = 10
         
         # Initialize chat environment
         self.chat_env_config = ChatEnvConfig(
-            clear_structure=self.config.get("settings", {}).get("clear_structure", False),
-            gui_design=self.config.get("settings", {}).get("gui_design", False),
-            git_management=self.config.get("settings", {}).get("git_management", False),
-            incremental_develop=self.config.get("settings", {}).get("incremental_develop", False),
-            background_prompt=self.config.get("background", ""),
-            with_memory=self.config.get("settings", {}).get("with_memory", False),
+            clear_structure=is_true(self.config["clear_structure"]),
+            gui_design=is_true(self.config["gui_design"]),
+            git_management=is_true(self.config["git_management"]),
+            incremental_develop=is_true(self.config["incremental_develop"]),
+            background_prompt=self.config["background_prompt"],
+            with_memory=is_true(self.config["with_memory"]),
         )
         self.chat_env = ChatEnv(self.chat_env_config)
         
@@ -58,14 +56,8 @@ class ChatChain:
         self.task_prompt_raw = self.task_prompt
         self.task_prompt = ""
         
-        # Prepare role prompts from agents definition
-        self.role_prompts = {
-            agent["name"]: agent["prompt"]
-            for agent in self.config.get("agents", [])
-        }
-        
-        # Initialize recruits
-        self.recruits = [agent["name"] for agent in self.config.get("agents", [])]
+        # Prepare role prompts
+        self.role_prompts = {role: "\n".join(lines) for role, lines in self.config_role.items()}
         
         # Set up logging
         self.start_time, self.log_filepath = self._setup_logging()
@@ -77,86 +69,12 @@ class ChatChain:
         self._init_phases()
         
     def _load_configs(self):
-        """Load configuration using the new YAML config reader."""
-        # Load company configuration
-        self.config = load_company_config(self.company_name)
-        
-        # For backward compatibility, add web_spider and other settings
-        if "settings" not in self.config:
-            self.config["settings"] = {}
-        
-        # For backward compatibility, map chain structure
-        if "chain" not in self.config and "process" in self.config:
-            self._map_process_to_chain()
-        
-        # For legacy code that expects these attributes
-        self.config_phase = {}
-        self.config_role = {}
-        
-        # Extract phase and role configs for backward compatibility
-        self._extract_phase_configs()
-        self._extract_role_configs()
-    
-    def _map_process_to_chain(self):
-        """Map the new process format to the legacy chain format for compatibility."""
-        self.chain = []
-        phases = self.config.get("process", {}).get("phases", [])
-        
-        for phase in phases:
-            if phase.get("type") == "SimplePhase":
-                # Simple phase mapping
-                self.chain.append({
-                    "phase": phase["name"],
-                    "phaseType": "SimplePhase",
-                    "max_turn_step": phase.get("max_turns", -1),
-                    "need_reflect": phase.get("reflection", False)
-                })
-            elif phase.get("type") == "RecursivePhase":
-                # Map recursive phase to composed phase
-                composition = []
-                for sub_phase in phase.get("recursion", {}).get("sub_phases", []):
-                    composition.append({
-                        "phase": sub_phase["name"],
-                        "phaseType": "SimplePhase",
-                        "max_turn_step": sub_phase.get("max_turns", 1),
-                        "need_reflect": sub_phase.get("reflection", False)
-                    })
-                
-                self.chain.append({
-                    "phase": phase["name"],
-                    "phaseType": "ComposedPhase",
-                    "cycleNum": phase.get("recursion", {}).get("max_depth", 3),
-                    "Composition": composition
-                })
-        
-        # Store the chain in config for backward compatibility
-        self.config["chain"] = self.chain
-    
-    def _extract_phase_configs(self):
-        """Extract phase configs from the new format for backward compatibility."""
-        phases = self.config.get("process", {}).get("phases", [])
-        
-        for phase in phases:
-            # Add the simple phase
-            self.config_phase[phase["name"]] = {
-                "assistant_role_name": phase.get("assistant_role", ""),
-                "user_role_name": phase.get("user_role", ""),
-                "phase_prompt": phase.get("prompt", "").split("\n")
-            }
-            
-            # Add sub-phases from recursive phases
-            if phase.get("type") == "RecursivePhase":
-                for sub_phase in phase.get("recursion", {}).get("sub_phases", []):
-                    self.config_phase[sub_phase["name"]] = {
-                        "assistant_role_name": sub_phase.get("assistant_role", ""),
-                        "user_role_name": sub_phase.get("user_role", ""),
-                        "phase_prompt": sub_phase.get("prompt", "").split("\n")
-                    }
-    
-    def _extract_role_configs(self):
-        """Extract role configs from the new format for backward compatibility."""
-        for agent in self.config.get("agents", []):
-            self.config_role[agent["name"]] = agent["prompt"].split("\n")
+        """Load JSON configuration files."""
+        for attr in dir(self):
+            if attr.startswith("config_") and attr.endswith("_path"):
+                config_attr = attr.replace("_path", "")
+                with open(getattr(self, attr), "r", encoding="utf8") as file:
+                    setattr(self, config_attr, json.load(file))
     
     def _setup_logging(self):
         """Set up logging and return start time and log filepath."""
@@ -167,7 +85,11 @@ class ChatChain:
         return start_time, log_path
     
     def _get_log_filepath(self, timestamp):
-        """Construct log filepath using project details and timestamp."""
+        """Construct log filepath using project details and timestamp.
+        
+        IMPORTANT: This method should NOT create directories, only return the path.
+        Directories will be created in pre_processing to avoid duplicates.
+        """
         root_dir = Path(__file__).parent.parent
         log_dir = root_dir / "WareHouse" / f"{self.project_name}_{self.org_name}_{timestamp}"
         # Use a simpler filename: "chat_log.log" inside the project directory
@@ -227,7 +149,7 @@ class ChatChain:
             raise ValueError(f"Phase '{phase}' not found")
             
         max_turns = config["max_turn_step"]
-        need_reflect = normalize_boolean(config["need_reflect"])
+        need_reflect = is_true(config["need_reflect"])
         
         # Use default turn limit if not specified
         if max_turns <= 0:
@@ -277,11 +199,11 @@ class ChatChain:
         if self.chat_env.config.with_memory:
             self.chat_env.init_memory()
         
-        # Save configuration YAML
-        self._save_config_to_software_dir(software_dir)
+        # Copy config files
+        self._copy_configs_to_software_dir(software_dir)
         
         # Set up code base if incremental development is enabled
-        if self.config.get("settings", {}).get("incremental_develop", False):
+        if is_true(self.config["incremental_develop"]):
             self._setup_code_base(software_dir)
         
         # Save task prompt
@@ -305,21 +227,10 @@ class ChatChain:
             if file_path.is_file() and not filename.endswith((".py", ".log")):
                 os.remove(file_path)
     
-    def _save_config_to_software_dir(self, software_dir):
-        """Save configuration YAML to software directory."""
-        import yaml
-        
-        # Save the full config
-        with open(software_dir / "config.yaml", "w") as f:
-            yaml.dump(self.config, f, default_flow_style=False)
-            
-        # For backward compatibility
-        if hasattr(self, 'config_path') and os.path.exists(self.config_path):
-            shutil.copy(self.config_path, software_dir)
-        if hasattr(self, 'config_phase_path') and os.path.exists(self.config_phase_path):
-            shutil.copy(self.config_phase_path, software_dir)
-        if hasattr(self, 'config_role_path') and os.path.exists(self.config_role_path):
-            shutil.copy(self.config_role_path, software_dir)
+    def _copy_configs_to_software_dir(self, software_dir):
+        """Copy configuration files to software directory."""
+        for config_file in [self.config_path, self.config_phase_path, self.config_role_path]:
+            shutil.copy(config_file, software_dir)
     
     def _setup_code_base(self, software_dir):
         """Copy existing code base for incremental development."""
@@ -341,14 +252,26 @@ class ChatChain:
         """Log preprocessing information."""
         preprocess_msg = f"""
         **[Preprocessing]**
+
         **strteam Starts** ({self.start_time})
+
         **Timestamp**: {self.start_time}
-        **Company**: {self.company_name}
+
+        **config_path**: {self.config_path}
+
+        **config_phase_path**: {self.config_phase_path}
+
+        **config_role_path**: {self.config_role_path}
+
         **task_prompt**: {self.task_prompt_raw}
+
         **project_name**: {self.project_name}
+
         **Log File**: {self.log_filepath}
+
         **strteam Config**:
         {self.chat_env.config}
+
         **ChatGPTConfig**:
         {ChatGPTConfig()}
         """
@@ -359,13 +282,13 @@ class ChatChain:
     def _process_task_prompt(self):
         """Process and enhance task prompt if needed."""
         # Determine if task prompt should be improved
-        if self.config.get("settings", {}).get("self_improve", False):
+        if is_true(self.config["self_improve"]):
             self.chat_env.env_dict["task_prompt"] = self._improve_task_prompt(self.task_prompt_raw)
         else:
             self.chat_env.env_dict["task_prompt"] = self.task_prompt_raw
         
         # Process for web spider if enabled
-        if self.config.get("settings", {}).get("web_spider", False):
+        if is_true(self.web_spider):
             self.chat_env.env_dict["task_description"] = modal_trans(self.task_prompt_raw)
     
     def _improve_task_prompt(self, original_prompt):

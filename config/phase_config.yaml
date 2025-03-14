@@ -1,0 +1,179 @@
+version: "1.0"
+company_name: "Startr.Team"
+default_model: "gpt-3.5-turbo"
+background_prompt: "Startr.Team is a software company powered by multiple intelligent agents with a mission of 'changing the digital world through programming'."
+
+# Phase execution sequence
+phase_sequence:
+  - DemandAnalysis
+  - ChooseLanguage
+  - Coding
+  - CodeReview
+  - Test
+  - EnvironmentDescription
+
+# Phase definitions
+phases:
+  - name: DemandAnalysis
+    phaseType: SimplePhase
+    max_turn_step: 3
+    need_reflect: true
+    roles:
+      assistant: Chief Product Officer
+      user: Chief Executive Officer
+    inputs:
+      - task_prompt
+    outputs:
+      - modality
+
+  - name: ChooseLanguage
+    phaseType: SimplePhase
+    max_turn_step: 2
+    need_reflect: true
+    roles:
+      assistant: Chief Technology Officer
+      user: Chief Product Officer
+    inputs:
+      - task_prompt
+      - modality
+    outputs:
+      - language
+
+  - name: Coding
+    phaseType: SimplePhase
+    max_turn_step: 1
+    need_reflect: false
+    roles:
+      assistant: Programmer
+      user: Chief Technology Officer
+    inputs:
+      - task_prompt
+      - modality
+      - language
+    outputs:
+      - code
+
+  - name: CodeReview
+    phaseType: ComposedPhase
+    cycleNum: 3
+    max_depth: 3
+    Composition:
+      - name: CodeReviewComment
+        phaseType: SimplePhase
+        max_turn_step: 1
+        need_reflect: false
+        roles:
+          assistant: Code Reviewer
+          user: Programmer
+        inputs:
+          - code
+          - language
+          - task_prompt
+        outputs:
+          - review_comments
+
+      - name: CodeReviewModification
+        phaseType: SimplePhase
+        max_turn_step: 1
+        need_reflect: false
+        roles:
+          assistant: Programmer
+          user: Code Reviewer
+        inputs:
+          - code
+          - review_comments
+        outputs:
+          - modified_code
+
+  - name: Test
+    phaseType: ComposedPhase
+    cycleNum: 3
+    max_depth: 3
+    Composition:
+      - name: TestErrorSummary
+        phaseType: SimplePhase
+        max_turn_step: 1
+        need_reflect: false
+        roles:
+          assistant: Software Test Engineer
+          user: Programmer
+        inputs:
+          - code
+          - language
+        outputs:
+          - test_report
+          - error_summary
+
+      - name: TestModification
+        phaseType: SimplePhase
+        max_turn_step: 1
+        need_reflect: false
+        roles:
+          assistant: Programmer
+          user: Software Test Engineer
+        inputs:
+          - code
+          - error_summary
+        outputs:
+          - fixed_code
+
+  - name: EnvironmentDescription
+    phaseType: SimplePhase
+    max_turn_step: 1
+    need_reflect: true
+    roles:
+      assistant: DevOps Engineer
+      user: Chief Technology Officer
+    inputs:
+      - code
+      - language
+    outputs:
+      - requirements
+      - setup_instructions
+
+# Agent configurations
+agents:
+  - role: Chief Executive Officer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You are the CEO responsible for overall project direction and final decisions."
+
+  - role: Chief Product Officer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You analyze requirements and determine the best product approach."
+
+  - role: Chief Technology Officer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You make technical decisions and guide the development process."
+
+  - role: Programmer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You write clean, efficient code following best practices."
+
+  - role: Code Reviewer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You review code for quality, bugs, and improvements."
+
+  - role: Software Test Engineer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You test code and identify potential issues."
+
+  - role: DevOps Engineer
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    system_message: "You handle deployment and environment configuration."
+
+# Global settings
+settings:
+  clear_structure: true
+  gui_design: false
+  git_management: true
+  incremental_develop: false
+  self_improve: true
+  with_memory: true
+  web_spider: false
