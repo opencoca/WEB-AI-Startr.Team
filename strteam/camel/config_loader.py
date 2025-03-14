@@ -24,7 +24,16 @@ class ConfigLoader:
         model_config = self.config["models"].get(model_name)
         if model_config is None:
             self.logger.error(f"No configuration found for model: {model_name}")
+            self.logger.debug(f"Available models: {list(self.config['models'].keys())}")
             raise ValueError(f"No configuration found for model: {model_name}")
+        
+        # Add detailed logging for debugging
+        self.logger.debug(f"Model config for {model_name}: {model_config}")
+        if "base_url" in model_config:
+            self.logger.debug(f"Model {model_name} has base_url: {model_config['base_url']}")
+        if "is_openai" in model_config:
+            self.logger.debug(f"Model {model_name} is_openai: {model_config['is_openai']}")
+            
         return model_config
 
     def get_all_model_configs(self):
