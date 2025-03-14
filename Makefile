@@ -98,7 +98,7 @@ shell:
 run-with-log:
 	@echo "Running in Docker with logging to WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S).log..."
 	@mkdir -p WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)
-	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python strteam/__main__.py" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python -m strteam" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
 
 
 # Verify API keys inside Docker container
