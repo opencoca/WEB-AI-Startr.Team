@@ -32,7 +32,7 @@ class TaskSpecifyAgent(ChatAgent):
 
     Args:
         model (ModelType): The type of model to use for the agent.
-            (default: :obj:`ModelType.GPT_3_5_TURBO`)
+            (default: :obj:`ModelType.GPT_4O_MINI`)
         task_type (TaskType): The type of task for which to generate a prompt.
             (default: :obj:`TaskType.AI_SOCIETY`)
         model_config (Any): The configuration for the model.
@@ -122,7 +122,7 @@ class TaskPlannerAgent(ChatAgent):
 
     Args:
         model (ModelType): The type of model to use for the agent.
-            (default: :obj:`ModelType.GPT_3_5_TURBO`)
+            (default: :obj:`ModelType.GPT_4O_MINI`)
         model_config (Any): The configuration for the model.
             (default: :obj:`None`)
     """

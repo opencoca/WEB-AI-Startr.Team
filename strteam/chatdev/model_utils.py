@@ -197,6 +197,7 @@ def map_model_name(model_name: str) -> str:
         "GPT_4": "gpt-4o",
         "GPT_4_TURBO": "gpt-4-turbo",
         "GPT_4O": "gpt-4o",
+        "GPT_4O_MINI": "gpt-4o-mini",
         "CLAUDE_INSTANT": "claude-instant-1",
         "CLAUDE_2": "claude-2",
         "CLAUDE_3_OPUS": "claude-3-opus-20240229",

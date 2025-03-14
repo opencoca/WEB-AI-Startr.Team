@@ -47,7 +47,7 @@ class RolePlaying:
         with_critic_in_the_loop (bool, optional): Whether to include a critic
             in the loop. (default: :obj:`False`)
         model_type (ModelType, optional): The type of backend model to use.
-            (default: :obj:`ModelType.GPT_3_5_TURBO`)
+            (default: :obj:`ModelType.GPT_4O_MINI`)
         task_type (TaskType, optional): The type of task to perform.
             (default: :obj:`TaskType.AI_SOCIETY`)
         assistant_agent_kwargs (Dict, optional): Additional arguments to pass
@@ -82,7 +82,7 @@ class RolePlaying:
         with_task_planner: bool = False,
         with_critic_in_the_loop: bool = False,
         critic_criteria: Optional[str] = None,
-        model_type: ModelType = ModelType.GPT_3_5_TURBO,
+        model_type: ModelType = ModelType.GPT_4O_MINI,
         task_type: TaskType = TaskType.AI_SOCIETY,
         assistant_agent_kwargs: Optional[Dict] = None,
         user_agent_kwargs: Optional[Dict] = None,

@@ -147,8 +147,8 @@ def get_info(dir, log_filepath):
                 sublines[0].split("| **model_type** | ModelType.")[-1].split(" | ")[0]
             )
             model_type = model_type[:-2]
-            if model_type == "GPT_3_5_TURBO" or model_type == "GPT_3_5_TURBO_NEW":
-                model_type = "gpt-3.5-turbo"
+            if model_type == "GPT_4O_MINI" or model_type == "GPT_3_5_TURBO_NEW":
+                model_type = "gpt-4o-mini"
             elif model_type == "GPT_4":
                 model_type = "gpt-4o"
             elif model_type == "GPT_4_32k":

@@ -61,7 +61,7 @@ class Phase(ABC):
         task_type=TaskType.STARTR_TEAM,
         need_reflect=False,
         with_task_specify=False,
-        model_type=ModelType.GPT_3_5_TURBO,
+        model_type=ModelType.GPT_4O_MINI,
         memory=None,
         placeholders=None,
         chat_turn_limit=10,
