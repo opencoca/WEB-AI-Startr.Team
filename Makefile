@@ -23,19 +23,19 @@ debug-setup:
 
 debug-run:
 	@echo "Running with debugging enabled"
-	@python -m startr.team.debug_run --model-debug --interactive --log-level info
+	@python -m strteam.debug_run --model-debug --interactive --log-level info
 
 debug-model:
 	@echo "Running model verification"
-	@python -m startr.team.debug_run --check-model --model $(MODEL)
+	@python -m strteam.debug_run --check-model --model $(MODEL)
 
 debug-inspect:
 	@echo "Running with interactive debugging and breakpoints"
-	@python -m startr.team.debug_run --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain,Phase.execute" --model-debug
+	@python -m strteam.debug_run --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain,Phase.execute" --model-debug
 
 debug-fallback:
 	@echo "Running with fallback model (GPT-4)"
-	@python -m startr.team.debug_run --model GPT_4 --model-debug
+	@python -m strteam.debug_run --model GPT_4 --model-debug
 
 debug-api-test:
 	@echo "Testing API connectivity with minimal request"
@@ -151,7 +151,7 @@ docker-restart:
 	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
 		pkill -f 'python' || true && \
 		source .env && \
-		nohup python -m startr.team.visualizer --port 5000 > /dev/null 2>&1 &"
+		nohup python -m strteam.visualizer --port 5000 > /dev/null 2>&1 &"
 	@echo "Application restarted with updated API keys."
 
 # Open a shell in the running Docker container
@@ -165,30 +165,19 @@ run-with-log:
 	@mkdir -p WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)
 	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python strteam/__main__.py" | tee WareHouse/docker_run_$(shell date +%Y%m%d_%H%M%S)/output.log
 
-# Verify that API keys are working properly
-verify-api-keys:
-	@if [ ! -f .env ]; then \
-		echo "Error: .env file not found. Run 'make init-env' first."; \
-		exit 1; \
-	fi
-	@echo "Verifying OpenAI API key..."
-	@export $$(grep -v '^#' .env | xargs) && \
-	curl -s "https://api.openai.com/v1/chat/completions" \
-		-H "Content-Type: application/json" \
-		-H "Authorization: Bearer $$OPENAI_API_KEY" \
-		-d '{"model": "gpt-4o-mini", "messages": [{"role": "user", "content": "Hello"}]}' | head -20
-	@echo "\nAPI key verification completed."
 
 # Verify API keys inside Docker container
-docker-verify-api-keys:
+verify-api-keys:
 	@echo "Verifying OpenAI API key in Docker container..."
-	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
+	@docker exec web-ai-startr.team-develop bash -c "cd /project && \
 		source .env && \
+		echo 'API KEY:' \$$OPENAI_API_KEY && \
+		echo \"Full curl command: curl -s 'https://api.openai.com/v1/chat/completions' -H 'Content-Type: application/json' -H 'Authorization: Bearer \$$OPENAI_API_KEY' -d '{\\\"model\\\": \\\"gpt-4o-mini\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello\\\"}]}' | head -20\" && \
 		curl -s 'https://api.openai.com/v1/chat/completions' \
 			-H 'Content-Type: application/json' \
 			-H 'Authorization: Bearer \$$OPENAI_API_KEY' \
 			-d '{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}]}' | head -20"
-	@echo "\nAPI key verification in Docker completed."
+	@echo "API key verification in Docker completed."
 
 # ==========================================================================
 # VISUALIZATION TOOLS
@@ -198,7 +187,7 @@ run-visualizer:
 	@echo "Starting visualizer on http://localhost:5000..."
 	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
 		source .env && \
-		nohup python -m startr.team.visualizer --port 5000 > /dev/null 2>&1 &"
+		nohup python -m strteam.visualizer --port 5000 > /dev/null 2>&1 &"
 
 # List all WareHouse projects with log files
 list-logs:
@@ -235,7 +224,7 @@ docker-run:
 
 docker-debug:
 	@echo "Running debug commands in Docker container..."
-	@docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --model-debug --interactive --log-level info
+	@docker exec -it web-ai-startr.team-develop python -m strteam.debug_run 
 
 docker-shell:
 	@echo "Opening a shell in the Docker container..."
