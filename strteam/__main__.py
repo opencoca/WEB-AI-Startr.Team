@@ -27,8 +27,8 @@ from .chatdev.chat_chain import ChatChain
 
 # Add support for debug utilities if available
 try:
-    from chatdev.debug_utils import debug_log, debug_inspect, debug_decorator, DEBUG_ENABLED
-    from chatdev.model_utils import map_model_name
+    from .chatdev.debug_utils import debug_log, debug_inspect, debug_decorator, DEBUG_ENABLED
+    from .chatdev.model_utils import map_model_name
     debug_tools_available = True
 except ImportError:
     debug_tools_available = False

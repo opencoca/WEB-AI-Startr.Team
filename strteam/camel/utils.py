@@ -124,7 +124,7 @@ def openai_api_key_required(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        from camel.agents.chat_agent import ChatAgent
+        from .agents.chat_agent import ChatAgent
 
         if not isinstance(self, ChatAgent):
             raise ValueError("Expected ChatAgent")

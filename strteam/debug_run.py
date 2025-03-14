@@ -167,7 +167,7 @@ def main() -> None:
     
     # Check model connectivity if requested
     if args.check_model:
-        from chatdev.model_utils import verify_model_access
+        from .chatdev.model_utils import verify_model_access
         verify_model_access(ModelType[args.model])
         debug_log("Model verification completed", "info")
         return  # Exit after model verification

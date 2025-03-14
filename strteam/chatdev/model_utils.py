@@ -4,7 +4,7 @@ import requests
 import logging
 from typing import List, Dict, Optional, Any, Tuple
 
-from chatdev.debug_utils import debug_log, debug_inspect, debug_decorator
+from .debug_utils import debug_log, debug_inspect, debug_decorator
 
 # Available model types 
 OPENAI_MODELS = [

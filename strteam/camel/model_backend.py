@@ -16,6 +16,8 @@ import json
 import warnings
 import os
 
+import logging
+
 import openai
 import tiktoken
 
