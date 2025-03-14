@@ -86,35 +86,8 @@ it_run:
 it_build:
 	@bash -c 'bash <(curl -sL startr.sh) build'
 
-# ==========================================================================
-# MAINTENANCE TASKS
-# ==========================================================================
-# IMPORTANT: Always add reusable operations to the Makefile as targets.
-# This ensures:
-# 1. Documentation of common tasks
-# 2. Reproducibility across environments
-# 3. Consistent execution of complex operations
-# 4. Easy onboarding for new team members
 
-# Fix JSON syntax errors in configuration files by removing comments
-# This is needed because standard JSON doesn't support comments
-fix-json-configs:
-	@echo "Creating backups of original configuration files..."
-	@cp config/CompanyConfig/Default/ChatChainConfig.json config/CompanyConfig/Default/ChatChainConfig.json.bak
-	@echo "Removing comments from JSON configuration files..."
-	@cat config/CompanyConfig/Default/ChatChainConfig.json | grep -v '//' | jq . > fixed_config.json
-	@cp fixed_config.json config/CompanyConfig/Default/ChatChainConfig.json
-	@echo "Fixed JSON configuration files. Originals backed up with .bak extension."
-
-# Same operation for Docker environment
-docker-fix-json-configs:
-	@echo "Fixing JSON configuration files in Docker container..."
-	docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
-		cp config/CompanyConfig/Default/ChatChainConfig.json config/CompanyConfig/Default/ChatChainConfig.json.bak && \
-		cat config/CompanyConfig/Default/ChatChainConfig.json | grep -v '//' | jq . > fixed_config.json && \
-		cp fixed_config.json config/CompanyConfig/Default/ChatChainConfig.json"
-	@echo "Fixed JSON configuration files in Docker container."
-
+# Run all maintenance tasks
 # ==========================================================================
 # API KEY MANAGEMENT
 # ==========================================================================
@@ -167,6 +140,7 @@ run-with-log:
 
 
 # Verify API keys inside Docker container
+#TODO Fix this
 verify-api-keys:
 	@echo "Verifying OpenAI API key in Docker container..."
 	@docker exec web-ai-startr.team-develop bash -c "cd /project && \
@@ -204,23 +178,6 @@ check-log-format:
 	@head -n 50 $(LOG_FILE) | grep -E '^\[[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -n 5
 	@echo "\nLog type: Docker format"
 	@echo "Use the replay tool at http://localhost:8080/replay to visualize this log"
-
-# Fix visualization in Docker container
-docker-fix-visualization:
-	@echo "Updating visualization files in Docker container..."
-	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
-		sed -i 's/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (\w+) - (.*?)\$$/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) (\w+)\] (.*)\$$/g' visualizer/static/replay/js/app.js && \
-		sed -i 's/Startr.Team Starts/\*\*Startr\\.Team Starts\*\*/g' visualizer/static/replay/js/app.js && \
-		sed -i 's/task_prompt: (.*)/\*\*task_prompt\*\*: (.*)/g' visualizer/static/replay/js/app.js"
-	@echo "Visualization files updated. Restart the visualizer with 'make docker-restart'"
-
-# Restart visualizer to apply changes
-docker-restart-visualizer: docker-fix-visualization docker-restart
-
-# Docker-specific targets
-docker-run:
-	@echo "Running WEB-AI-Startr.Team in Docker..."
-	@bash -c 'bash <(curl -sL startr.sh) run'
 
 docker-debug:
 	@echo "Running debug commands in Docker container..."
