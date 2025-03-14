@@ -26,7 +26,7 @@ from typing import List, Optional
 os.environ["STARTR_DEBUG"] = "true"
 
 # Import the debug utilities
-from chatdev.debug_utils import (
+from .chatdev.debug_utils import (
     enable_debug, 
     enable_interactive, 
     add_breakpoint, 
@@ -39,15 +39,14 @@ from strteam.__main__ import (
     get_model_choices,
     check_api_key,
     get_config,
-    get_company_configs as get_config/CompanyConfigs,
+    get_company_configs,
     execute_chat_chain,
     parse_arguments,
     setup_logging,
     log_initial_info
 )
-from camel.typing import ModelType
-from chatdev.chat_chain import ChatChain
-
+from .camel.typing import ModelType
+from .chatdev.chat_chain import ChatChain
 
 def setup_debug_logging(log_level: str = "debug") -> None:
     """
@@ -70,12 +69,6 @@ def setup_debug_logging(log_level: str = "debug") -> None:
 
 
 def parse_debug_arguments() -> argparse.Namespace:
-    """
-    Parse command line arguments for debug mode.
-    
-    Returns:
-        Parsed arguments
-    """
     # First get the standard arguments
     standard_parser = parse_arguments()
     
@@ -86,7 +79,7 @@ def parse_debug_arguments() -> argparse.Namespace:
     args_config = {
         "debug": ("store_true", False, "Enable debug mode"),
         "local": ("store_true", False, "Use local Ollama API instead of OpenAI API"),
-        "config": (str, "Default", "config/CompanyConfig name loading settings (Choices: {})".format(", ".join(get_config/CompanyConfigs()))),
+        "config": (str, "Default", "config/CompanyConfig name loading settings (Choices: {})".format(", ".join(get_company_configs()))),
         "org": (str, "DefaultOrganization", "Organization name for software generation"),
         "task": (str, "Develop simple static Website using only html and css.", "Software prompt"),
         "name": (str, "Website", "Software name for generation"),
@@ -109,18 +102,42 @@ def parse_debug_arguments() -> argparse.Namespace:
     # Add all arguments to the parser
     for arg, (action_or_type, default, help_text) in args_config.items():
         flag = f"--{arg}"
+
+        # Skip short flags if argument is "model-debug", "model", or "check-model"
+        if arg in ["model-debug", "model", "check-model"]:
+            if action_or_type == "store_true":
+                parser.add_argument(
+                    flag,
+                    action="store_true",
+                    default=default,
+                    help=f"{help_text} (default: {default})"
+                )
+            else:
+                parser.add_argument(
+                    flag,
+                    type=action_or_type,
+                    default=default,
+                    help=f"{help_text} (default: {default})"
+                )
+            continue
+
         short_flag = f"-{arg[0]}"
+
         if action_or_type == "store_true":
             parser.add_argument(
-                short_flag, flag, action=action_or_type, default=default, 
+                short_flag, flag,
+                action="store_true",
+                default=default,
                 help=f"{help_text} (default: {default})"
             )
         else:
             parser.add_argument(
-                short_flag, flag, type=action_or_type, default=default, 
+                short_flag, flag,
+                type=action_or_type,
+                default=default,
                 help=f"{help_text} (default: {default})"
             )
-    
+
     return parser.parse_args()
 
 
@@ -205,4 +222,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main() 
+    main()
