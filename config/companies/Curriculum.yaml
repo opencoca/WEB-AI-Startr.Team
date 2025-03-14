@@ -1,0 +1,89 @@
+background: "At Startr Team, we're reinventing education with our quirky AI crew!\
+  \ Our team includes a brainy AI CEO, a tech-savvy CTO, a people-loving HR officer,\
+  \ and a creative product whiz. Together, we're cooking up fun, easy-to-understand\
+  \ lessons for all subjects. Watch out, textbooks \u2013 Startr Team is here to make\
+  \ learning an awesome adventure!"
+process:
+  phases:
+  - name: DemandAnalysis
+    type: SimplePhase
+    max_turns: 3
+    reflection: true
+    assistant_role: Chief Curriculum Officer
+    user_role: Chief Executive Officer
+    prompt: "Startr.Team has previously created products in the following formats:\n\
+      \nImages: Visuals like line charts, bar charts, flow charts, cloud charts, Gantt\
+      \ charts, etc.\nDocuments: Information presented in .docx files.\nPowerPoint\
+      \ Presentations: Information presented in .pptx files.\nExcel Sheets: Data displayed\
+      \ in .xlsx files.\nPDFs: Information presented in .pdf files.\nWebsites: Personal\
+      \ resumes, tutorials, products, or ideas in .html files.\nApplications: Visual\
+      \ games, software, tools, etc., developed with Python.\nDashboards: Panels visualizing\
+      \ real-time information.\nMind Maps: Ideas arranged around a core concept.\n\
+      Markdown Files: Information presented in .md files.\n\nAs the {assistant_role},\
+      \ let's focus on choosing the best product format for our project. Keep the\
+      \ discussion going until we decide on the modality that meets our needs.\n\n\
+      Remember, we're ONLY discussing the product format\u2014nothing else. Once we've\
+      \ all agreed, anyone can end the discussion by replying with a single line.\
+      \ Start this line with `<INFO>`, followed by the chosen product format, like\
+      \ `<INFO> Markdown`."
+  - name: ChooseLanguage
+    type: SimplePhase
+    max_turns: 3
+    reflection: true
+    assistant_role: Educational Consultant
+    user_role: Chief Curriculum Officer
+    prompt: 'Based on the projects'' current task and some creative ideas below:
+
+      Task: "{task}".
+
+      Modality: "{modality}".
+
+      Ideas: "{ideas}".
+
+      We must complete the task following Understanding by Design (UbD), a framework
+      for curriculum development
+
+      As the {assistant_role}, working to meet the projects'' needs, suggest a specific
+      plan.
+
+      We will only discuss the UbD curiuculum dev plan and nothing else! Once everyone
+      agrees, end the discussion and provide the chosen plan in this format: ''<INFO>
+      *'' where ''*'' is the plan.'
+  - name: Manual
+    type: SimplePhase
+    max_turns: 1
+    reflection: false
+    assistant_role: Chief Learning Officer
+    user_role: Educational Consultant
+    prompt: "Here is the information you'll need for the project task, code, & dependencies:\n\
+      Task: \"{task}\".\nModality: \"{modality}\".\nProgramming Language: \"{language}\"\
+      \nIdeas: \"{ideas}\"\nCodes: \n\"{codes}\"\nRequirements:\n\"{requirements}\"\
+      \nAs the {assistant_role}, create a `manual.md` file using Markdown. This file\
+      \ will serve as a curriculum guide following the Understanding by Design (UbD)\
+      \ framework. It should include:\n- An overview of the project's main goals and\
+      \ objectives.\n- A description of key concepts and skills to be taught.\n- Instructions\
+      \ for setting up and using any required tools or resources.\n- Guidance on how\
+      \ to assess and reflect on the learning outcomes.\nHere\u2019s an example of\
+      \ what your guide could look like:\nmanual.md\n\n```\n# Curriculum Guide: Understanding\
+      \ by Design (UbD) Framework\n## Overview\n\nThis curriculum guide is designed\
+      \ to help you understand and apply the UbD framework in your project.\n\n##\
+      \ Goals and Objectives\n\nDefine the main goals of the project and what learners\
+      \ should achieve.\n## Key Concepts and Skills\n\nOutline the essential concepts\
+      \ and skills that will be covered.\n## Setup and Resources\n\nProvide instructions\
+      \ for setting up any necessary tools and resources.\n\n## Assessment and Reflection\n\
+      \nInclude guidance on how to assess progress and reflect on learning outcomes.\n\
+      \n## Example Structure\n\n### 1. Goals and Objectives\n\nDescribe what the project\
+      \ aims to accomplish and the learning objectives.\n\n### 2. Key Concepts and\
+      \ Skills\nDetail the important concepts and skills that will be taught.\n\n\
+      ### 3. Setup and Resources\nExplain how to set up the project and any resources\
+      \ needed.\n\n### 4. Assessment and Reflection\nProvide methods for evaluating\
+      \ success and reflecting on the learning process.\n```"
+agents: []
+settings:
+  clear_structure: true
+  git_management: false
+  gui_design: true
+  incremental_develop: false
+  self_improve: false
+  web_spider: false
+  with_memory: false

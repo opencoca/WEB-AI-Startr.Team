@@ -1,0 +1,160 @@
+# WEB-AI-Startr.Team Configuration Schema
+# This document defines the expected structure and types for all configuration files
+
+# Base types
+definitions:
+  boolean_value:
+    type: boolean
+    description: A true/false value (use actual boolean, not strings)
+  
+  turn_limit:
+    type: integer
+    description: Maximum number of conversation turns (-1 for default)
+    minimum: -1
+  
+  phase_type:
+    type: string
+    enum: [SimplePhase, RecursivePhase]
+    description: Type of phase execution (Simple or Recursive)
+  
+  agent_role:
+    type: string
+    description: Role name for an agent
+
+# Configuration File Schemas
+schemas:
+  # Main configuration schema
+  main_config:
+    type: object
+    required:
+      - process
+      - agents
+      - settings
+    properties:
+      # Background information shared with all agents
+      background:
+        type: string
+        description: Background prompt shared with all agents
+
+      # Process definition - the flow of development
+      process:
+        type: object
+        required:
+          - phases
+        properties:
+          phases:
+            type: array
+            items:
+              $ref: "#/schemas/phase_config"
+      
+      # Agent definitions
+      agents:
+        type: array
+        items:
+          $ref: "#/schemas/agent_config"
+      
+      # Global settings
+      settings:
+        type: object
+        properties:
+          clear_structure:
+            $ref: "#/definitions/boolean_value"
+            description: Whether to clean up project structure after completion
+          
+          git_management:
+            $ref: "#/definitions/boolean_value"
+            description: Whether to use Git for version control
+          
+          gui_design:
+            $ref: "#/definitions/boolean_value"
+            description: Whether to include GUI design in the project
+          
+          incremental_develop:
+            $ref: "#/definitions/boolean_value"
+            description: Whether to use incremental development approach
+          
+          self_improve:
+            $ref: "#/definitions/boolean_value"
+            description: Whether agents can improve their own prompts
+          
+          web_spider:
+            $ref: "#/definitions/boolean_value"
+            description: Whether to use web search capabilities
+          
+          with_memory:
+            $ref: "#/definitions/boolean_value"
+            description: Whether agents should maintain memory between sessions
+
+  # Phase configuration schema
+  phase_config:
+    type: object
+    required:
+      - name
+      - type
+    properties:
+      name:
+        type: string
+        description: Unique name of the phase
+      
+      type:
+        $ref: "#/definitions/phase_type"
+        description: Type of phase (SimplePhase or RecursivePhase)
+      
+      max_turns:
+        $ref: "#/definitions/turn_limit"
+        description: Maximum conversation turns for this phase
+      
+      reflection:
+        $ref: "#/definitions/boolean_value"
+        description: Whether this phase should include reflection
+      
+      assistant_role:
+        $ref: "#/definitions/agent_role"
+        description: Role of the assistant in this phase
+      
+      user_role:
+        $ref: "#/definitions/agent_role"
+        description: Role of the user in this phase
+      
+      prompt:
+        type: string
+        description: Base prompt template for this phase
+      
+      # For recursive phases only
+      recursion:
+        type: object
+        properties:
+          condition:
+            type: string
+            description: Condition for continuing recursion
+          
+          max_depth:
+            type: integer
+            minimum: 1
+            description: Maximum recursion depth
+          
+          sub_phases:
+            type: array
+            items:
+              $ref: "#/schemas/phase_config"
+
+  # Agent configuration schema
+  agent_config:
+    type: object
+    required:
+      - name
+      - prompt
+    properties:
+      name:
+        $ref: "#/definitions/agent_role"
+        description: Unique name/role of this agent
+      
+      prompt:
+        type: string
+        description: Base prompt defining the agent's role and capabilities
+      
+      tools:
+        type: array
+        items:
+          type: string
+        description: Tools this agent has access to

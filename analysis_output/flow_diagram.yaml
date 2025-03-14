@@ -1,0 +1,86 @@
+name: WEB-AI-Startr.Team
+type: project
+components:
+- name: Config Management
+  type: system
+  components:
+  - name: JSON Configs
+    path: config/CompanyConfig
+    type: config
+  - name: YAML Configs
+    path: config/CompanyConfig_yaml
+    type: config
+  - name: Newstyle Configs
+    path: config/CompanyConfig_newstyle
+    type: config
+- name: Agent System
+  type: system
+  components:
+  - name: Base Agent
+    path: strteam/camel/agents/base.py
+    type: class
+  - name: Chat Agent
+    path: strteam/camel/agents/chat_agent.py
+    type: class
+  - name: Task Agent
+    path: strteam/camel/agents/task_agent.py
+    type: class
+  - name: Critic Agent
+    path: strteam/camel/agents/critic_agent.py
+    type: class
+  - name: Role Playing
+    path: strteam/camel/agents/role_playing.py
+    type: class
+- name: Phase System
+  type: system
+  components:
+  - name: Phase
+    path: strteam/chatdev/phase.py
+    type: class
+  - name: Composed Phase
+    path: strteam/chatdev/composed_phase.py
+    type: class
+- name: Chat Environment
+  type: system
+  components:
+  - name: Chat Environment
+    path: strteam/chatdev/chat_env.py
+    type: class
+  - name: Chat Chain
+    path: strteam/chatdev/chat_chain.py
+    type: class
+- name: Execution Flow
+  type: flow
+  flow:
+  - phase: Requirements Analysis
+    agents:
+    - Project Manager
+    - Planning Agent
+    type: recursive
+  - phase: Design
+    agents:
+    - Architect
+    - Developer
+    type: recursive
+  - phase: Implementation
+    agents:
+    - Developer
+    type: recursive
+    sub_phases:
+    - name: Coding
+      agents:
+      - Developer
+    - name: Review
+      agents:
+      - Reviewer
+      - Developer
+  - phase: Testing
+    agents:
+    - Tester
+    - Developer
+    type: recursive
+  - phase: Documentation
+    agents:
+    - Documentation
+    - Developer
+    type: simple

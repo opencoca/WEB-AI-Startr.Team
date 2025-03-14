@@ -1,0 +1,172 @@
+# WEB-AI-Startr.Team Simplified Configuration
+# This is a clean, simplified configuration that uses proper YAML types
+# and follows the schema defined in schema.yaml
+
+# Background information shared with all agents
+background: >
+  Startr.Team is a software company powered by multiple intelligent agents,
+  organized in a recursive structure that can adapt to various software development tasks.
+  The company's mission is to efficiently create high-quality software through 
+  collaborative work among specialized agents.
+
+# Process definition - the development workflow using recursion
+process:
+  phases:
+    # Initial requirements phase
+    - name: RequirementsAnalysis
+      type: SimplePhase
+      max_turns: 5
+      reflection: true
+      assistant_role: PlanningAgent
+      user_role: ProjectManager
+      prompt: >
+        Analyze the user's request to determine the software requirements.
+        Consider the primary use cases, functional requirements, and necessary components.
+        The output should be a clear, structured specification that can guide implementation.
+
+    # Design and architecture phase
+    - name: DesignPhase
+      type: SimplePhase
+      max_turns: 3
+      reflection: true
+      assistant_role: ArchitectAgent
+      user_role: PlanningAgent
+      prompt: >
+        Based on the requirements, design the software architecture.
+        Specify the major components, their interactions, and the technology stack.
+        Ensure the design is scalable, maintainable, and addresses all requirements.
+
+    # Implementation phase (recursive)
+    - name: Implementation
+      type: RecursivePhase
+      max_turns: 3
+      reflection: false
+      assistant_role: DeveloperAgent
+      user_role: ArchitectAgent
+      prompt: >
+        Implement the software according to the design specifications.
+        Write clean, well-structured, and documented code.
+        Ensure all requirements are met in the implementation.
+      recursion:
+        condition: implementation_incomplete
+        max_depth: 5
+        sub_phases:
+          - name: CodeImplementation
+            type: SimplePhase
+            max_turns: 5
+            reflection: false
+            assistant_role: DeveloperAgent
+            user_role: ArchitectAgent
+            prompt: >
+              Implement the specified component or feature.
+              Focus on correct functionality and clean code.
+
+          - name: CodeReview
+            type: SimplePhase
+            max_turns: 2
+            reflection: true
+            assistant_role: ReviewerAgent
+            user_role: DeveloperAgent
+            prompt: >
+              Review the implemented code for correctness, style, and potential issues.
+              Provide specific feedback and suggestions for improvement.
+
+    # Testing phase (recursive)
+    - name: Testing
+      type: RecursivePhase
+      max_turns: 2
+      reflection: true
+      assistant_role: TesterAgent
+      user_role: DeveloperAgent
+      prompt: >
+        Test the software to ensure it meets all requirements and functions correctly.
+        Report any bugs or issues found during testing.
+      recursion:
+        condition: tests_failing
+        max_depth: 3
+        sub_phases:
+          - name: TestExecution
+            type: SimplePhase
+            max_turns: 2
+            reflection: false
+            assistant_role: TesterAgent
+            user_role: DeveloperAgent
+            prompt: >
+              Execute tests on the software and report results.
+              Identify any issues or edge cases that need attention.
+
+          - name: BugFixing
+            type: SimplePhase
+            max_turns: 3
+            reflection: false
+            assistant_role: DeveloperAgent
+            user_role: TesterAgent
+            prompt: >
+              Fix the identified issues and bugs.
+              Ensure the changes don't break existing functionality.
+
+    # Documentation phase
+    - name: Documentation
+      type: SimplePhase
+      max_turns: 2
+      reflection: false
+      assistant_role: DocumentationAgent
+      user_role: DeveloperAgent
+      prompt: >
+        Create comprehensive documentation for the software.
+        Include installation instructions, usage examples, and API references.
+        Ensure the documentation is clear and accessible.
+
+# Agent definitions - simplified and focused on core roles
+agents:
+  - name: ProjectManager
+    prompt: >
+      You are the Project Manager responsible for understanding user requirements
+      and coordinating the development process. You translate user needs into clear
+      specifications and ensure the project stays aligned with its goals.
+
+  - name: PlanningAgent
+    prompt: >
+      You are the Planning Agent responsible for analyzing requirements and creating
+      detailed plans for implementation. You break down complex tasks into manageable
+      steps and establish clear priorities.
+
+  - name: ArchitectAgent
+    prompt: >
+      You are the Software Architect responsible for designing the overall structure
+      of the software. You make decisions about patterns, frameworks, and technologies
+      based on requirements and best practices.
+
+  - name: DeveloperAgent
+    prompt: >
+      You are the Developer responsible for writing clean, efficient code according to
+      the specifications and design. You implement features, fix bugs, and ensure
+      the code is maintainable and well-structured.
+
+  - name: ReviewerAgent
+    prompt: >
+      You are the Code Reviewer responsible for ensuring code quality and adherence to
+      best practices. You provide constructive feedback and identify potential issues
+      before they cause problems.
+
+  - name: TesterAgent
+    prompt: >
+      You are the Testing Agent responsible for verifying that the software works correctly
+      and meets all requirements. You design test cases, execute tests, and report any
+      issues found.
+
+  - name: DocumentationAgent
+    prompt: >
+      You are the Documentation Agent responsible for creating clear, comprehensive
+      documentation for the software. You ensure users and developers can understand
+      how to use and extend the software.
+
+# Global settings with proper boolean values
+settings:
+  clear_structure: true
+  git_management: true
+  gui_design: true
+  incremental_develop: false
+  self_improve: true
+  web_spider: false
+  with_memory: false

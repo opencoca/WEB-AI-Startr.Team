@@ -1,0 +1,136 @@
+# WEB-AI-Startr.Team Simplified Recursive Flow
+# This is a cleaned-up version of the agent flow using recursion to reduce complexity
+
+name: WEB-AI-Startr.Team
+description: >
+  Simplified recursive architecture for WEB-AI-Startr.Team.
+  This structure reduces complexity by using recursion instead of linear chains
+  and consolidates the agent system into fewer, more flexible roles.
+
+# Core Agents with clear, focused responsibilities
+agents:
+  - name: Planner
+    description: >
+      High-level planning agent that coordinates the development process and 
+      makes strategic decisions based on the user's requirements.
+    replaces: 
+      - Chief Executive Officer
+      - Chief Technology Officer
+      - Chief Product Officer
+
+  - name: Developer
+    description: >
+      Main implementation agent responsible for writing code, reviewing, 
+      and fixing issues based on feedback from testing.
+    replaces:
+      - Programmer
+      - Code Reviewer
+      - Chief Creative Officer
+
+  - name: Tester
+    description: >
+      Quality assurance agent that tests implementations, provides feedback,
+      and ensures requirements are met.
+    replaces:
+      - Software Test Engineer
+      - Counselor
+
+# Recursive workflow model that replaces the linear chain
+workflow:
+  # Main workflow function that can call itself
+  main_process:
+    name: BuildSoftware
+    input: user_request
+    output: completed_software
+    phases:
+      - name: PlanningPhase
+        agent: Planner
+        # This phase handles the requirements gathering and planning phases
+        description: >
+          Analyze requirements and develop a high-level plan including architecture, 
+          technology choices, and implementation approach.
+        input: user_request
+        output: software_plan
+      
+      - name: ImplementationPhase
+        agent: Developer
+        # This phase recursively handles all implementation steps
+        description: >
+          Implement the software based on the plan, with recursive calls for:
+          1. Writing initial code
+          2. Reviewing the code
+          3. Fixing any issues found in review
+        input: software_plan
+        output: implementation
+        recursion:
+          condition: is_implementation_complete
+          max_depth: 5
+          sub_phases:
+            - name: WriteCode
+              agent: Developer
+              input: current_component_spec
+              output: component_implementation
+            
+            - name: ReviewCode
+              agent: Developer
+              input: component_implementation
+              output: review_feedback
+              review_mode: true
+            
+            - name: ReviseCode
+              agent: Developer
+              input: review_feedback
+              output: revised_implementation
+      
+      - name: TestingPhase
+        agent: Tester
+        # This phase recursively handles testing and bug fixing
+        description: >
+          Test the implementation thoroughly to verify it meets requirements, 
+          with recursive calls when issues are found.
+        input: implementation
+        output: test_results
+        recursion:
+          condition: all_tests_passing
+          max_depth: 3
+          sub_phases:
+            - name: ExecuteTests 
+              agent: Tester
+              input: implementation
+              output: test_findings
+            
+            - name: FixIssues
+              agent: Developer
+              input: test_findings
+              output: fixed_implementation
+      
+      - name: DocumentationPhase
+        agent: Developer
+        # Final phase for documentation
+        description: >
+          Create comprehensive documentation including installation instructions,
+          usage guide, and API references if applicable.
+        input: implementation
+        output: documentation
+
+# Configuration for how to store and manage the project
+project_structure:
+  # Generate code with a clean, modular structure
+  directory_layout:
+    - src/            # Source code
+    - tests/          # Test files
+    - docs/           # Documentation
+    - requirements.txt # Dependencies
+
+  # Use version control effectively
+  version_control:
+    enabled: true
+    commit_strategy: feature_based  # Commit after completing each feature
+
+  # Configuration settings with proper types
+  settings:
+    clear_structure: true
+    gui_design: true
+    incremental_develop: false
+    self_improve: true
+    with_memory: false

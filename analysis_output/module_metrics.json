@@ -1,0 +1,691 @@
+{
+  "strteam.chatdev.phase": {
+    "path": "strteam/chatdev/phase.py",
+    "line_counts": {
+      "code": 668,
+      "comment": 32,
+      "blank": 106,
+      "total": 806
+    },
+    "imports": 12,
+    "classes": 14,
+    "functions": 47,
+    "complexity_score": 423.5
+  },
+  "utils.code_analyzer": {
+    "path": "utils/code_analyzer.py",
+    "line_counts": {
+      "code": 439,
+      "comment": 63,
+      "blank": 125,
+      "total": 627
+    },
+    "imports": 16,
+    "classes": 0,
+    "functions": 12,
+    "complexity_score": 257.5
+  },
+  "strteam.camel.agents.role_playing": {
+    "path": "strteam/camel/agents/role_playing.py",
+    "line_counts": {
+      "code": 303,
+      "comment": 32,
+      "blank": 36,
+      "total": 371
+    },
+    "imports": 19,
+    "classes": 1,
+    "functions": 5,
+    "complexity_score": 195.0
+  },
+  "strteam.camel.agents.chat_agent": {
+    "path": "strteam/camel/agents/chat_agent.py",
+    "line_counts": {
+      "code": 255,
+      "comment": 25,
+      "blank": 42,
+      "total": 322
+    },
+    "imports": 22,
+    "classes": 2,
+    "functions": 9,
+    "complexity_score": 182.0
+  },
+  "strteam.chatdev.chat_env": {
+    "path": "strteam/chatdev/chat_env.py",
+    "line_counts": {
+      "code": 269,
+      "comment": 7,
+      "blank": 43,
+      "total": 319
+    },
+    "imports": 14,
+    "classes": 2,
+    "functions": 24,
+    "complexity_score": 180.5
+  },
+  "utils.config_cleanup": {
+    "path": "utils/config_cleanup.py",
+    "line_counts": {
+      "code": 293,
+      "comment": 47,
+      "blank": 82,
+      "total": 422
+    },
+    "imports": 12,
+    "classes": 0,
+    "functions": 12,
+    "complexity_score": 176.5
+  },
+  "strteam.ecl.graph": {
+    "path": "strteam/ecl/graph.py",
+    "line_counts": {
+      "code": 278,
+      "comment": 12,
+      "blank": 37,
+      "total": 327
+    },
+    "imports": 7,
+    "classes": 3,
+    "functions": 19,
+    "complexity_score": 171.5
+  },
+  "strteam.camel.generators": {
+    "path": "strteam/camel/generators.py",
+    "line_counts": {
+      "code": 236,
+      "comment": 16,
+      "blank": 47,
+      "total": 299
+    },
+    "imports": 14,
+    "classes": 5,
+    "functions": 14,
+    "complexity_score": 168.0
+  },
+  "strteam.ecl.experience": {
+    "path": "strteam/ecl/experience.py",
+    "line_counts": {
+      "code": 226,
+      "comment": 28,
+      "blank": 57,
+      "total": 311
+    },
+    "imports": 13,
+    "classes": 2,
+    "functions": 11,
+    "complexity_score": 150.5
+  },
+  "strteam.chatdev.composed_phase": {
+    "path": "strteam/chatdev/composed_phase.py",
+    "line_counts": {
+      "code": 205,
+      "comment": 3,
+      "blank": 60,
+      "total": 268
+    },
+    "imports": 8,
+    "classes": 6,
+    "functions": 26,
+    "complexity_score": 149.5
+  },
+  "strteam.ecl.memory": {
+    "path": "strteam/ecl/memory.py",
+    "line_counts": {
+      "code": 169,
+      "comment": 228,
+      "blank": 32,
+      "total": 429
+    },
+    "imports": 19,
+    "classes": 3,
+    "functions": 21,
+    "complexity_score": 142.0
+  },
+  "strteam.chatdev.model_utils": {
+    "path": "strteam/chatdev/model_utils.py",
+    "line_counts": {
+      "code": 221,
+      "comment": 17,
+      "blank": 68,
+      "total": 306
+    },
+    "imports": 13,
+    "classes": 0,
+    "functions": 6,
+    "complexity_score": 139.5
+  },
+  "strteam.chatdev.debug_utils": {
+    "path": "strteam/chatdev/debug_utils.py",
+    "line_counts": {
+      "code": 187,
+      "comment": 25,
+      "blank": 45,
+      "total": 257
+    },
+    "imports": 15,
+    "classes": 0,
+    "functions": 12,
+    "complexity_score": 129.5
+  },
+  "strteam.debug_run": {
+    "path": "strteam/debug_run.py",
+    "line_counts": {
+      "code": 158,
+      "comment": 24,
+      "blank": 43,
+      "total": 225
+    },
+    "imports": 24,
+    "classes": 0,
+    "functions": 3,
+    "complexity_score": 128.5
+  },
+  "strteam.chatdev.chat_chain": {
+    "path": "strteam/chatdev/chat_chain.py",
+    "line_counts": {
+      "code": 155,
+      "comment": 210,
+      "blank": 58,
+      "total": 423
+    },
+    "imports": 18,
+    "classes": 1,
+    "functions": 24,
+    "complexity_score": 128.5
+  },
+  "strteam.chatdev.eval_quality": {
+    "path": "strteam/chatdev/eval_quality.py",
+    "line_counts": {
+      "code": 185,
+      "comment": 0,
+      "blank": 39,
+      "total": 224
+    },
+    "imports": 7,
+    "classes": 0,
+    "functions": 15,
+    "complexity_score": 114.0
+  },
+  "strteam.camel.agents.critic_agent": {
+    "path": "strteam/camel/agents/critic_agent.py",
+    "line_counts": {
+      "code": 139,
+      "comment": 17,
+      "blank": 29,
+      "total": 185
+    },
+    "imports": 18,
+    "classes": 1,
+    "functions": 5,
+    "complexity_score": 111.0
+  },
+  "strteam.chatdev.localai": {
+    "path": "strteam/chatdev/localai.py",
+    "line_counts": {
+      "code": 125,
+      "comment": 8,
+      "blank": 39,
+      "total": 172
+    },
+    "imports": 7,
+    "classes": 9,
+    "functions": 7,
+    "complexity_score": 107.0
+  },
+  "strteam.ecl.utils": {
+    "path": "strteam/ecl/utils.py",
+    "line_counts": {
+      "code": 103,
+      "comment": 25,
+      "blank": 19,
+      "total": 147
+    },
+    "imports": 21,
+    "classes": 2,
+    "functions": 9,
+    "complexity_score": 104.0
+  },
+  "strteam.camel.agents.task_agent": {
+    "path": "strteam/camel/agents/task_agent.py",
+    "line_counts": {
+      "code": 133,
+      "comment": 17,
+      "blank": 37,
+      "total": 187
+    },
+    "imports": 14,
+    "classes": 2,
+    "functions": 5,
+    "complexity_score": 103.0
+  },
+  "strteam.chatdev.codes": {
+    "path": "strteam/chatdev/codes.py",
+    "line_counts": {
+      "code": 162,
+      "comment": 2,
+      "blank": 20,
+      "total": 184
+    },
+    "imports": 5,
+    "classes": 1,
+    "functions": 8,
+    "complexity_score": 98.0
+  },
+  "strteam.chatdev.statistics": {
+    "path": "strteam/chatdev/statistics.py",
+    "line_counts": {
+      "code": 178,
+      "comment": 18,
+      "blank": 29,
+      "total": 225
+    },
+    "imports": 2,
+    "classes": 0,
+    "functions": 2,
+    "complexity_score": 94.0
+  },
+  "strteam.camel.model_backend": {
+    "path": "strteam/camel/model_backend.py",
+    "line_counts": {
+      "code": 99,
+      "comment": 44,
+      "blank": 33,
+      "total": 176
+    },
+    "imports": 13,
+    "classes": 4,
+    "functions": 6,
+    "complexity_score": 90.5
+  },
+  "strteam.camel.human": {
+    "path": "strteam/camel/human.py",
+    "line_counts": {
+      "code": 99,
+      "comment": 15,
+      "blank": 23,
+      "total": 137
+    },
+    "imports": 8,
+    "classes": 1,
+    "functions": 5,
+    "complexity_score": 71.0
+  },
+  "config.CompanyConfig.flexible_ai_json_handler": {
+    "path": "config/CompanyConfig/flexible_ai_json_handler.py",
+    "line_counts": {
+      "code": 100,
+      "comment": 2,
+      "blank": 33,
+      "total": 135
+    },
+    "imports": 9,
+    "classes": 0,
+    "functions": 5,
+    "complexity_score": 70.5
+  },
+  "strteam.ecl.ece": {
+    "path": "strteam/ecl/ece.py",
+    "line_counts": {
+      "code": 117,
+      "comment": 5,
+      "blank": 24,
+      "total": 146
+    },
+    "imports": 5,
+    "classes": 0,
+    "functions": 4,
+    "complexity_score": 70.5
+  },
+  "strteam.chatdev.utils": {
+    "path": "strteam/chatdev/utils.py",
+    "line_counts": {
+      "code": 99,
+      "comment": 23,
+      "blank": 35,
+      "total": 157
+    },
+    "imports": 8,
+    "classes": 0,
+    "functions": 8,
+    "complexity_score": 69.5
+  },
+  "strteam.camel.messages.chat_messages": {
+    "path": "strteam/camel/messages/chat_messages.py",
+    "line_counts": {
+      "code": 79,
+      "comment": 17,
+      "blank": 21,
+      "total": 117
+    },
+    "imports": 7,
+    "classes": 3,
+    "functions": 1,
+    "complexity_score": 63.0
+  },
+  "strteam.ecl.embedding": {
+    "path": "strteam/ecl/embedding.py",
+    "line_counts": {
+      "code": 74,
+      "comment": 0,
+      "blank": 10,
+      "total": 84
+    },
+    "imports": 10,
+    "classes": 1,
+    "functions": 3,
+    "complexity_score": 61.5
+  },
+  "utils.breeder": {
+    "path": "utils/breeder.py",
+    "line_counts": {
+      "code": 99,
+      "comment": 19,
+      "blank": 36,
+      "total": 154
+    },
+    "imports": 4,
+    "classes": 0,
+    "functions": 4,
+    "complexity_score": 59.5
+  },
+  "strteam.camel.prompts.prompt_templates": {
+    "path": "strteam/camel/prompts/prompt_templates.py",
+    "line_counts": {
+      "code": 80,
+      "comment": 15,
+      "blank": 28,
+      "total": 123
+    },
+    "imports": 7,
+    "classes": 1,
+    "functions": 5,
+    "complexity_score": 59.5
+  },
+  "strteam.camel.messages.base": {
+    "path": "strteam/camel/messages/base.py",
+    "line_counts": {
+      "code": 15,
+      "comment": 186,
+      "blank": 8,
+      "total": 209
+    },
+    "imports": 20,
+    "classes": 1,
+    "functions": 16,
+    "complexity_score": 58.5
+  },
+  "strteam.camel.utils": {
+    "path": "strteam/camel/utils.py",
+    "line_counts": {
+      "code": 32,
+      "comment": 144,
+      "blank": 9,
+      "total": 185
+    },
+    "imports": 18,
+    "classes": 0,
+    "functions": 12,
+    "complexity_score": 58.0
+  },
+  "strteam.camel.agents.tool_agents.hugging_face_tool_agent": {
+    "path": "strteam/camel/agents/tool_agents/hugging_face_tool_agent.py",
+    "line_counts": {
+      "code": 88,
+      "comment": 75,
+      "blank": 27,
+      "total": 190
+    },
+    "imports": 4,
+    "classes": 1,
+    "functions": 4,
+    "complexity_score": 57.0
+  },
+  "strteam.camel.prompts.base": {
+    "path": "strteam/camel/prompts/base.py",
+    "line_counts": {
+      "code": 53,
+      "comment": 33,
+      "blank": 24,
+      "total": 110
+    },
+    "imports": 9,
+    "classes": 3,
+    "functions": 5,
+    "complexity_score": 56.0
+  },
+  "strteam.visualizer.app": {
+    "path": "strteam/visualizer/app.py",
+    "line_counts": {
+      "code": 66,
+      "comment": 26,
+      "blank": 22,
+      "total": 114
+    },
+    "imports": 9,
+    "classes": 0,
+    "functions": 9,
+    "complexity_score": 55.5
+  },
+  "strteam.ecl.codes": {
+    "path": "strteam/ecl/codes.py",
+    "line_counts": {
+      "code": 62,
+      "comment": 90,
+      "blank": 11,
+      "total": 163
+    },
+    "imports": 8,
+    "classes": 1,
+    "functions": 9,
+    "complexity_score": 54.5
+  },
+  "strteam.camel.web_spider": {
+    "path": "strteam/camel/web_spider.py",
+    "line_counts": {
+      "code": 76,
+      "comment": 12,
+      "blank": 9,
+      "total": 97
+    },
+    "imports": 7,
+    "classes": 0,
+    "functions": 3,
+    "complexity_score": 53.5
+  },
+  "strteam.ecl.ecl": {
+    "path": "strteam/ecl/ecl.py",
+    "line_counts": {
+      "code": 57,
+      "comment": 1,
+      "blank": 11,
+      "total": 69
+    },
+    "imports": 10,
+    "classes": 0,
+    "functions": 3,
+    "complexity_score": 50.0
+  },
+  "strteam.camel.messages.system_messages": {
+    "path": "strteam/camel/messages/system_messages.py",
+    "line_counts": {
+      "code": 55,
+      "comment": 15,
+      "blank": 13,
+      "total": 83
+    },
+    "imports": 6,
+    "classes": 3,
+    "functions": 0,
+    "complexity_score": 48.5
+  },
+  "strteam.camel.typing": {
+    "path": "strteam/camel/typing.py",
+    "line_counts": {
+      "code": 59,
+      "comment": 4,
+      "blank": 21,
+      "total": 84
+    },
+    "imports": 3,
+    "classes": 3,
+    "functions": 0,
+    "complexity_score": 44.5
+  },
+  "strteam.chatdev.documents": {
+    "path": "strteam/chatdev/documents.py",
+    "line_counts": {
+      "code": 50,
+      "comment": 0,
+      "blank": 6,
+      "total": 56
+    },
+    "imports": 3,
+    "classes": 1,
+    "functions": 4,
+    "complexity_score": 36.0
+  },
+  "strteam.camel.configs": {
+    "path": "strteam/camel/configs.py",
+    "line_counts": {
+      "code": 36,
+      "comment": 0,
+      "blank": 6,
+      "total": 42
+    },
+    "imports": 6,
+    "classes": 1,
+    "functions": 0,
+    "complexity_score": 33.0
+  },
+  "strteam.camel.config_loader": {
+    "path": "strteam/camel/config_loader.py",
+    "line_counts": {
+      "code": 35,
+      "comment": 2,
+      "blank": 10,
+      "total": 47
+    },
+    "imports": 3,
+    "classes": 1,
+    "functions": 6,
+    "complexity_score": 29.5
+  },
+  "strteam.camel.prompts.task_prompt_template": {
+    "path": "strteam/camel/prompts/task_prompt_template.py",
+    "line_counts": {
+      "code": 26,
+      "comment": 15,
+      "blank": 6,
+      "total": 47
+    },
+    "imports": 6,
+    "classes": 1,
+    "functions": 1,
+    "complexity_score": 28.5
+  },
+  "utils.convert_json_to_yaml": {
+    "path": "utils/convert_json_to_yaml.py",
+    "line_counts": {
+      "code": 37,
+      "comment": 9,
+      "blank": 16,
+      "total": 62
+    },
+    "imports": 4,
+    "classes": 0,
+    "functions": 3,
+    "complexity_score": 28.0
+  },
+  "test_groq": {
+    "path": "test_groq.py",
+    "line_counts": {
+      "code": 33,
+      "comment": 7,
+      "blank": 7,
+      "total": 47
+    },
+    "imports": 4,
+    "classes": 0,
+    "functions": 0,
+    "complexity_score": 24.5
+  },
+  "setup": {
+    "path": "setup.py",
+    "line_counts": {
+      "code": 19,
+      "comment": 0,
+      "blank": 1,
+      "total": 20
+    },
+    "imports": 2,
+    "classes": 0,
+    "functions": 0,
+    "complexity_score": 13.5
+  },
+  "strteam.chatdev.roster": {
+    "path": "strteam/chatdev/roster.py",
+    "line_counts": {
+      "code": 17,
+      "comment": 0,
+      "blank": 3,
+      "total": 20
+    },
+    "imports": 0,
+    "classes": 1,
+    "functions": 4,
+    "complexity_score": 13.5
+  },
+  "strteam.camel.agents.tool_agents.base": {
+    "path": "strteam/camel/agents/tool_agents/base.py",
+    "line_counts": {
+      "code": 12,
+      "comment": 15,
+      "blank": 7,
+      "total": 34
+    },
+    "imports": 1,
+    "classes": 1,
+    "functions": 2,
+    "complexity_score": 12.0
+  },
+  "strteam.camel.agents.base": {
+    "path": "strteam/camel/agents/base.py",
+    "line_counts": {
+      "code": 5,
+      "comment": 22,
+      "blank": 3,
+      "total": 30
+    },
+    "imports": 2,
+    "classes": 1,
+    "functions": 2,
+    "complexity_score": 10.5
+  },
+  "run": {
+    "path": "run.py",
+    "line_counts": {
+      "code": 8,
+      "comment": 3,
+      "blank": 5,
+      "total": 16
+    },
+    "imports": 3,
+    "classes": 0,
+    "functions": 0,
+    "complexity_score": 10.0
+  },
+  "strteam.ecl.post_process.memory_filter": {
+    "path": "strteam/ecl/post_process/memory_filter.py",
+    "line_counts": {
+      "code": 5,
+      "comment": 43,
+      "blank": 2,
+      "total": 50
+    },
+    "imports": 3,
+    "classes": 0,
+    "functions": 2,
+    "complexity_score": 9.5
+  }
+}

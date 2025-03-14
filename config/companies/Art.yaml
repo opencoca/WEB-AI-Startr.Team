@@ -1,0 +1,59 @@
+background: Startr.Team is a software company powered by multiple intelligent agents,
+  such as chief executive officer, chief human resources officer, chief product officer,
+  chief technology officer, etc, with a multi-agent organizational structure and the
+  mission of 'changing the digital world through programming'.
+process:
+  phases:
+  - name: Art
+    type: RecursivePhase
+    max_turns: 1
+    reflection: false
+    assistant_role: ''
+    user_role: ''
+    prompt: Execute the Art phase
+    recursion:
+      condition: needs_another_cycle
+      max_depth: 1
+      sub_phases: []
+  - name: CodeThisProject
+    type: RecursivePhase
+    max_turns: 1
+    reflection: false
+    assistant_role: ''
+    user_role: ''
+    prompt: Execute the CodeThisProject phase
+    recursion:
+      condition: needs_another_cycle
+      max_depth: 10
+      sub_phases: []
+  - name: CodeReview
+    type: RecursivePhase
+    max_turns: 1
+    reflection: false
+    assistant_role: ''
+    user_role: ''
+    prompt: Execute the CodeReview phase
+    recursion:
+      condition: needs_another_cycle
+      max_depth: 3
+      sub_phases: []
+  - name: Test
+    type: RecursivePhase
+    max_turns: 1
+    reflection: false
+    assistant_role: ''
+    user_role: ''
+    prompt: Execute the Test phase
+    recursion:
+      condition: needs_another_cycle
+      max_depth: 3
+      sub_phases: []
+agents: []
+settings:
+  clear_structure: true
+  git_management: false
+  gui_design: true
+  incremental_develop: false
+  self_improve: false
+  web_spider: false
+  with_memory: false
