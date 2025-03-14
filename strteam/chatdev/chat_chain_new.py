@@ -1,32 +1,37 @@
-import importlib
-import logging
+"""
+New Chat Chain for WEB-AI-Startr.Team
+
+This module replaces the old ChatChain with a version that uses the new Phase system
+with unified base classes and support for recursion.
+"""
+
 import os
 import sys
-import shutil
+import yaml
+import logging
 import time
+import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 from ..camel.agents import RolePlaying
 from ..camel.configs import ChatGPTConfig
-from ..camel.typing import TaskType
+from ..camel.typing import ModelType, TaskType
 from ..camel.web_spider import modal_trans
 from .chat_env import ChatEnv, ChatEnvConfig
 from .statistics import get_info
 from .utils import log_visualize, now
+from .phase_new import Phase, RecursivePhase
+from .phase_factory import PhaseFactory
 
-# Import our new config reader
+# Import our config reader
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from utils.config_reader import (
-    load_company_config, 
-    get_phase_config, 
-    get_recursive_flow_config,
-    normalize_boolean
-)
+from utils.config_reader import load_company_config, normalize_boolean
 
-class ChatChain:
-    """Manages the execution flow of a chat-based software development process."""
+
+class NewChatChain:
+    """Manages the execution flow of a chat-based software development process using the new phase system."""
     
     def __init__(self, **kwargs):
         """Initialize ChatChain with configuration settings."""
@@ -70,10 +75,7 @@ class ChatChain:
         # Set up logging
         self.start_time, self.log_filepath = self._setup_logging()
         
-        # Import phase modules
-        self._import_phase_modules()
-        
-        # Initialize phases
+        # Initialize phases using the new factory
         self._init_phases()
         
     def _load_configs(self):
@@ -84,79 +86,28 @@ class ChatChain:
         # For backward compatibility, add web_spider and other settings
         if "settings" not in self.config:
             self.config["settings"] = {}
-        
-        # For backward compatibility, map chain structure
-        if "chain" not in self.config and "process" in self.config:
-            self._map_process_to_chain()
-        
-        # For legacy code that expects these attributes
-        self.config_phase = {}
-        self.config_role = {}
-        
-        # Extract phase and role configs for backward compatibility
-        self._extract_phase_configs()
-        self._extract_role_configs()
-    
-    def _map_process_to_chain(self):
-        """Map the new process format to the legacy chain format for compatibility."""
-        self.chain = []
-        phases = self.config.get("process", {}).get("phases", [])
-        
-        for phase in phases:
-            if phase.get("type") == "SimplePhase":
-                # Simple phase mapping
-                self.chain.append({
-                    "phase": phase["name"],
-                    "phaseType": "SimplePhase",
-                    "max_turn_step": phase.get("max_turns", -1),
-                    "need_reflect": phase.get("reflection", False)
-                })
-            elif phase.get("type") == "RecursivePhase":
-                # Map recursive phase to composed phase
-                composition = []
-                for sub_phase in phase.get("recursion", {}).get("sub_phases", []):
-                    composition.append({
-                        "phase": sub_phase["name"],
-                        "phaseType": "SimplePhase",
-                        "max_turn_step": sub_phase.get("max_turns", 1),
-                        "need_reflect": sub_phase.get("reflection", False)
-                    })
-                
-                self.chain.append({
-                    "phase": phase["name"],
-                    "phaseType": "ComposedPhase",
-                    "cycleNum": phase.get("recursion", {}).get("max_depth", 3),
-                    "Composition": composition
-                })
-        
-        # Store the chain in config for backward compatibility
-        self.config["chain"] = self.chain
-    
-    def _extract_phase_configs(self):
-        """Extract phase configs from the new format for backward compatibility."""
-        phases = self.config.get("process", {}).get("phases", [])
-        
-        for phase in phases:
-            # Add the simple phase
-            self.config_phase[phase["name"]] = {
-                "assistant_role_name": phase.get("assistant_role", ""),
-                "user_role_name": phase.get("user_role", ""),
-                "phase_prompt": phase.get("prompt", "").split("\n")
-            }
             
-            # Add sub-phases from recursive phases
-            if phase.get("type") == "RecursivePhase":
-                for sub_phase in phase.get("recursion", {}).get("sub_phases", []):
-                    self.config_phase[sub_phase["name"]] = {
-                        "assistant_role_name": sub_phase.get("assistant_role", ""),
-                        "user_role_name": sub_phase.get("user_role", ""),
-                        "phase_prompt": sub_phase.get("prompt", "").split("\n")
+        # Use recursive flow if available and no process defined
+        if "process" not in self.config:
+            try:
+                from utils.config_reader import get_recursive_flow_config
+                recursive_flow = get_recursive_flow_config()
+                
+                if "workflow" in recursive_flow and "main_process" in recursive_flow["workflow"]:
+                    # Use recursive flow as the configuration
+                    self.config["process"] = {
+                        "phases": recursive_flow["workflow"]["main_process"].get("phases", [])
                     }
-    
-    def _extract_role_configs(self):
-        """Extract role configs from the new format for backward compatibility."""
-        for agent in self.config.get("agents", []):
-            self.config_role[agent["name"]] = agent["prompt"].split("\n")
+                    
+                    # Copy agents from recursive flow
+                    if "agents" in recursive_flow and "agents" not in self.config:
+                        self.config["agents"] = recursive_flow["agents"]
+                        
+                    # Copy settings from recursive flow
+                    if "settings" in recursive_flow:
+                        self.config["settings"].update(recursive_flow.get("settings", {}))
+            except Exception as e:
+                logging.warning(f"Failed to load recursive flow: {e}")
     
     def _setup_logging(self):
         """Set up logging and return start time and log filepath."""
@@ -173,31 +124,14 @@ class ChatChain:
         # Use a simpler filename: "chat_log.log" inside the project directory
         return str(log_dir / "chat_log.log")
     
-    def _import_phase_modules(self):
-        """Import required phase modules."""
-        self.phase_module = importlib.import_module("strteam.chatdev.phase")
-        self.compose_phase_module = importlib.import_module("strteam.chatdev.composed_phase")
-    
     def _init_phases(self):
-        """Initialize all phases from configuration."""
-        self.phases = {}
-        for phase_name, phase_config in self.config_phase.items():
-            # Get phase parameters
-            assistant_role = phase_config["assistant_role_name"]
-            user_role = phase_config["user_role_name"]
-            phase_prompt = "\n\n".join(phase_config["phase_prompt"])
-            
-            # Create phase instance
-            phase_class = getattr(self.phase_module, phase_name)
-            self.phases[phase_name] = phase_class(
-                assistant_role_name=assistant_role,
-                user_role_name=user_role,
-                phase_prompt=phase_prompt,
-                role_prompts=self.role_prompts,
-                phase_name=phase_name,
-                model_type=self.model_type,
-                log_filepath=self.log_filepath,
-            )
+        """Initialize all phases using the PhaseFactory."""
+        self.phases = PhaseFactory.create_phases_from_company_config(
+            company_name=self.company_name,
+            role_prompts=self.role_prompts,
+            model_type=self.model_type,
+            log_filepath=self.log_filepath
+        )
     
     def recruit_team(self):
         """Recruit all team members specified in config."""
@@ -205,58 +139,29 @@ class ChatChain:
             self.chat_env.recruit(agent_name=employee)
     
     def execute_chain(self):
-        """Execute all phases in the chain sequence."""
-        for phase_item in self.chain:
-            self.execute_step(phase_item)
-    
-    def execute_step(self, phase_item):
-        """Execute a single phase in the chain."""
-        phase = phase_item["phase"]
-        phase_type = phase_item["phaseType"]
+        """Execute all phases in the process sequence."""
+        # Get the phases in the correct order
+        phase_sequence = []
         
-        if phase_type == "SimplePhase":
-            self._run_simple_phase(phase, phase_item)
-        elif phase_type == "ComposedPhase":
-            self._run_composed_phase(phase, phase_item)
-        else:
-            raise ValueError(f"Unknown phase type: {phase_type}")
-    
-    def _run_simple_phase(self, phase, config):
-        """Execute a simple phase."""
-        if phase not in self.phases:
-            raise ValueError(f"Phase '{phase}' not found")
+        if "process" in self.config and "phases" in self.config["process"]:
+            for phase_config in self.config["process"]["phases"]:
+                phase_name = phase_config["name"]
+                if phase_name in self.phases:
+                    phase_sequence.append((phase_name, phase_config))
+        
+        # Execute each phase
+        for phase_name, phase_config in phase_sequence:
+            max_turns = phase_config.get("max_turns", self.chat_turn_limit_default)
+            with_reflection = phase_config.get("reflection", False)
             
-        max_turns = config["max_turn_step"]
-        need_reflect = normalize_boolean(config["need_reflect"])
-        
-        # Use default turn limit if not specified
-        if max_turns <= 0:
-            max_turns = self.chat_turn_limit_default
-            
-        self.chat_env = self.phases[phase].execute(
-            self.chat_env,
-            max_turns,
-            need_reflect
-        )
-    
-    def _run_composed_phase(self, phase, config):
-        """Execute a composed phase."""
-        # Get the composed phase class
-        phase_class = getattr(self.compose_phase_module, phase, None)
-        if not phase_class:
-            raise ValueError(f"Composed phase '{phase}' not found")
-        
-        # Create and execute the composed phase
-        phase_instance = phase_class(
-            phase_name=phase,
-            cycle_num=config["cycleNum"],
-            composition=config["Composition"],
-            config_phase=self.config_phase,
-            config_role=self.config_role,
-            model_type=self.model_type,
-            log_filepath=self.log_filepath,
-        )
-        self.chat_env = phase_instance.execute(self.chat_env)
+            # Execute the phase
+            log_visualize(f"Executing phase: {phase_name}")
+            self.chat_env = self.phases[phase_name].execute(
+                self.chat_env,
+                max_turns,
+                with_reflection
+            )
+            log_visualize(f"Completed phase: {phase_name}")
     
     def pre_processing(self):
         """Prepare the environment before execution."""
@@ -307,19 +212,9 @@ class ChatChain:
     
     def _save_config_to_software_dir(self, software_dir):
         """Save configuration YAML to software directory."""
-        import yaml
-        
         # Save the full config
         with open(software_dir / "config.yaml", "w") as f:
             yaml.dump(self.config, f, default_flow_style=False)
-            
-        # For backward compatibility
-        if hasattr(self, 'config_path') and os.path.exists(self.config_path):
-            shutil.copy(self.config_path, software_dir)
-        if hasattr(self, 'config_phase_path') and os.path.exists(self.config_phase_path):
-            shutil.copy(self.config_phase_path, software_dir)
-        if hasattr(self, 'config_role_path') and os.path.exists(self.config_role_path):
-            shutil.copy(self.config_role_path, software_dir)
     
     def _setup_code_base(self, software_dir):
         """Copy existing code base for incremental development."""
