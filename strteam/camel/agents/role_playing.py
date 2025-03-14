@@ -47,7 +47,7 @@ class RolePlaying:
         with_critic_in_the_loop (bool, optional): Whether to include a critic
             in the loop. (default: :obj:`False`)
         model_type (ModelType, optional): The type of backend model to use.
-            (default: :obj:`ModelType.GPT_4O_MINI`)
+            (default: :obj:`ModelType.GPT_3_5_TURBO`)
         task_type (TaskType, optional): The type of task to perform.
             (default: :obj:`TaskType.AI_SOCIETY`)
         assistant_agent_kwargs (Dict, optional): Additional arguments to pass

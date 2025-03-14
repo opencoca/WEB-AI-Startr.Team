@@ -132,7 +132,7 @@ class ModelFactory:
     def create(model_type: ModelType, model_config_dict: Dict = None) -> ModelBackend:
         """Create and return a model backend instance of the specified type."""
         if model_type is None:
-            model_type = ModelType.GPT_4O_MINI
+            model_type = ModelType.GPT_3_5_TURBO
 
         if model_config_dict is None:
             model_config_dict = config_loader.get_model_config(model_type.name)

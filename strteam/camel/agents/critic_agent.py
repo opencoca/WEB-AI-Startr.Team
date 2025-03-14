@@ -36,7 +36,7 @@ class CriticAgent(ChatAgent):
         system_message (SystemMessage): The system message for the critic
             agent.
         model (ModelType, optional): The LLM model to use for generating
-            responses. (default :obj:`ModelType.GPT_4O_MINI`)
+            responses. (default :obj:`ModelType.GPT_3_5_TURBO`)
         model_config (Any, optional): Configuration options for the LLM model.
             (default: :obj:`None`)
         message_window_size (int, optional): The maximum number of previous
