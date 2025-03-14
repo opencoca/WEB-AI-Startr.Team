@@ -102,17 +102,25 @@ run-with-log:
 
 
 # Verify API keys inside Docker container
-#TODO Fix this
 verify-api-keys:
 	@echo "Verifying OpenAI API key in Docker container..."
-	@docker exec web-ai-startr.team-develop bash -c "cd /project && \
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
 		source .env && \
-		echo 'API KEY:' \$$OPENAI_API_KEY && \
-		echo \"Full curl command: curl -s 'https://api.openai.com/v1/chat/completions' -H 'Content-Type: application/json' -H 'Authorization: Bearer \$$OPENAI_API_KEY' -d '{\\\"model\\\": \\\"gpt-4o-mini\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello\\\"}]}' | head -20\" && \
+		echo 'OpenAI API KEY:' \$$OPENAI_API_KEY && \
+		echo \"Testing OpenAI API: curl -s 'https://api.openai.com/v1/chat/completions' -H 'Content-Type: application/json' -H 'Authorization: Bearer \$$OPENAI_API_KEY' -d '{\\\"model\\\": \\\"gpt-4o-mini\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello\\\"}]}' | head -20\" && \
 		curl -s 'https://api.openai.com/v1/chat/completions' \
 			-H 'Content-Type: application/json' \
 			-H 'Authorization: Bearer \$$OPENAI_API_KEY' \
 			-d '{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}]}' | head -20"
+	@echo "\nVerifying Groq API key in Docker container..."
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && \
+		source .env && \
+		echo 'Groq API KEY:' \$$GROQ_API_KEY && \
+		echo \"Testing Groq API: curl -s 'https://api.groq.com/openai/v1/chat/completions' -H 'Content-Type: application/json' -H 'Authorization: Bearer \$$GROQ_API_KEY' -d '{\\\"model\\\": \\\"llama-3.1-8b-instant\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello\\\"}]}' | head -20\" && \
+		curl -s 'https://api.groq.com/openai/v1/chat/completions' \
+			-H 'Content-Type: application/json' \
+			-H 'Authorization: Bearer \$$GROQ_API_KEY' \
+			-d '{\"model\": \"llama-3.1-8b-instant\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}]}' | head -20"
 	@echo "API key verification in Docker completed."
 
 
@@ -136,6 +144,10 @@ debug-api-test:
 	@echo "Testing API connectivity with minimal request"
 	@python -c "import os, openai; client = openai.OpenAI(api_key=os.environ['OPENAI_API_KEY']); print(client.chat.completions.create(model='gpt-3.5-turbo', messages=[{'role': 'user', 'content': 'Hello'}], max_tokens=5))"
 
+debug-groq-api:
+	@echo "Testing Groq API connectivity with direct container access"
+	@docker exec -it web-ai-startr.team-develop bash -c 'cd /project && source /project/.env && python -m strteam.test_groq'
+
 debug-help:
 	@echo "Debug targets:"
 	@echo "  debug-setup     - Set up debugging environment"
@@ -144,6 +156,7 @@ debug-help:
 	@echo "  debug-inspect   - Run with interactive debugging and breakpoints"
 	@echo "  debug-fallback  - Run with fallback model (GPT-4)"
 	@echo "  debug-api-test  - Test API connectivity with minimal request"
+	@echo "  debug-groq-api  - Test Groq API connectivity with direct container access"
 	@echo "  debug-help      - Show this help message"
 	@echo ""
 	@echo "Example usage:"
@@ -179,7 +192,11 @@ check-log-format:
 	@echo "\nLog type: Docker format"
 	@echo "Use the replay tool at http://localhost:8080/replay to visualize this log"
 
-docker-debug:
+docker-run:
 	@echo "Running debug commands in Docker container..."
-	@docker exec -it web-ai-startr.team-develop python -m strteam.debug_run 
+	@docker exec -it web-ai-startr.team-develop bash -c "cd /project && source /project/.env && python -m strteam"
+
+debug-llama3:
+	@echo "Testing LLAMA_3 model configuration and API connectivity"
+	@docker exec -it web-ai-startr.team-develop bash -c 'cd /project && source /project/.env && python -m strteam.test_groq llama3'
 
