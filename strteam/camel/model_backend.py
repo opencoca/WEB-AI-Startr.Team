@@ -1,7 +1,6 @@
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# you may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -35,8 +34,10 @@ class ModelBackend:
 
 
 class OpenAIModel(ModelBackend):
+    """Model backend that uses the OpenAI API format, supporting multiple providers including OpenAI and Groq."""
+    
     def __init__(self, model_type: ModelType, model_config_dict: Dict) -> None:
-        """Initialize OpenAI API model backend.
+        """Initialize API model backend.
         
         Args:
             model_type: The type of model to use
@@ -56,103 +57,81 @@ class OpenAIModel(ModelBackend):
             self.model_name = self.model_type.value if self.model_type else "gpt-3.5-turbo"
             logging.warning(f"Model name not found in config, using fallback: {self.model_name}")
         
-        # Initialize the client immediately with base_url from config
-        self.client = self._setup_client()
+        # Determine the API provider based on configuration
+        self.base_url = self.model_config.get("base_url", "https://api.openai.com/v1")
+        self.is_groq = "groq" in str(self.base_url).lower()
         
-    def _setup_client(self):
-        """Set up and return the OpenAI client with proper base URL."""
-        # Get base URL from config
+        # Validate the configuration
+        self._validate_config()
+        
+    def _validate_config(self):
+        """Validate and log the configuration to help with debugging."""
+        # Log the key configuration details
+        logging.info(f"Initialized model: {self.model_type.name}")
+        logging.info(f"  Model name: {self.model_name}")
+        logging.info(f"  Base URL: {self.base_url}")
+        logging.info(f"  Using {'Groq' if self.is_groq else 'OpenAI'} API")
+        
+        # Validate provider-specific configuration
+        if self.is_groq and "groq" in str(self.base_url).lower():
+            if not os.environ.get("GROQ_API_KEY"):
+                logging.warning("GROQ_API_KEY environment variable is not set, will use OPENAI_API_KEY as fallback")
+        
+    def _get_client_for_request(self):
+        """Create a fresh client for this request with the correct API configuration."""
+        # Get base URL from config - prefer model-specific config over default
         base_url = self.model_config.get("base_url")
         
-        # Default to OpenAI API key
-        api_key = os.environ.get("OPENAI_API_KEY", "")
-        
-        # Handle provider-specific API keys
-        if base_url:
-            # Case-insensitive check for known API providers
-            base_url_lower = str(base_url).lower()
+        # Handle special cases for Llama/Groq models
+        if self.is_groq or (self.model_type == ModelType.LLAMA_3) or ("llama" in str(self.model_name).lower()):
+            # Ensure we're using the Groq URL from config, with a fallback
+            if not base_url or "groq" not in str(base_url).lower():
+                base_url = self.model_config.get("base_url") or "https://api.groq.com/openai/v1"
+                logging.info(f"Using base_url from config: {base_url}")
             
-            # Handle Groq API
-            if "groq" in base_url_lower:
-                provider_api_key = os.environ.get("GROQ_API_KEY", "")
-                if provider_api_key:
-                    api_key = provider_api_key
-                    logging.info(f"Model {self.model_name}: Using GROQ_API_KEY")
-                else:
-                    logging.warning(f"Model {self.model_name}: GROQ_API_KEY not found, using OPENAI_API_KEY as fallback")
+            # Use Groq API key if available
+            api_key = os.environ.get("GROQ_API_KEY") or os.environ.get("OPENAI_API_KEY", "")
+            logging.info(f"Using {'GROQ_API_KEY' if os.environ.get('GROQ_API_KEY') else 'OPENAI_API_KEY as fallback'}")
+        else:
+            # Standard OpenAI handling
+            base_url = base_url or "https://api.openai.com/v1"
+            api_key = os.environ.get("OPENAI_API_KEY", "")
         
-        # Create client with base_url when provided
+        # Create client with explicit kwargs
         client_kwargs = {"api_key": api_key}
-        if base_url:
-            # Remove trailing slash if present to avoid URL normalization issues
-            if base_url.endswith("/"):
-                base_url = base_url[:-1]
-            client_kwargs["base_url"] = base_url
-            
-        # Log creation details without exposing API key
-        logging.info(f"Creating API client with base_url: {base_url}")
+        
+        # Always set the base_url explicitly
+        if isinstance(base_url, str) and base_url.endswith("/"):
+            base_url = base_url[:-1]  # Remove trailing slash
+        client_kwargs["base_url"] = base_url
+        
+        # Create a fresh client for this request
+        logging.info(f"Creating client with explicit base_url: {base_url}")
         client = openai.OpenAI(**client_kwargs)
         
-        # Log actual base_url to verify it was set correctly
-        logging.info(f"Client configured with base_url: {getattr(client, 'base_url', 'default')}")
+        # Force verification that base_url was correctly set
+        actual_base_url = str(getattr(client, "base_url", "unknown"))
+        logging.info(f"VERIFICATION - Client created with base_url: {actual_base_url}")
         
+        if base_url not in actual_base_url:
+            logging.error(f"BASE URL ERROR: Expected {base_url}, got {actual_base_url}")
+            
         return client
-        
-    def _validate_model(self):
-        """Validate that the configured model is available at the API endpoint."""
-        # Skip validation for stub or test models
-        if self.model_type == ModelType.STUB or not self.model_name:
-            return
-            
-        try:
-            # Make a minimal API call to test model availability
-            self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": "test"}],
-                max_tokens=1,
-                n=1
-            )
-            logging.info(f"Successfully validated model: {self.model_name}")
-        except Exception as e:
-            # Log the error but don't fail - we'll handle this during actual usage
-            logging.warning(f"Model validation failed for {self.model_name}: {str(e)}")
-            
-            # Provide helpful message for common error cases
-            if "not_found" in str(e).lower() or "model_not_found" in str(e).lower():
-                base_url = self.model_config.get("base_url", "default API")
-                logging.error(f"The model '{self.model_name}' was not found at {base_url}.")
-                
-                # Suggest checking provider documentation for valid model names
-                if "groq" in str(base_url).lower():
-                    logging.error("For Groq API, ensure you're using a valid model name like 'llama3-70b-8192'.")
-            
+    
     def run(self, *args, **kwargs):
-        """Run the model with the provided arguments."""
+        """Run the model with the provided arguments, creating a fresh client for each request."""
         messages = kwargs.get("messages", [])
         
-        # Ensure model_name is not None
-        if self.model_name is None:
-            self.model_name = "gpt-3.5-turbo"
-            logging.warning(f"Model name is None, using default model: {self.model_name}")
-            
-        # Verify base_url is being used
-        base_url = self.model_config.get("base_url")
-        client_base_url = getattr(self.client, "base_url", "default")
-        logging.info(f"Using client with base_url: {client_base_url}")
+        # Always create a fresh client for each request to ensure correct configuration
+        client = self._get_client_for_request()
         
-        # If there's a mismatch, recreate the client
-        if base_url and client_base_url != base_url and "default" not in client_base_url:
-            logging.warning(f"Base URL mismatch. Expected: {base_url}, Got: {client_base_url}. Recreating client...")
-            self.client = self._setup_client()
-        
-        # Calculate tokens for max_tokens limit
+        # Calculate tokens for max_tokens limit using appropriate encoding
         try:
             encoding = tiktoken.encoding_for_model(self.model_name)
         except KeyError:
             logging.warning(f"No tokenizer for {self.model_name}, using default")
             encoding = tiktoken.get_encoding("cl100k_base")
         except Exception as e:
-            # Handle any other exceptions with tiktoken
             logging.warning(f"Error getting tokenizer: {str(e)}, using default")
             encoding = tiktoken.get_encoding("cl100k_base")
         
@@ -164,50 +143,54 @@ class OpenAIModel(ModelBackend):
             logging.warning(f"Error calculating prompt tokens: {str(e)}")
             prompt_tokens = 0  # Safe fallback
         
-        # Set safe max_tokens value
-        if self.max_tokens is None:
-            self.max_tokens = 4096
-            logging.warning(f"max_tokens is None, setting to default {self.max_tokens}")
-        
+        # Calculate max_completion_tokens
         max_completion_tokens = max(0, self.max_tokens - prompt_tokens)
         
-        # Prepare parameters for the API call
+        # Prepare parameters for the API call - first from default config
         run_config = {}
-        
-        # Get default config but filter out non-API parameters
         default_config = config_loader.get_default_config()
         for key, value in default_config.items():
             if key not in ["base_url", "is_openai", "name"]:
                 run_config[key] = value
         
-        # Add config parameters, but skip non-API params
+        # Override with model-specific config
         for key, value in self.model_config.items():
             if key not in ["base_url", "is_openai", "name"]:
                 run_config[key] = value
                 
         run_config["max_tokens"] = max_completion_tokens
         
+        # Log the API call details
+        base_url = getattr(client, "base_url", self.base_url)
+        logging.info(f"Making API call to {base_url} for model: {self.model_name}")
+        
         try:
-            # Log request info for debugging
-            logging.info(f"Making API call to model: {self.model_name}")
-            logging.info(f"Using client base_url: {getattr(self.client, 'base_url', 'default')}")
-            
-            # Make the API call with explicit model name from config
-            response = self.client.chat.completions.create(
+            # Make the API call
+            response = client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 **run_config
             )
+            
+            # Log the response content for visibility
+            if hasattr(response, "choices") and response.choices:
+                first_choice = response.choices[0]
+                if hasattr(first_choice, "message") and hasattr(first_choice.message, "content"):
+                    content = first_choice.message.content
+                    # Log the first 100 chars of the response with ellipsis if longer
+                    preview = content[:100] + ("..." if len(content) > 100 else "")
+                    logging.info(f"Response received - preview: {preview}")
+                    
             return response
             
         except openai.NotFoundError as e:
             # Handle model not found errors with helpful message
-            base_url = self.model_config.get("base_url", "default API")
             logging.error(f"Model '{self.model_name}' not found at {base_url}")
             
             # Provide helpful guidance based on the API provider
-            if "groq" in str(base_url).lower():
+            if self.is_groq or "groq" in str(base_url).lower():
                 logging.error("For Groq API, check https://console.groq.com/docs/models for valid model names")
+                logging.error("Valid Groq models include: llama-3.3-70b-versatile, mixtral-8x7b-32768, etc.")
             raise
             
         except Exception as e:

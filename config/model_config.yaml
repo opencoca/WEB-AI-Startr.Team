@@ -1,3 +1,4 @@
+# Base configuration used by all models
 default_config: &default_config
   temperature: 0.7
   top_p: 1.0
@@ -8,38 +9,51 @@ default_config: &default_config
   frequency_penalty: 0.0
   is_openai: true
   max_tokens: 4096
-  base_url: https://api.openai.com/v1/ 
+
+# OpenAI specific configuration
+openai_config: &openai_config
+  <<: *default_config
+  base_url: https://api.openai.com/v1
+  is_openai: true
+
+# Groq specific configuration
+groq_config: &groq_config
+  <<: *default_config
+  base_url: https://api.groq.com/openai/v1
+  is_openai: false
+  
+# Model definitions
 models:
   GPT_3_5_TURBO:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-3.5-turbo-16k-0613"
     max_tokens: 16384
   GPT_3_5_TURBO_NEW:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-3.5-turbo-16k"
     max_tokens: 16384
   GPT_4:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-4"
     max_tokens: 8192
   GPT_4_32K:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-4-32k"
     max_tokens: 32768
   GPT_4_TURBO:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-4-turbo"
     max_tokens: 100000
   GPT_4_TURBO_V:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-4-turbo"
     max_tokens: 100000
   GPT_4O:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-4o"
     max_tokens: 100000
   GPT_4O_MINI:
-    <<: *default_config
+    <<: *openai_config
     name: "gpt-4o-mini"
     max_tokens: 100000
   STUB:
@@ -48,8 +62,6 @@ models:
     max_tokens: 4096
     is_openai: false
   LLAMA_3:
-    <<: *default_config
+    <<: *groq_config
     name: "llama-3.3-70b-versatile"
     max_tokens: 32000
-    is_openai: false
-    base_url: https://api.groq.com/openai/v1
