@@ -49,7 +49,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Update
 CONFIG_DIR = os.path.join(ROOT_DIR, "config/CompanyConfig")
 DEFAULT_CONFIG_DIR = os.path.join(CONFIG_DIR, "Default")
 
-CONFIG_FILES = ["ChatChainConfig.json", "PhaseConfig.json", "RoleConfig.json"]
+CONFIG_FILES = ["ChatChainConfig.yaml", "PhaseConfig.yaml", "RoleConfig.yaml"]
 
 sys.path.append(ROOT_DIR)
 

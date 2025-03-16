@@ -52,7 +52,7 @@ class CriticAgent(ChatAgent):
     def __init__(
         self,
         system_message: SystemMessage,
-        model: ModelType = ModelType.GPT_4O_MINI,
+        model: ModelType = ModelType.GPT_3_5_TURBO,
         model_config: Optional[Any] = None,
         message_window_size: int = 6,
         retry_attempts: int = 2,

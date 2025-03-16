@@ -20,6 +20,7 @@
 - These  agents form a multi-agent organizational structure and are united by a mission to "revolutionize the digital world
   through programming." The agents within Startr.Team **collaborate** by participating in specialized functional seminars,
   including tasks such as designing, coding, testing, and documenting.
+
 - The primary objective of Startr.Team is to offer an **easy-to-use**, **highly customizable** and **extendable** framework,
   which is based on large language models (LLMs) and serves as an ideal scenario for studying collective intelligence.
 
@@ -29,7 +30,7 @@
 
 ## 🎉 News
 
-* June 12, 2024: We introduce Multi-Agent Collaboration Networks (MacNet) 🎉, which utilize directed acyclic graphs 
+* June 12, 2024: We introduce Multi-Agent Collaboration Networks (MacNet) 🎉, which utilize directed directed graphs
 to facilitate effective task-oriented collaboration among agents through linguistic interactions 🤖🤖. MacNet supports 
 cooperation across various topologies and among more than a thousand agents without exceeding context limits. More 
 versatile and scalable, MacNet can be considered a more advanced version of WEB-AI-Startr.Team's chain-shaped topology. 
@@ -92,10 +93,10 @@ richer solutions beyond software development (e.g., logical reasoning, data anal
 
 The project now uses a clean module structure with:
 
-- Core functionality moved to the `startr.team` package
+- Core functionality moved to the `strteam` package
 - Main entry points:
-  - `python -m startr.team` - Run the main application
-  - `python -m startr.team.debug_run` - Run with debugging features
+  - `python -m strteam` - Run the main application
+  - `python -m strteam.debug_run` - Run with debugging features
 - Legacy compatibility scripts:
   - `./run.py` - Wrapper for backward compatibility
   - `./debug_run.py` - Debug wrapper for backward compatibility
@@ -154,7 +155,7 @@ These instructions are primarily for developers who need to modify the core code
 
 4. **Build Your Software:** 
    ```
-   pipenv run python -m startr.team --task "[description_of_your_idea]" --name "[project_name]"
+   pipenv run python -m strteam --task "[description_of_your_idea]" --name "[project_name]"
    ```
 
 5. **Run Your Software:** 
@@ -189,7 +190,7 @@ instructions on customization, refer to our [Wiki](wiki.md).
 
 **Software**: Whenever you develop software using WEB-AI-Startr.Team, a corresponding folder is generated containing all the
 essential information. Sharing your work with us is as simple as making a pull request. Here's an example: execute the
-command ``python3 run.py --task "design a 2048 game" --name "2048"  --org "THUNLP" --config "Default"``. This will
+command ``python3 -m strteam --task "design a 2048 game" --name "2048"  --org "THUNLP" --config "Default"``. This will
 create a software package and generate a folder named ``/WareHouse/2048_THUNLP_timestamp``. Inside, you'll find:
 
 - All the files and documents related to the 2048 game software
@@ -242,7 +243,7 @@ If you have any questions, feedback, or would like to get in touch, please feel 
 ```mermaid
 graph LR
     %% Main Application Flow
-    User[User Input] --> RunPy[run.py]
+    User[User Input] --> RunPy[strteam]
     RunPy --> ChatChain[ChatChain]
     ChatChain --> PreProcess[Pre-processing]
     PreProcess --> Recruitment[Recruit Team]
@@ -338,23 +339,6 @@ Based on the codebase analysis, several areas of code overlap have been identifi
 
 These overlaps represent opportunities for code cleanup and refactoring to improve maintainability and reduce technical debt.
 
-## 🐞 Debugging Tools
-
-The Docker environment includes comprehensive debugging tools to help diagnose and resolve issues:
-
-```bash
-# Check a specific model configuration
-docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --check-model MODEL_NAME
-
-# Run with debugging enabled
-docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --model-debug
-
-# Run with interactive debugging and breakpoints
-docker exec -it web-ai-startr.team-develop python -m startr.team.debug_run --interactive --breakpoints "OpenAIModel.run,ChatChain.execute_chain"
-```
-
-For detailed instructions, see the [DEBUG.md](DEBUG.md) file.
-
 ## 🔄 Project Structure
 
 The project now uses a clean module structure with:
@@ -365,4 +349,3 @@ The project now uses a clean module structure with:
   - `python -m startr.team.debug_run` - Run with debugging features
 - Legacy compatibility scripts:
   - `./run.py` - Wrapper for backward compatibility
-  - `./debug_run.py` - Debug wrapper for backward compatibility
