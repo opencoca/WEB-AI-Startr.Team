@@ -23,42 +23,52 @@ class OpenAIModel(ModelBackend):
         """Initialize model with configuration from model_config.yaml."""
         self.model_type = model_type
         self.config = config
-        self.model_name = config.get("name")
-        self.base_url = config.get("base_url").rstrip("/")
+        self.model_name = config["name"]
+        self.base_url = config["base_url"].rstrip("/")
         self.is_groq = "groq" in self.base_url.lower()
         logging.info(f"Model initialized: {self.model_name} @ {self.base_url}")
     
     def _get_api_key(self) -> str:
         """Get API key based on provider type."""
-        return (os.environ.get("GROQ_API_KEY") or os.environ.get("OPENAI_API_KEY", "")) if self.is_groq else os.environ.get("OPENAI_API_KEY", "")
+        return os.environ.get("GROQ_API_KEY", "") if self.is_groq else os.environ.get("OPENAI_API_KEY", "")
     
     def _calculate_tokens(self, messages: List[Dict]) -> int:
         """Estimate available completion tokens."""
         try:
-            # Use appropriate encoding with fallback
+            # Use appropriate encoding
             encoding = tiktoken.encoding_for_model(self.model_name) if hasattr(tiktoken, "encoding_for_model") else tiktoken.get_encoding("cl100k_base")
             
             # Calculate tokens from message content
             content = "\n".join(msg.get("content", "") for msg in messages if isinstance(msg, dict))
             prompt_tokens = len(encoding.encode(content)) + (15 * len(messages))
-        except Exception:
-            prompt_tokens = len(str(messages)) // 4
-            logging.info("Using fallback token estimation")
-        
-        # Use config's max_tokens
-        return max(100, self.config["max_tokens"] - prompt_tokens)
+            
+            # Use config's max_tokens
+            return self.config["max_tokens"] - prompt_tokens
+        except Exception as e:
+            logging.error(f"Token calculation error: {e}")
+            # Return a small safe number without fallbacks
+            return 100
     
     def run(self, *args, **kwargs) -> Dict[str, Any]:
         """Execute model query with error handling."""
         messages = kwargs.get("messages", [])
         
-        # Copy config params but exclude non-API parameters
+        # Copy config params excluding non-API parameters
         api_params = {k: v for k, v in self.config.items() if k not in ["base_url", "is_openai", "name"]}
         api_params["max_tokens"] = self._calculate_tokens(messages)
         
         try:
-            client = openai.OpenAI(api_key=self._get_api_key(), base_url=self.base_url)
-            return client.chat.completions.create(model=self.model_name, messages=messages, **api_params)
+            # Initialize the OpenAI client using the model's API key and base URL
+            client = openai.OpenAI(
+                api_key=self._get_api_key(),
+                base_url=self.base_url
+            )
+            # Create and return a chat completion using the provided messages and parameters
+            return client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                **api_params
+            )
         except Exception as e:
             logging.error(f"API error: {e}")
             return {
@@ -94,20 +104,26 @@ class ModelFactory:
         """Create model instance using configuration from model_config.yaml.
         
         Args:
-            model_type: Model type (defaults to first model in config if None)
+            model_type: Model type from config
             custom_config: Optional override configuration
         """
-        # If no model_type provided, get default from config
+        # If no model_type specified, use first model from config
         if model_type is None:
-            # Get first model from config as default
-            first_model_key = next(iter(config_loader.config.get("models", {})), "GPT_3_5_TURBO")
-            model_type = getattr(ModelType, first_model_key, ModelType.GPT_3_5_TURBO)
-            logging.info(f"No model type specified, using {model_type.name} from config")
+            # Get the first model from config file
+            models_config = config_loader.config["models"]
+            first_model_name = next(iter(models_config.keys()))
+            model_type = getattr(ModelType, first_model_name)
+            logging.info(f"Using first model from config: {model_type.name}")
         
-        # Get config based on priority: custom config > model-specific config > default config
-        config = custom_config
-        if not config:
-            config = config_loader.get_model_config(model_type.name) or config_loader.get_default_config()
+        # Get configuration directly from config sources
+        if custom_config:
+            config = custom_config
+        else:
+            config = config_loader.get_model_config(model_type.name)
+            if not config:
+                config = config_loader.get_default_config()
         
-        # Create appropriate model backend
-        return StubModel() if model_type == ModelType.STUB else OpenAIModel(model_type, config)
+        # Create the appropriate model backend
+        if model_type == ModelType.STUB:
+            return StubModel()
+        return OpenAIModel(model_type, config)
