@@ -116,12 +116,7 @@ class ModelFactory:
             logging.info(f"Using first model from config: {model_type.name}")
         
         # Get configuration directly from config sources
-        if custom_config:
-            config = custom_config
-        else:
-            config = config_loader.get_model_config(model_type.name)
-            if not config:
-                config = config_loader.get_default_config()
+        config = custom_config if custom_config else config_loader.get_model_config(model_type.name)
         
         # Create the appropriate model backend
         if model_type == ModelType.STUB:

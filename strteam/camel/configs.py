@@ -10,7 +10,7 @@ class ChatGPTConfig:
     Attributes:
         temperature (float): Controls response randomness. Range: 0 to 2.
             Higher values make responses more creative, lower values make them more focused.
-            Default is 0.2.
+            Default is 0.7.
         top_p (float): Controls diversity via nucleus sampling. Range: 0 to 1.
             Default is 1.0.
         n (int): Number of responses to generate per input. Default is 1.
@@ -19,7 +19,7 @@ class ChatGPTConfig:
         stop (Optional[Union[str, Sequence[str]]]): Phrases where the API will stop generating
             further text. Default is None.
         max_tokens (Optional[int]): Maximum length of the generated response in tokens.
-            Default is None.
+            Default is 4096.
         presence_penalty (float): Encourages discussion of new topics. Range: -2.0 to 2.0.
             Default is 0.0.
         frequency_penalty (float): Discourages repetition of the same words. Range: -2.0 to 2.0.
@@ -28,15 +28,22 @@ class ChatGPTConfig:
             Uses token IDs as keys and bias values from -100 to 100.
             Default is an empty dictionary.
         user (str): User ID to help OpenAI monitor and prevent misuse. Default is an empty string.
+        is_openai (bool): Flag indicating whether this is an OpenAI-compatible model.
+            Default is True.
+        base_url (str): Base URL for the API endpoint. Default is OpenAI's endpoint.
     """
 
-    temperature: float = 0.2
+    temperature: float = 0.7
     top_p: float = 1.0
     n: int = 1
     stream: bool = False
     stop: Optional[Union[str, Sequence[str]]] = None
-    max_tokens: Optional[int] = None
+    max_tokens: Optional[int] = 4096
     presence_penalty: float = 0.0
     frequency_penalty: float = 0.0
     logit_bias: Dict[int, float] = field(default_factory=dict)
     user: str = ""
+    # Added fields to match model_config.yaml
+    is_openai: bool = True
+    base_url: str = "https://api.openai.com/v1"
+    name: str = "gpt-3.5-turbo"  # Default model name from config

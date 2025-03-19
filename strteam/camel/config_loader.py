@@ -2,9 +2,15 @@ import yaml
 import os
 from enum import Enum
 import logging
+from pathlib import Path
 
 class ConfigLoader:
     def __init__(self, config_path="config/model_config.yaml"):
+        """Initialize the configuration loader.
+        
+        Args:
+            config_path: Path to the model configuration YAML file
+        """
         self.config_path = config_path
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
@@ -29,39 +35,20 @@ class ConfigLoader:
                 raise ValueError("Invalid config: missing 'models' section")
                 
             if "default_config" not in config:
-                self.logger.warning(f"Config missing 'default_config' section, using empty defaults")
-                config["default_config"] = {}
+                self.logger.error(f"Invalid config: {self.config_path} must contain a 'default_config' section")
+                raise ValueError("Invalid config: missing 'default_config' section")
                 
             self.logger.debug(f"Successfully loaded config with {len(config['models'])} models")
             
-            # Check for environment variable overrides
+            # Apply environment variable overrides
             self._apply_env_overrides(config)
                 
             return config
             
         except FileNotFoundError:
             self.logger.error(f"Config file not found: {self.config_path}")
-            # Provide fallback minimal configuration
-            self.logger.warning("Using fallback minimal configuration")
-            return {
-                "default_config": {
-                    "temperature": 0.7,
-                    "max_tokens": 4096,
-                    "is_openai": True
-                },
-                "models": {
-                    "GPT_3_5_TURBO": {
-                        "name": "gpt-3.5-turbo",
-                        "max_tokens": 4096,
-                        "is_openai": True
-                    },
-                    "STUB": {
-                        "name": "stub",
-                        "max_tokens": 1024,
-                        "is_openai": False
-                    }
-                }
-            }
+            # Instead of hardcoded fallbacks, exit with a clear error message
+            raise FileNotFoundError(f"Configuration file not found: {self.config_path}")
         except yaml.YAMLError as e:
             self.logger.error(f"Error parsing YAML config: {str(e)}")
             raise ValueError(f"Invalid YAML in config file: {str(e)}")
@@ -72,21 +59,30 @@ class ConfigLoader:
         groq_base_url = os.environ.get("GROQ_BASE_URL")
         if groq_base_url:
             self.logger.info(f"Using GROQ_BASE_URL from environment: {groq_base_url}")
-            # Apply to any Groq models
+            # Apply to any Groq models that use Llama
             for model_key, model_config in config["models"].items():
-                if model_config.get("name", "").startswith("llama3"):
+                model_name = model_config.get("name", "").lower()
+                if "llama" in model_name or model_config.get("base_url", "").lower().startswith("https://api.groq.com"):
                     model_config["base_url"] = groq_base_url
                     self.logger.info(f"Applied GROQ_BASE_URL to model {model_key}")
         
-        # Could add more provider-specific overrides here
+        # Add OpenAI base URL override if present
+        openai_base_url = os.environ.get("OPENAI_BASE_URL")
+        if openai_base_url:
+            self.logger.info(f"Using OPENAI_BASE_URL from environment: {openai_base_url}")
+            # Apply to OpenAI models
+            for model_key, model_config in config["models"].items():
+                if model_config.get("is_openai", False):
+                    model_config["base_url"] = openai_base_url
+                    self.logger.info(f"Applied OPENAI_BASE_URL to model {model_key}")
 
     def get_model_config(self, model_name):
         """Get configuration for a specific model with error handling."""
         self.logger.debug(f"Retrieving config for model: {model_name}")
         
-        # Handle case where model_name is None
+        # Handle case where model_name is None by delegating to default selection
         if model_name is None:
-            self.logger.warning("Model name is None, returning default model config")
+            self.logger.warning("Model name is None, using default model")
             return self.get_default_model_config()
         
         # Get model configuration
@@ -96,14 +92,14 @@ class ConfigLoader:
             self.logger.error(f"No configuration found for model: {model_name}")
             self.logger.debug(f"Available models: {list(self.config['models'].keys())}")
             
-            # Try case-insensitive match as fallback
+            # Try case-insensitive match
             for key in self.config["models"].keys():
                 if key.lower() == model_name.lower():
                     model_config = self.config["models"][key]
                     self.logger.warning(f"Found case-insensitive match for {model_name}: {key}")
                     break
                     
-            # If still not found
+            # If still not found, raise error instead of using hardcoded fallback
             if model_config is None:
                 raise ValueError(f"No configuration found for model: {model_name}")
         
@@ -111,15 +107,6 @@ class ConfigLoader:
         merged_config = self.get_default_config().copy()
         merged_config.update(model_config)
         
-        # Add detailed logging for debugging
-        self.logger.debug(f"Model config for {model_name}: {merged_config}")
-        if "base_url" in merged_config:
-            self.logger.debug(f"Model {model_name} has base_url: {merged_config['base_url']}")
-        if "is_openai" in merged_config:
-            self.logger.debug(f"Model {model_name} is_openai: {merged_config['is_openai']}")
-        if "name" in merged_config:
-            self.logger.debug(f"Model {model_name} API name: {merged_config['name']}")
-            
         return merged_config
         
     def get_default_model_config(self):
@@ -132,24 +119,14 @@ class ConfigLoader:
             except ValueError:
                 self.logger.warning(f"Default model {default_model_name} not found")
                 
-        # Fall back to GPT_3_5_TURBO if available
-        if "GPT_3_5_TURBO" in self.config["models"]:
-            return self.get_model_config("GPT_3_5_TURBO")
-            
-        # Otherwise return first available model
+        # Use first model in config instead of hardcoded GPT_3_5_TURBO
         model_keys = list(self.config["models"].keys())
-        if model_keys:
-            first_model = model_keys[0]
-            self.logger.warning(f"No default model specified, using first available: {first_model}")
-            return self.get_model_config(first_model)
+        if not model_keys:
+            raise ValueError("No models defined in configuration")
             
-        # If no models defined at all, return minimal defaults
-        self.logger.error("No models defined in config")
-        return {
-            "name": "gpt-3.5-turbo",
-            "max_tokens": 4096,
-            "is_openai": True
-        }
+        first_model = model_keys[0]
+        self.logger.warning(f"No default model specified, using first available: {first_model}")
+        return self.get_model_config(first_model)
 
     def get_all_model_configs(self):
         """Get all model configurations."""
@@ -164,20 +141,16 @@ class ConfigLoader:
         # Create a dictionary of enum values
         enum_dict = {}
         
-        # Handle case where models might be missing
+        # Get models from config
         models = self.config.get("models", {})
         if not models:
-            self.logger.warning("No models defined for ModelType enum")
-            # Add minimal defaults
-            enum_dict = {
-                "GPT_3_5_TURBO": "gpt-3.5-turbo",
-                "STUB": "stub"
-            }
-        else:
-            # Create enum entries from model configs
-            for key, value in models.items():
-                # Use 'name' field if available, otherwise use key
-                enum_dict[key] = value.get("name", key)
+            self.logger.error("No models defined for ModelType enum")
+            raise ValueError("Configuration must define at least one model")
+            
+        # Create enum entries from model configs
+        for key, value in models.items():
+            # Use 'name' field if available, otherwise use key
+            enum_dict[key] = value.get("name", key)
                 
         return Enum("ModelType", enum_dict)
 

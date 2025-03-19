@@ -29,6 +29,7 @@ from ..utils import (
     num_tokens_from_messages,
     openai_api_key_required,
 )
+from ..config_loader import config_loader
 from ...chatdev.utils import log_visualize
 
 try:
@@ -83,9 +84,9 @@ class ChatAgent(BaseAgent):
         system_message (SystemMessage): The system message for the chat agent.
         with_memory(bool): The memory setting of the chat agent.
         model (ModelType, optional): The LLM model to use for generating
-            responses. (default :obj:`ModelType.GPT_3_5_TURBO`)
+            responses. (default: first model from model_config.yaml)
         model_config (Any, optional): Configuration options for the LLM model.
-            (default: :obj:`None`)
+            (default: from model_config.yaml)
         message_window_size (int, optional): The maximum number of previous
             messages to include in the context window. If `None`, no windowing
             is performed. (default: :obj:`None`)
@@ -99,12 +100,23 @@ class ChatAgent(BaseAgent):
         model_config: Optional[Any] = None,
         message_window_size: Optional[int] = None,
     ) -> None:
-
         self.system_message: SystemMessage = system_message
         self.role_name: str = system_message.role_name
         self.role_type: RoleType = system_message.role_type
-        self.model: ModelType = model if model is not None else ModelType.GPT_3_5_TURBO
-        self.model_config: ChatGPTConfig = model_config or ChatGPTConfig()
+        
+        # Use first model from config instead of hardcoded default
+        if model is None:
+            model_keys = list(config_loader.config["models"].keys())
+            if model_keys:
+                model = getattr(ModelType, model_keys[0])
+        
+        self.model: ModelType = model
+        
+        # Use config from YAML if not explicitly provided
+        if model_config is None:
+            model_config = ChatGPTConfig(**config_loader.get_model_config(self.model.name))
+        self.model_config = model_config
+        
         self.model_token_limit: int = get_model_token_limit(self.model)
         self.message_window_size: Optional[int] = message_window_size
         self.model_backend: ModelBackend = ModelFactory.create(
@@ -113,11 +125,10 @@ class ChatAgent(BaseAgent):
         self.terminated: bool = False
         self.info: bool = False
         self.init_messages()
-        if memory != None and self.role_name in [
-            "Code Reviewer",
-            "Programmer",
-            "Software Test Engineer",
-        ]:
+        
+        # Initialize memory if provided and role is appropriate
+        memory_enabled_roles = ["Code Reviewer", "Programmer", "Software Test Engineer"]
+        if memory is not None and self.role_name in memory_enabled_roles:
             self.memory = memory.memory_data.get("All")
         else:
             self.memory = None
