@@ -11,7 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Note: Portions of this codebase originating from CAMEL-AI.org are published under the Apache License, Version 2.0.
+# Note: 
+# Archival of this codebase originating from CAMEL-AI.org are published under the Apache License, Version 2.0.
 # Please use version control blame to verify the license of specific code sections.
 # =========== Copyright 2025 @ Startr.LLC & CAMEL-AI.org. All Rights Reserved. ===========
 
