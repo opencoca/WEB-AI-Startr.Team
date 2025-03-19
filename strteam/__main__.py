@@ -1,7 +1,10 @@
-# =========== Copyright 2025 Startr.LLC & CAMEL-AI.org. All Rights Reserved. ===========
-# Licensed under the GNU Affero General Public License, Version 3.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# ===========   Copyright 2025 Startr.LLC   ===========
+# Licensed under the GNU Affero General Public License, 
+#             Version 3.0 (the "License")
+#
+#      This file is part of the strteam project;
+# you may not use this file except in compliance with 
+# the License. You may obtain a copy of the License at
 #
 #     https://www.gnu.org/licenses/agpl-3.0.en.html
 #
@@ -10,11 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# Note: 
-# Archival of this codebase originating from CAMEL-AI.org are published under the Apache License, Version 2.0.
-# Please use version control blame to verify the license of specific code sections.
-# =========== Copyright 2025 @ Startr.LLC & CAMEL-AI.org. All Rights Reserved. ===========
+# .
+# =========== Copyright 2025 @ Startr.LLC   ===========
 
 import argparse
 import logging
