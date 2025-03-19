@@ -59,7 +59,7 @@ class ComposedPhase(ABC):
             assistant_role_name = self.config_phase[phase]["assistant_role_name"]
             user_role_name = self.config_phase[phase]["user_role_name"]
             phase_prompt = "\n".join(self.config_phase[phase]["phase_prompt"])
-            phase_module = importlib.import_module("chatdev.phase")
+            phase_module = importlib.import_module("strteam.chatdev.phase")
             phase_class = getattr(phase_module, phase)
             phase_instance = phase_class(
                 assistant_role_name=assistant_role_name,
@@ -75,7 +75,9 @@ class ComposedPhase(ABC):
     @abstractmethod
     def update_phase_env(self, chat_env):
         """
-        update self.phase_env (if needed) using chat_env, then the chatting will use self.phase_env to follow the context and fill placeholders in phase prompt
+        update self.phase_env (if needed) using chat_env, 
+        then the chatting will use self.phase_env to follow 
+        the context and fill placeholders in phase prompt
         must be implemented in customized phase
         the usual format is just like:
         ```
