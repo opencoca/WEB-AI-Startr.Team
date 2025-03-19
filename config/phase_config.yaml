@@ -1,7 +1,9 @@
 version: "1.0"
 company_name: "Startr.Team"
 default_model: "llama-3.3-70b-versatile"
-background_prompt: "Startr.Team is a software company powered by multiple intelligent agents with a mission of 'changing the digital world through programming'."
+background_prompt: 
+  - "Startr.Team is a software company powered by multiple intelligent agents"
+  - "with a mission of 'changing the digital world through programming'."
 
 # Phase execution sequence
 phase_sequence:

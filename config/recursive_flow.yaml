@@ -73,21 +73,26 @@ workflow:
             
             - name: ReviewCode
               agent: Developer
-              input: component_implementation
+              input: 
+                - current_component_spec
+                - component_implementation
               output: review_feedback
               review_mode: true
             
             - name: ReviseCode
               agent: Developer
-              input: review_feedback
+              input: 
+                - review_feedback
+                - component_implementation
               output: revised_implementation
       
       - name: TestingPhase
         agent: Tester
         # This phase recursively handles testing and bug fixing
         description: >
-          Test the implementation thoroughly to verify it meets requirements, 
-          with recursive calls when issues are found.
+          Test the implementation thoroughly to verify it 
+          meets requirements,with recursive calls when issues
+          are found.
         input: implementation
         output: test_results
         recursion:
@@ -101,15 +106,21 @@ workflow:
             
             - name: FixIssues
               agent: Developer
-              input: test_findings
+              input: 
+               - test_findings
+               - current_component_spec
+               - implementation
               output: fixed_implementation
       
       - name: DocumentationPhase
         agent: Developer
         # Final phase for documentation
         description: >
-          Create comprehensive documentation including installation instructions,
-          usage guide, and API references if applicable.
+          Create comprehensive documentation including:
+
+            - installation instructions
+            - usage guide 
+            - and API references if applicable
         input: implementation
         output: documentation
 
@@ -120,7 +131,7 @@ project_structure:
     - src/            # Source code
     - tests/          # Test files
     - docs/           # Documentation
-    - requirements.txt # Dependencies
+    - requirements.txt # Dependencies list
 
   # Use version control effectively
   version_control:
@@ -133,4 +144,4 @@ project_structure:
     gui_design: true
     incremental_develop: false
     self_improve: true
-    with_memory: false
+    with_memory: false # No memory for simplicity. Alternative: true for memory

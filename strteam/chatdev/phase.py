@@ -436,13 +436,13 @@ class Coding(Phase):
             
             # Create a minimal starter file based on the language
             if "python" in language:
-                fallback_code = f"# Basic starter for: {task}\n\ndef main():\n    print('Hello, this is a starter application!')\n    print('Task: {task}')\n    \nif __name__ == '__main__':\n    main()"
+                fallback_code = f"# Basic starter for: {task}\n\ndef main():\n    print('Hello, this is a startr application!')\n    print('Task: {task}')\n    \nif __name__ == '__main__':\n    main()"
                 chat_env.codes.codebooks["main.py"] = fallback_code
             elif "javascript" in language or "js" in language:
-                fallback_code = f"// Basic starter for: {task}\n\nfunction main() {{\n    console.log('Hello, this is a starter application!');\n    console.log('Task: {task}');\n}}\n\nmain();"
+                fallback_code = f"// Basic starter for: {task}\n\nfunction main() {{\n    console.log('Hello, this is a startr application!');\n    console.log('Task: {task}');\n}}\n\nmain();"
                 chat_env.codes.codebooks["main.js"] = fallback_code
             elif "html" in language:
-                fallback_code = f"<!DOCTYPE html>\n<html>\n<head>\n    <title>{task}</title>\n</head>\n<body>\n    <h1>Hello, this is a starter application!</h1>\n    <p>Task: {task}</p>\n</body>\n</html>"
+                fallback_code = f"<!DOCTYPE html>\n<html>\n<head>\n    <title>{task}</title>\n</head>\n<body>\n    <h1>Hello, this is a startr application!</h1>\n    <p>Task: {task}</p>\n</body>\n</html>"
                 chat_env.codes.codebooks["index.html"] = fallback_code
             else:
                 fallback_code = f"// Basic starter for: {task}\n// TODO: Implement functionality\n"
