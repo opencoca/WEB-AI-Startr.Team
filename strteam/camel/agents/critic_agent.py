@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by the  Startr Team (2023 - 2025)
+#  Development continued by the  Startr Team (2023 - 2025)
 # =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 from typing import List, Union, Dict, Any, Optional, Tuple, Sequence
 import copy
@@ -52,7 +52,7 @@ class CriticAgent(ChatAgent):
     def __init__(
         self,
         system_message: SystemMessage,
-        model: ModelType = ModelType.GPT_4O_MINI,
+        model: ModelType = ModelType.GPT_3_5_TURBO,
         model_config: Optional[Any] = None,
         message_window_size: int = 6,
         retry_attempts: int = 2,

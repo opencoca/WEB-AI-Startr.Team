@@ -23,7 +23,7 @@ class Phase(ABC):
         self.expected_outputs = config.get('outputs', [])
         self.assistant_role = config.get('roles', {}).get('assistant')
         self.user_role = config.get('roles', {}).get('user')
-        self.model_type = config.get('model_type', ModelType.GPT_3_5_TURBO)
+        self.model_type = config['model_type']
         self.max_retries = config.get('max_retries', 3)
         self.reflection_enabled = config.get('need_reflect', False)
         

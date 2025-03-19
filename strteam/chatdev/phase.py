@@ -402,7 +402,7 @@ class ChooseLanguage(Phase):
 class Coding(Phase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
+        
     def update_phase_env(self, chat_env):
         gui = (
             ""
@@ -419,11 +419,38 @@ class Coding(Phase):
                 "gui": gui,
             }
         )
-
+        
     def update_chat_env(self, chat_env) -> ChatEnv:
+        # First try to update the codes with the seminar conclusion
         chat_env.update_codes(self.seminar_conclusion)
+        
+        # Check if any valid code was extracted
         if len(chat_env.codes.codebooks.keys()) == 0:
-            raise ValueError("No Valid Codes.")
+            # If no valid code was extracted, try a more direct approach
+            log_visualize("**[Warning]**: No valid code blocks were parsed from the agent's response.")
+            log_visualize("**[Attempting Recovery]**: Creating a basic starter file.")
+            
+            # Get language and task info
+            language = chat_env.env_dict["language"].lower()
+            task = chat_env.env_dict["task_prompt"]
+            
+            # Create a minimal starter file based on the language
+            if "python" in language:
+                fallback_code = f"# Basic starter for: {task}\n\ndef main():\n    print('Hello, this is a startr application!')\n    print('Task: {task}')\n    \nif __name__ == '__main__':\n    main()"
+                chat_env.codes.codebooks["main.py"] = fallback_code
+            elif "javascript" in language or "js" in language:
+                fallback_code = f"// Basic starter for: {task}\n\nfunction main() {{\n    console.log('Hello, this is a startr application!');\n    console.log('Task: {task}');\n}}\n\nmain();"
+                chat_env.codes.codebooks["main.js"] = fallback_code
+            elif "html" in language:
+                fallback_code = f"<!DOCTYPE html>\n<html>\n<head>\n    <title>{task}</title>\n</head>\n<body>\n    <h1>Hello, this is a startr application!</h1>\n    <p>Task: {task}</p>\n</body>\n</html>"
+                chat_env.codes.codebooks["index.html"] = fallback_code
+            else:
+                fallback_code = f"// Basic starter for: {task}\n// TODO: Implement functionality\n"
+                chat_env.codes.codebooks["main.txt"] = fallback_code
+            
+            log_visualize("**[Recovery]**: Created basic starter file. Please implement functionality.")
+        
+        # Continue with the normal process
         chat_env.rewrite_codes("Finish Coding")
         log_visualize(
             "**[Software Info]**:\n\n {}".format(

@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by the  Startr Team (2023 - 2025)
+#  Development continued by the  Startr Team (2023 - 2025)
 # =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
@@ -29,6 +29,7 @@ from ..utils import (
     num_tokens_from_messages,
     openai_api_key_required,
 )
+from ..config_loader import config_loader
 from ...chatdev.utils import log_visualize
 
 try:
@@ -40,7 +41,7 @@ except ImportError:
 
 @dataclass(frozen=True)
 class ChatAgentResponse:
-    r"""Response of a ChatAgent.
+    """Response of a ChatAgent.
 
     Attributes:
         msgs (List[ChatMessage]): A list of zero, one or several messages.
@@ -77,15 +78,15 @@ class ChatAgentResponse:
 
 
 class ChatAgent(BaseAgent):
-    r"""Class for managing conversations of CAMEL Chat Agents.
+    """Class for managing conversations of CAMEL Chat Agents.
 
     Args:
         system_message (SystemMessage): The system message for the chat agent.
         with_memory(bool): The memory setting of the chat agent.
         model (ModelType, optional): The LLM model to use for generating
-            responses. (default :obj:`ModelType.GPT_3_5_TURBO`)
+            responses. (default: first model from model_config.yaml)
         model_config (Any, optional): Configuration options for the LLM model.
-            (default: :obj:`None`)
+            (default: from model_config.yaml)
         message_window_size (int, optional): The maximum number of previous
             messages to include in the context window. If `None`, no windowing
             is performed. (default: :obj:`None`)
@@ -99,12 +100,23 @@ class ChatAgent(BaseAgent):
         model_config: Optional[Any] = None,
         message_window_size: Optional[int] = None,
     ) -> None:
-
         self.system_message: SystemMessage = system_message
         self.role_name: str = system_message.role_name
         self.role_type: RoleType = system_message.role_type
-        self.model: ModelType = model if model is not None else ModelType.GPT_3_5_TURBO
-        self.model_config: ChatGPTConfig = model_config or ChatGPTConfig()
+        
+        # Use first model from config instead of hardcoded default
+        if model is None:
+            model_keys = list(config_loader.config["models"].keys())
+            if model_keys:
+                model = getattr(ModelType, model_keys[0])
+        
+        self.model: ModelType = model
+        
+        # Use config from YAML if not explicitly provided
+        if model_config is None:
+            model_config = ChatGPTConfig(**config_loader.get_model_config(self.model.name))
+        self.model_config = model_config
+        
         self.model_token_limit: int = get_model_token_limit(self.model)
         self.message_window_size: Optional[int] = message_window_size
         self.model_backend: ModelBackend = ModelFactory.create(
@@ -113,17 +125,16 @@ class ChatAgent(BaseAgent):
         self.terminated: bool = False
         self.info: bool = False
         self.init_messages()
-        if memory != None and self.role_name in [
-            "Code Reviewer",
-            "Programmer",
-            "Software Test Engineer",
-        ]:
+        
+        # Initialize memory if provided and role is appropriate
+        memory_enabled_roles = ["Code Reviewe", "Programme", "Software Test Enginee"]
+        if memory is not None and self.role_name in memory_enabled_roles:
             self.memory = memory.memory_data.get("All")
         else:
             self.memory = None
 
     def reset(self) -> List[MessageType]:
-        r"""Resets the :obj:`ChatAgent` to its initial state and returns the
+        """Resets the :obj:`ChatAgent` to its initial state and returns the
         stored messages.
 
         Returns:
@@ -140,12 +151,14 @@ class ChatAgent(BaseAgent):
         termination_reasons: List[str],
         num_tokens: int,
     ) -> Dict[str, Any]:
-        r"""Returns a dictionary containing information about the chat session.
+        """Returns a dictionary containing information about the chat session.
 
         Args:
-            id (str, optional): The ID of the chat session.
+            id (str, optional): The ID of the chat session. Can be `None` if 
+                the session terminates due to exceeding token limits.
             usage (Dict[str, int], optional): Information about the usage of
-                the LLM model.
+                the LLM model. Can be `None` if the session terminates due to 
+                exceeding token limits.
             termination_reasons (List[str]): The reasons for the termination of
                 the chat session.
             num_tokens (int): The number of tokens used in the chat session.
@@ -161,13 +174,13 @@ class ChatAgent(BaseAgent):
         }
 
     def init_messages(self) -> None:
-        r"""Initializes the stored messages list with the initial system
+        """Initializes the stored messages list with the initial system
         message.
         """
         self.stored_messages: List[MessageType] = [self.system_message]
 
     def update_messages(self, message: ChatMessage) -> List[MessageType]:
-        r"""Updates the stored messages list with a new message.
+        """Updates the stored messages list with a new message.
 
         Args:
             message (ChatMessage): The new message to add to the stored
@@ -183,13 +196,17 @@ class ChatAgent(BaseAgent):
         if self.memory is None:
             return None
         else:
-            if self.role_name == "Programmer":
+            if self.role_name == "Programme":
                 result = self.memory.memory_retrieval(input_message, "code")
                 if result != None:
                     target_memory, distances, mids, task_list, task_dir_list = result
                     if target_memory != None and len(target_memory) != 0:
                         target_memory = "".join(target_memory)
-                        # self.stored_messages[-1].content = self.stored_messages[-1].content+"Here is some code you've previously completed:"+target_memory+"You can refer to the previous script to complement this task."
+                        self.stored_messages[-1].content += (
+                            "Here is some code you've previously completed:"
+                            + target_memory
+                            + "You can refer to the previous script to complement this task."
+                        )
                         log_visualize(
                             self.role_name,
                             "thinking back and found some related code: \n--------------------------\n"
@@ -207,7 +224,11 @@ class ChatAgent(BaseAgent):
                     target_memory, distances, mids, task_list, task_dir_list = result
                     if target_memory != None and len(target_memory) != 0:
                         target_memory = ";".join(target_memory)
-                        # self.stored_messages[-1].content = self.stored_messages[-1].content+"Here are some effective and efficient instructions you have sent to the assistant :"+target_memory+"You can refer to these previous excellent instructions to better instruct assistant here."
+                        self.stored_messages[-1].content += (
+                            "Here are some effective and efficient instructions you have sent to the assistant :"
+                            + target_memory
+                            + "You can refer to these previous excellent instructions to better instruct assistant here."
+                        )
                         log_visualize(
                             self.role_name,
                             "thinking back and found some related text: \n--------------------------\n"
@@ -227,7 +248,7 @@ class ChatAgent(BaseAgent):
         self,
         input_message: ChatMessage,
     ) -> ChatAgentResponse:
-        r"""Performs a single step in the chat session by generating a response
+        """Performs a single step in the chat session by generating a response
         to the input message.
 
         Args:
@@ -259,43 +280,25 @@ class ChatAgent(BaseAgent):
 
         if num_tokens < self.model_token_limit:
             response = self.model_backend.run(messages=openai_messages)
-            if openai_new_api:
-                if not isinstance(response, ChatCompletion):
-                    raise RuntimeError("OpenAI returned unexpected struct")
-                output_messages = [
-                    ChatMessage(
-                        role_name=self.role_name,
-                        role_type=self.role_type,
-                        meta_dict=dict(),
-                        **dict(choice.message),
-                    )
-                    for choice in response.choices
-                ]
-                info = self.get_info(
-                    response.id,
-                    response.usage,
-                    [str(choice.finish_reason) for choice in response.choices],
-                    num_tokens,
-                )
-            else:
-                if not isinstance(response, dict):
-                    raise RuntimeError("OpenAI returned unexpected struct")
-                output_messages = [
-                    ChatMessage(
-                        role_name=self.role_name,
-                        role_type=self.role_type,
-                        meta_dict=dict(),
-                        **dict(choice["message"]),
-                    )
-                    for choice in response["choices"]
-                ]
-                info = self.get_info(
-                    response["id"],
-                    response["usage"],
-                    [str(choice["finish_reason"]) for choice in response["choices"]],
-                    num_tokens,
-                )
 
+            if not isinstance(response, ChatCompletion):
+                raise RuntimeError("OpenAI returned unexpected struct")
+            output_messages = [
+                ChatMessage(
+                    role_name=self.role_name,
+                    role_type=self.role_type,
+                    meta_dict=dict(),
+                    **dict(choice.message),
+                )
+                for choice in response.choices
+            ]
+            info = self.get_info(
+                response.id,
+                response.usage,
+                [str(choice.finish_reason) for choice in response.choices],
+                num_tokens,
+            )
+            
             # TODO strict <INFO> check, only in the beginning of the line
             # if "<INFO>" in output_messages[0].content:
             if output_messages[0].content.split("\n")[-1].startswith("<INFO>"):
@@ -314,7 +317,7 @@ class ChatAgent(BaseAgent):
         return ChatAgentResponse(output_messages, self.terminated, info)
 
     def __repr__(self) -> str:
-        r"""Returns a string representation of the :obj:`ChatAgent`.
+        """Returns a string representation of the :obj:`ChatAgent`.
 
         Returns:
             str: The string representation of the :obj:`ChatAgent`.

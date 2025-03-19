@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 import time
+import yaml  # Added import for YAML parsing
 from datetime import datetime
 from pathlib import Path
 
@@ -69,12 +70,17 @@ class ChatChain:
         self._init_phases()
         
     def _load_configs(self):
-        """Load JSON configuration files."""
+        """Load configuration files (both YAML and JSON supported)."""
         for attr in dir(self):
             if attr.startswith("config_") and attr.endswith("_path"):
                 config_attr = attr.replace("_path", "")
-                with open(getattr(self, attr), "r", encoding="utf8") as file:
-                    setattr(self, config_attr, json.load(file))
+                file_path = getattr(self, attr)
+                with open(file_path, "r", encoding="utf8") as file:
+                    # Check if the file is YAML or JSON based on extension
+                    if file_path.lower().endswith(('.yaml', '.yml')):
+                        setattr(self, config_attr, yaml.safe_load(file))
+                    else:
+                        setattr(self, config_attr, json.load(file))
     
     def _setup_logging(self):
         """Set up logging and return start time and log filepath."""

@@ -41,48 +41,40 @@ ArtDesign:
 ArtIntegration:
   assistant_role_name: Programmer
   phase_prompt:
-  - 'Our developed source code and corresponding test reports are listed below: '
-  - 'Task: "{task}".'
-  - 'Programming Language: "{language}"'
-  - 'Source Codes:'
-  - '"{codes}"'
-  - ''
-  - '**Note:** Each file must follow the markdown code block format exactly.'
-  - 'Replace the following tokens as described:'
-  - '- "FILENAME" with the lowercase file name, including the file extension.'
-  - '- "LANGUAGE" with the programming language.'
-  - '- "DOCSTRING" with a string in the source code that explains a specific part
-    of the code.'
-  - '- "CODE" with the original code.'
-  - ''
-  - FILENAME
-  - '```LANGUAGE'
-  - ''''''''
-  - DOCSTRING
-  - ''''''''
-  - CODE
-  - '```'
-  - As our team {assistant_role}, working to satisfy the new user's demand and equip
-    the software with
-  - a beautiful graphical user interface (GUI), you will incorporate our designed
-    images for GUI decoration.
-  - 'Here are some ready-made high-quality pictures and corresponding descriptions:'
-  - ''
-  - '{images}'
-  - '**Note** that the designed images have a fixed size of 256x256 pixels and the
-    images are located in the'
-  - same directory as all the Python files; please dynamically scaling these images
-    according to the size of GUI,
-  - 'and use "self.*" to avoid displaying-related problems caused by automatic garbage
-    collection. For example:'
-  - ''
-  - '```'
-  - self.image = ImageTk.PhotoImage(Image.open("./image.png").resize((50, 50)))
-  - '```'
-  - ''
-  - Now, use some or all of the pictures into the GUI to make it more beautiful and
-    creative.
-  - Output code strictly following the required format mentioned above.
+    - "Our developed source code and corresponding test reports are listed below:"
+    - "Task: '{task}'"
+    - "Programming Language: '{language}'"
+    - "Source Codes:"
+    - "'{codes}'"
+    - ""
+    - "**Note:** Each file must follow the markdown code block format exactly."
+    - "Replace the following tokens as described:"
+    - "- 'FILENAME' with the lowercase file name (including the extension)."
+    - "- 'LANGUAGE' with the programming language."
+    - "- 'DOCSTRING' with a helpful string in the source code that explains a specific part."
+    - "- 'CODE' with the original code."
+    - ""
+    - "FILENAME"
+    - "```LANGUAGE"
+    - "''''''"
+    - "DOCSTRING"
+    - "''''''"
+    - "CODE"
+    - "```"
+    - "As our team {assistant_role}, please incorporate our designed images for GUI decoration."
+    - "Here are some ready-made high-quality pictures and corresponding descriptions:"
+    - ""
+    - "{images}"
+    - "**Note**: All images sized 256x256, located in the same directory with the Python files;"
+    - "dynamically scale them for the GUI. Use 'self.*' to avoid garbage collection issues."
+    - "For example:"
+    - ""
+    - "```"
+    - "self.image = ImageTk.PhotoImage(Image.open('./image.png').resize((50, 50)))"
+    - "```"
+    - ""
+    - "Now, use some or all of these pictures in the GUI for creativity."
+    - "Output code strictly following the required format above."
   user_role_name: Chief Creative Officer
 ChooseLanguage:
   assistant_role_name: Chief Technology Officer

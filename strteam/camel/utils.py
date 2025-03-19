@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # =========== Copyright 2023 @ CAMEL-AI.org. All Rights Reserved. ===========
-#  Enhanced by the  Startr Team (2023 - 2025)
+#  Development continued by the  Startr Team (2023 - 2025)
 # =========== Copyright 2024 - 2025 @  Startr LLC   All Rights Reserved. ===========
 
 import os
@@ -155,6 +155,7 @@ def get_first_int(string: str) -> Optional[int]:
     return int(match.group()) if match else None
 
 
+#TODO Investigate if this function is still needed or if we should migrate to our own implementation
 def download_tasks(task: TaskType, folder_path: str) -> None:
     """Download and extract task files for a given task type."""
     zip_file_path = os.path.join(folder_path, "tasks.zip")

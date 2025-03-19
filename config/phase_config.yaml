@@ -1,7 +1,9 @@
 version: "1.0"
 company_name: "Startr.Team"
-default_model: "gpt-3.5-turbo"
-background_prompt: "Startr.Team is a software company powered by multiple intelligent agents with a mission of 'changing the digital world through programming'."
+default_model: "llama-3.3-70b-versatile"
+background_prompt: 
+  - "Startr.Team is a software company powered by multiple intelligent agents"
+  - "with a mission of 'changing the digital world through programming'."
 
 # Phase execution sequence
 phase_sequence:
@@ -134,37 +136,37 @@ phases:
 # Agent configurations
 agents:
   - role: Chief Executive Officer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You are the CEO responsible for overall project direction and final decisions."
 
   - role: Chief Product Officer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You analyze requirements and determine the best product approach."
 
   - role: Chief Technology Officer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You make technical decisions and guide the development process."
 
   - role: Programmer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You write clean, efficient code following best practices."
 
   - role: Code Reviewer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You review code for quality, bugs, and improvements."
 
   - role: Software Test Engineer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You test code and identify potential issues."
 
   - role: DevOps Engineer
-    model: gpt-3.5-turbo
+    model: gpt-4o-mini
     temperature: 0.7
     system_message: "You handle deployment and environment configuration."
 

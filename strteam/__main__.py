@@ -1,7 +1,10 @@
-# =========== Copyright 2025 Startr.LLC & CAMEL-AI.org. All Rights Reserved. ===========
-# Licensed under the GNU Affero General Public License, Version 3.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# ===========   Copyright 2025 Startr.LLC   ===========
+# Licensed under the GNU Affero General Public License, 
+#             Version 3.0 (the "License")
+#
+#      This file is part of the strteam project;
+# you may not use this file except in compliance with 
+# the License. You may obtain a copy of the License at
 #
 #     https://www.gnu.org/licenses/agpl-3.0.en.html
 #
@@ -10,10 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# Note: Portions of this codebase originating from CAMEL-AI.org are published under the Apache License, Version 2.0.
-# Please use version control blame to verify the license of specific code sections.
-# =========== Copyright 2025 @ Startr.LLC & CAMEL-AI.org. All Rights Reserved. ===========
+# .
+# =========== Copyright 2025 @ Startr.LLC   ===========
 
 import argparse
 import logging
@@ -49,9 +50,20 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Update
 CONFIG_DIR = os.path.join(ROOT_DIR, "config/CompanyConfig")
 DEFAULT_CONFIG_DIR = os.path.join(CONFIG_DIR, "Default")
 
-CONFIG_FILES = ["ChatChainConfig.json", "PhaseConfig.json", "RoleConfig.json"]
+CONFIG_FILES = ["ChatChainConfig.yaml", "PhaseConfig.yaml", "RoleConfig.yaml"]
 
 sys.path.append(ROOT_DIR)
+
+class MarkdownFormatter(logging.Formatter):
+    """
+    Custom formatter that handles Markdown formatting for logs.
+    This prevents empty lines in logs when formatting is desired.
+    """
+    def format(self, record):
+        # Skip formatting for empty messages
+        if not record.msg:
+            return ""
+        return super().format(record)
 
 
 def get_model_choices() -> List[str]:
@@ -181,7 +193,7 @@ def setup_logging(log_filepath, logging_level):
     os.makedirs(log_dir, exist_ok=True)
     
     # Create a formatter for the logs
-    formatter = logging.Formatter(
+    formatter = MarkdownFormatter(
         '[%(asctime)s] [%(levelname)s] %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
@@ -213,6 +225,20 @@ def setup_logging(log_filepath, logging_level):
     return sys.stdout, file_handler  # Return values for compatibility
 
 
+def log_with_markdown(msg, section_break=False):
+    """
+    Log a message with optional section breaks.
+    
+    Args:
+        msg (str): The message to log
+        section_break (bool): Whether to add section break formatting
+    """
+    if section_break:
+        logging.info("\n" + msg)
+    else:
+        logging.info(msg)
+
+
 def log_initial_info(chat_chain, config_path, config_phase_path, config_role_path, task):
     """
     Log initial information about the ChatChain run.
@@ -224,27 +250,17 @@ def log_initial_info(chat_chain, config_path, config_phase_path, config_role_pat
         config_role_path (str): Path to the role config file.
         task (str): The task prompt.
     """
-    logging.info("")
-    logging.info("**[Preprocessing]**")
-    logging.info("")
-    logging.info(f"**strteam Starts** ({chat_chain.start_time})")
-    logging.info("")
-    logging.info(f"**Timestamp**: {chat_chain.start_time}")
-    logging.info("")
-    logging.info(f"**config_path**: {config_path}")
-    logging.info("")
-    logging.info(f"**config_phase_path**: {config_phase_path}")
-    logging.info("")
-    logging.info(f"**config_role_path**: {config_role_path}")
-    logging.info("")
-    logging.info(f"**task_prompt**: {task}")
-    logging.info("")
-    logging.info(f"**project_name**: {chat_chain.project_name}")
-    logging.info("")
-    logging.info(f"**Log File**: {chat_chain.log_filepath}")
-    logging.info("")
-    logging.info("**strteam Config**:")
-    logging.info(f"ChatEnvConfig.with_memory: {chat_chain.chat_env_config.with_memory}")
+    log_with_markdown("**[Preprocessing]**", section_break=True)
+    log_with_markdown(f"**strteam Starts** ({chat_chain.start_time})")
+    log_with_markdown(f"**Timestamp**: {chat_chain.start_time}")
+    log_with_markdown(f"**config_path**: {config_path}")
+    log_with_markdown(f"**config_phase_path**: {config_phase_path}")
+    log_with_markdown(f"**config_role_path**: {config_role_path}")
+    log_with_markdown(f"**task_prompt**: {task}")
+    log_with_markdown(f"**project_name**: {chat_chain.project_name}")
+    log_with_markdown(f"**Log File**: {chat_chain.log_filepath}")
+    log_with_markdown("**strteam Config**:")
+    log_with_markdown(f"ChatEnvConfig.with_memory: {chat_chain.chat_env_config.with_memory}")
 
 
 def flush_log_handlers():
@@ -349,7 +365,7 @@ def main():
         execute_chat_chain(chat_chain)
         
         # Log completion message
-        logging.info("\nTask completed successfully!")
+        log_with_markdown("\nTask completed successfully!")
     except Exception as e:
         # Log error information
         logging.error(f"\nError during execution: {str(e)}")
