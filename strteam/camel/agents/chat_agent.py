@@ -41,7 +41,7 @@ except ImportError:
 
 @dataclass(frozen=True)
 class ChatAgentResponse:
-    r"""Response of a ChatAgent.
+    """Response of a ChatAgent.
 
     Attributes:
         msgs (List[ChatMessage]): A list of zero, one or several messages.
@@ -78,7 +78,7 @@ class ChatAgentResponse:
 
 
 class ChatAgent(BaseAgent):
-    r"""Class for managing conversations of CAMEL Chat Agents.
+    """Class for managing conversations of CAMEL Chat Agents.
 
     Args:
         system_message (SystemMessage): The system message for the chat agent.
@@ -127,14 +127,14 @@ class ChatAgent(BaseAgent):
         self.init_messages()
         
         # Initialize memory if provided and role is appropriate
-        memory_enabled_roles = ["Code Reviewer", "Programmer", "Software Test Engineer"]
+        memory_enabled_roles = ["Code Reviewe", "Programme", "Software Test Enginee"]
         if memory is not None and self.role_name in memory_enabled_roles:
             self.memory = memory.memory_data.get("All")
         else:
             self.memory = None
 
     def reset(self) -> List[MessageType]:
-        r"""Resets the :obj:`ChatAgent` to its initial state and returns the
+        """Resets the :obj:`ChatAgent` to its initial state and returns the
         stored messages.
 
         Returns:
@@ -151,12 +151,14 @@ class ChatAgent(BaseAgent):
         termination_reasons: List[str],
         num_tokens: int,
     ) -> Dict[str, Any]:
-        r"""Returns a dictionary containing information about the chat session.
+        """Returns a dictionary containing information about the chat session.
 
         Args:
-            id (str, optional): The ID of the chat session.
+            id (str, optional): The ID of the chat session. Can be `None` if 
+                the session terminates due to exceeding token limits.
             usage (Dict[str, int], optional): Information about the usage of
-                the LLM model.
+                the LLM model. Can be `None` if the session terminates due to 
+                exceeding token limits.
             termination_reasons (List[str]): The reasons for the termination of
                 the chat session.
             num_tokens (int): The number of tokens used in the chat session.
@@ -172,13 +174,13 @@ class ChatAgent(BaseAgent):
         }
 
     def init_messages(self) -> None:
-        r"""Initializes the stored messages list with the initial system
+        """Initializes the stored messages list with the initial system
         message.
         """
         self.stored_messages: List[MessageType] = [self.system_message]
 
     def update_messages(self, message: ChatMessage) -> List[MessageType]:
-        r"""Updates the stored messages list with a new message.
+        """Updates the stored messages list with a new message.
 
         Args:
             message (ChatMessage): The new message to add to the stored
@@ -194,13 +196,17 @@ class ChatAgent(BaseAgent):
         if self.memory is None:
             return None
         else:
-            if self.role_name == "Programmer":
+            if self.role_name == "Programme":
                 result = self.memory.memory_retrieval(input_message, "code")
                 if result != None:
                     target_memory, distances, mids, task_list, task_dir_list = result
                     if target_memory != None and len(target_memory) != 0:
                         target_memory = "".join(target_memory)
-                        # self.stored_messages[-1].content = self.stored_messages[-1].content+"Here is some code you've previously completed:"+target_memory+"You can refer to the previous script to complement this task."
+                        self.stored_messages[-1].content += (
+                            "Here is some code you've previously completed:"
+                            + target_memory
+                            + "You can refer to the previous script to complement this task."
+                        )
                         log_visualize(
                             self.role_name,
                             "thinking back and found some related code: \n--------------------------\n"
@@ -218,7 +224,11 @@ class ChatAgent(BaseAgent):
                     target_memory, distances, mids, task_list, task_dir_list = result
                     if target_memory != None and len(target_memory) != 0:
                         target_memory = ";".join(target_memory)
-                        # self.stored_messages[-1].content = self.stored_messages[-1].content+"Here are some effective and efficient instructions you have sent to the assistant :"+target_memory+"You can refer to these previous excellent instructions to better instruct assistant here."
+                        self.stored_messages[-1].content += (
+                            "Here are some effective and efficient instructions you have sent to the assistant :"
+                            + target_memory
+                            + "You can refer to these previous excellent instructions to better instruct assistant here."
+                        )
                         log_visualize(
                             self.role_name,
                             "thinking back and found some related text: \n--------------------------\n"
@@ -238,7 +248,7 @@ class ChatAgent(BaseAgent):
         self,
         input_message: ChatMessage,
     ) -> ChatAgentResponse:
-        r"""Performs a single step in the chat session by generating a response
+        """Performs a single step in the chat session by generating a response
         to the input message.
 
         Args:
@@ -307,7 +317,7 @@ class ChatAgent(BaseAgent):
         return ChatAgentResponse(output_messages, self.terminated, info)
 
     def __repr__(self) -> str:
-        r"""Returns a string representation of the :obj:`ChatAgent`.
+        """Returns a string representation of the :obj:`ChatAgent`.
 
         Returns:
             str: The string representation of the :obj:`ChatAgent`.

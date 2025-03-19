@@ -6,6 +6,8 @@ from typing import List, Dict, Optional, Any, Tuple
 
 from .debug_utils import debug_log, debug_inspect, debug_decorator
 
+#TODO - Move any models not in the model_config.yaml file to the model_config.yaml file
+#TODO - Remove hard coded models as all models should be available in the model_config.yaml file
 # Available model types 
 OPENAI_MODELS = [
     "gpt-3.5-turbo",

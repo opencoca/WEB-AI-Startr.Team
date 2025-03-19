@@ -155,6 +155,7 @@ def get_first_int(string: str) -> Optional[int]:
     return int(match.group()) if match else None
 
 
+#TODO Investigate if this function is still needed or if we should migrate to our own implementation
 def download_tasks(task: TaskType, folder_path: str) -> None:
     """Download and extract task files for a given task type."""
     zip_file_path = os.path.join(folder_path, "tasks.zip")
