@@ -1,6 +1,8 @@
 import os
 import re
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Optional, Dict, Any
 
 from ..camel.agents import RolePlaying
 from ..camel.messages import ChatMessage
@@ -8,6 +10,69 @@ from ..camel.typing import TaskType, ModelType
 from .chat_env import ChatEnv
 from .statistics import get_info
 from .utils import log_visualize, log_arguments
+
+@dataclass
+class ConversationContext:
+    """Holds the context for a conversation between agents"""
+    assistant_role_name: str
+    user_role_name: str
+    phase_name: str
+    turn: int
+    assistant_message: Optional[ChatMessage] = None
+    user_message: Optional[ChatMessage] = None
+    terminated: bool = False
+    conclusion: Optional[str] = None
+    
+    def log_messages(self, role_play_session: RolePlaying):
+        """Logs messages from both assistant and user in a consistent format"""
+        conversation_meta = (
+            f"**{self.assistant_role_name}<->{self.user_role_name} on : "
+            f"{self.phase_name}, turn {self.turn}**\n\n"
+        )
+        
+        # Log assistant message if available
+        if self.assistant_message:
+            log_visualize(
+                role_play_session.assistant_agent.role_name,
+                conversation_meta
+                + "["
+                + role_play_session.user_agent.system_message.content
+                + "]\n"
+                + self.assistant_message.content,
+            )
+            
+        # Log user message if available
+        if self.user_message:
+            log_visualize(
+                role_play_session.user_agent.role_name,
+                conversation_meta
+                + "["
+                + role_play_session.assistant_agent.system_message.content
+                + "]\n"
+                + self.user_message.content,
+            )
+            
+    def update_from_response(self, assistant_response, user_response):
+        """Updates the context based on agent responses"""
+        # Process assistant response
+        if isinstance(assistant_response.msg, ChatMessage):
+            self.assistant_message = assistant_response.msg
+            self.terminated = self.terminated or assistant_response.terminated
+            # Fix: Access info directly from the response, not through agent
+            if assistant_response.info.get("info", False):
+                self.conclusion = assistant_response.msg.content
+                return True  # Indicates conversation should end
+        
+        # Process user response
+        if isinstance(user_response.msg, ChatMessage):
+            self.user_message = user_response.msg
+            self.terminated = self.terminated or user_response.terminated
+            # Fix: Access info directly from the response, not through agent
+            if user_response.info.get("info", False):
+                self.conclusion = user_response.msg.content
+                return True  # Indicates conversation should end
+                
+        return False  # Continue conversation
 
 
 class Phase(ABC):
@@ -139,50 +204,28 @@ class Phase(ABC):
                 input_user_msg, chat_turn_limit == 1
             )
 
-            conversation_meta = (
-                "**"
-                + assistant_role_name
-                + "<->"
-                + user_role_name
-                + " on : "
-                + str(phase_name)
-                + ", turn "
-                + str(i)
-                + "**\n\n"
+            # Create conversation context for the current turn
+            conversation = ConversationContext(
+                assistant_role_name=assistant_role_name,
+                user_role_name=user_role_name,
+                phase_name=phase_name,
+                turn=i
             )
-
-            # TODO: max_tokens_exceeded errors here
-            if isinstance(assistant_response.msg, ChatMessage):
-                # we log the second interaction here
-                log_visualize(
-                    role_play_session.assistant_agent.role_name,
-                    conversation_meta
-                    + "["
-                    + role_play_session.user_agent.system_message.content
-                    + "]\n\n"
-                    + assistant_response.msg.content,
-                )
-                if role_play_session.assistant_agent.info:
-                    seminar_conclusion = assistant_response.msg.content
-                    break
-                if assistant_response.terminated:
-                    break
-
-            if isinstance(user_response.msg, ChatMessage):
-                # here is the result of the second interaction, which may be used to start the next chat turn
-                log_visualize(
-                    role_play_session.user_agent.role_name,
-                    conversation_meta
-                    + "["
-                    + role_play_session.assistant_agent.system_message.content
-                    + "]\n\n"
-                    + user_response.msg.content,
-                )
-                if role_play_session.user_agent.info:
-                    seminar_conclusion = user_response.msg.content
-                    break
-                if user_response.terminated:
-                    break
+            
+            # Process responses and update conversation context
+            should_break = conversation.update_from_response(
+                assistant_response, user_response
+            )
+            
+            # Log messages
+            conversation.log_messages(role_play_session)
+            
+            # Get conclusion if conversation should end
+            if should_break:
+                seminar_conclusion = conversation.conclusion
+                break
+            elif conversation.terminated:
+                break
 
             # continue the chat
             if chat_turn_limit > 1 and isinstance(user_response.msg, ChatMessage):

@@ -2,4 +2,6 @@ Write Python code that is clean, clear, and DRY (Don't Repeat Yourself). Favor c
 
 Remove all fallbacks from the code in favor of directly relying on the configuration values from config/*.yaml files.
 
+Keep things DRY when working in python and use `from dataclasses import dataclass, field` so you don't repeat.
+
 Never duplicate configuration values in code. Always source defaults from configuration files when available. Prefer transparent propagation of settings through the system rather than hardcoding values that already exist in configuration files. When a value exists in a configuration file, reference it directly instead of duplicating it in code. This ensures single-source-of-truth and prevents debugging issues from inconsistent values.
