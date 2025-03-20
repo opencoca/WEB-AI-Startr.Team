@@ -6,7 +6,7 @@ import subprocess
 from .utils import log_visualize
 
 
-class Codes:
+class Code:
     def __init__(self, generated_content=""):
         self.directory: str = None
         self.version: float = 0.0
@@ -133,30 +133,30 @@ class Codes:
         code = "\n".join([line for line in code.split("\n") if len(line.strip()) > 0])
         return code
 
-    def _update_codes(self, generated_content):
-        new_codes = Codes(generated_content)
+    def _update_code(self, generated_content):
+        new_code = Code(generated_content)
         difflib.Differ()
-        for key in new_codes.codebooks.keys():
+        for key in new_code.codebooks.keys():
             if (
                 key not in self.codebooks.keys()
-                or self.codebooks[key] != new_codes.codebooks[key]
+                or self.codebooks[key] != new_code.codebooks[key]
             ):
-                update_codes_content = "**[Update Codes]**\n\n"
-                update_codes_content += "{} updated.\n".format(key)
-                old_codes_content = (
+                update_code_content = "**[Update Code]**\n\n"
+                update_code_content += "{} updated.\n".format(key)
+                old_code_content = (
                     self.codebooks[key] if key in self.codebooks.keys() else "# None"
                 )
-                new_codes_content = new_codes.codebooks[key]
+                new_code_content = new_code.codebooks[key]
 
-                lines_old = old_codes_content.splitlines()
-                lines_new = new_codes_content.splitlines()
+                lines_old = old_code_content.splitlines()
+                lines_new = new_code_content.splitlines()
 
                 unified_diff = difflib.unified_diff(
                     lines_old, lines_new, lineterm="", fromfile="Old", tofile="New"
                 )
                 unified_diff = "\n".join(unified_diff)
-                update_codes_content = (
-                    update_codes_content
+                update_code_content = (
+                    update_code_content
                     + "\n\n"
                     + """```
 '''
@@ -166,23 +166,23 @@ class Codes:
                     + "\n```"
                 )
 
-                log_visualize(update_codes_content)
-                self.codebooks[key] = new_codes.codebooks[key]
+                log_visualize(update_code_content)
+                self.codebooks[key] = new_code.codebooks[key]
 
-    def _rewrite_codes(self, git_management, phase_info=None) -> None:
+    def _rewrite_code(self, git_management, phase_info=None) -> None:
         directory = self.directory
-        rewrite_codes_content = "**[Rewrite Codes]**\n\n"
+        rewrite_code_content = "**[Rewrite Code]**\n\n"
         if os.path.exists(directory) and len(os.listdir(directory)) > 0:
             self.version += 1.0
         if not os.path.exists(directory):
             os.mkdir(self.directory)
-            rewrite_codes_content += "{} Created\n".format(directory)
+            rewrite_code_content += "{} Created\n".format(directory)
 
         for filename in self.codebooks.keys():
             filepath = os.path.join(directory, filename)
             with open(filepath, "w", encoding="utf-8") as writer:
                 writer.write(self.codebooks[filename])
-                rewrite_codes_content += os.path.join(directory, filename) + " Wrote\n"
+                rewrite_code_content += os.path.join(directory, filename) + " Wrote\n"
 
         if git_management:
             if not phase_info:
@@ -226,10 +226,10 @@ class Codes:
                     "WareHouse/" + os.path.basename(self.directory),
                     "WareHouse/" + os.path.basename(self.directory),
                 )
-                log_visualize(rewrite_codes_content)
+                log_visualize(rewrite_code_content)
             log_visualize(log_git_info)
 
-    def _get_codes(self) -> str:
+    def _get_code(self) -> str:
         content = ""
         for filename in self.codebooks.keys():
             content += "{}\n```{}\n{}\n```\n\n".format(

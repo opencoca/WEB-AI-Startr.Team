@@ -259,8 +259,8 @@
     "functions": 5,
     "complexity_score": 103.0
   },
-  "strteam.chatdev.codes": {
-    "path": "strteam/chatdev/codes.py",
+  "strteam.chatdev.code": {
+    "path": "strteam/chatdev/code.py",
     "line_counts": {
       "code": 162,
       "comment": 2,
@@ -467,8 +467,8 @@
     "functions": 9,
     "complexity_score": 55.5
   },
-  "strteam.ecl.codes": {
-    "path": "strteam/ecl/codes.py",
+  "strteam.ecl.code": {
+    "path": "strteam/ecl/code.py",
     "line_counts": {
       "code": 62,
       "comment": 90,

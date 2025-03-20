@@ -59,7 +59,7 @@ richer solutions beyond software development (e.g., logical reasoning, data anal
 
 * December 15, 2023: We have introduced the **Experiential Co-Learning Module** into WEB-AI-Startr.Team. Please see the [Experiential Co-Learning Guide](wiki.md#co-tracking).
 
-* November 2, 2023: Startr.Team is now supported with a new feature: incremental development, which allows agents to develop upon existing codes. Try `--config "incremental" --path "[source_code_directory_path]"` to start it.
+* November 2, 2023: Startr.Team is now supported with a new feature: incremental development, which allows agents to develop upon existing code. Try `--config "incremental" --path "[source_code_directory_path]"` to start it.
   <p align="center">
   <img src='./docs/misc/increment.png' width=700>
   </p>

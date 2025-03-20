@@ -58,8 +58,8 @@ process:
       Modality: "{modality}".
       Programming Language: "{language}"
       Ideas: "{ideas}"
-      Codes: 
-      "{codes}"
+      Code: 
+      "{code}"
       Requirements:
       "{requirements}"
       

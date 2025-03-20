@@ -74,7 +74,7 @@ class AllMemory(MemoryBase):
                 file.close()
         self.content = None
     # get code sample
-    def get_codesample(self) ->str:
+    def get_codeample(self) ->str:
         if self._get_memory_count() >=1:
             return self.content[-1].get("nodes")[-1]["code"]
         else:

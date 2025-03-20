@@ -178,11 +178,11 @@ def get_consistency(directory):
         print()
     filepath = files[0]
     task = open(filepath).read().strip()
-    codes = get_code(directory)
-    codes = remove_comments(codes)
+    code = get_code(directory)
+    code = remove_comments(code)
 
     text_embedding = get_text_embedding(task)
-    code_embedding = get_code_embedding(codes)
+    code_embedding = get_code_embedding(code)
     task_code_alignment = get_cosine_similarity(text_embedding, code_embedding)
 
     return task_code_alignment

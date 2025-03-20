@@ -360,8 +360,8 @@ class ChatChain:
         log_info = "**[Git Information]**\n\n"
         
         # Increment version
-        self.chat_env.codes.version += 1
-        version = self.chat_env.codes.version
+        self.chat_env.code.version += 1
+        version = self.chat_env.code.version
         directory = self.chat_env.env_dict["directory"]
         
         # Add all files to Git

@@ -8,7 +8,7 @@ import signal
 from utils import get_easyDict_from_filepath
 
 
-class Codes:
+class Code:
     def __init__(self, generated_content=""):
         cfg = get_easyDict_from_filepath("./ecl/config.yaml")
         self.directory: str = cfg.codes.tmp_directory
@@ -54,11 +54,11 @@ class Codes:
         return code
 
     def _update_codes(self, generated_content):
-        new_codes = Codes(generated_content)
+        new_codes = Code(generated_content)
         differ = difflib.Differ()
         for key in new_codes.codebooks.keys():
             if key not in self.codebooks.keys() or self.codebooks[key] != new_codes.codebooks[key]:
-                update_codes_content = "**[Update Codes]**\n\n"
+                update_codes_content = "**[Update Code]**\n\n"
                 update_codes_content += "{} updated.\n".format(key)
                 old_codes_content = self.codebooks[key] if key in self.codebooks.keys() else "# None"
                 new_codes_content = new_codes.codebooks[key]
@@ -77,7 +77,7 @@ class Codes:
 
     def _rewrite_codes(self) -> None:
         directory = self.directory
-        rewrite_codes_content = "**[Rewrite Codes]**\n"
+        rewrite_codes_content = "**[Rewrite Code]**\n"
         if os.path.exists(directory):
             shutil.rmtree(self.directory)
         if not os.path.exists(directory):

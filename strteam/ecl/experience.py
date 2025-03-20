@@ -4,7 +4,7 @@ from graph import Graph, Node, Edge
 import sys
 import openai
 import numpy as np
-from codes import Codes
+from strteam.ecl.code import Code
 from utils import get_easyDict_from_filepath,OpenAIModel,log_and_print_online
 from embedding import OpenAIEmbedding
 sys.path.append(os.path.join(os.getcwd(),"ecl"))
@@ -94,9 +94,9 @@ class Experience:
         pathNodes, pathEdges = self.graph.find_shortest_path(vi.mID, vj.mID)
         distance_weight = 1.0 / len(pathEdges) if len(pathEdges) != 0 else 1.0
 
-        codes = Codes(vi.code)
-        codes._rewrite_codes()
-        (exist_bugs_flag, test_reports) = codes._run_codes()
+        code = Code(vi.code)
+        code._rewrite_code()
+        (exist_bugs_flag, test_reports) = code._run_code()
         compile_weight = 0.0 if exist_bugs_flag else 1.0
 
         if compile_weight == 0.0:

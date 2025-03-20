@@ -3,8 +3,8 @@ experience:
   threshold: 0
   upper_limit: 10
 
-codes:
-  tmp_directory: "tmp_codes"
+code:
+  tmp_directory: "tmp_code"
   main_script: "main.py"
 
 embedding_method: "OpenAI"

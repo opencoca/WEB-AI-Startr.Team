@@ -231,33 +231,33 @@
       "get_code_embedding"
     ],
     [
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
-      "_update_codes"
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
+      "_update_code"
     ],
     [
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
-      "_rewrite_codes"
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
+      "_rewrite_code"
     ],
     [
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
-      "_get_codes"
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
+      "_get_code"
     ],
     [
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
       "_load_from_hardware"
     ],
     [
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
       "extract_filename_from_line"
     ],
     [
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
       "extract_filename_from_code"
     ],
     [
@@ -267,12 +267,12 @@
     ],
     [
       "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/graph.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
       "extract_filename_from_line"
     ],
     [
       "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/graph.py",
-      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+      "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
       "extract_filename_from_code"
     ],
     [
@@ -592,7 +592,7 @@
         127
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         104
       ]
     ],
@@ -602,7 +602,7 @@
         143
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         119
       ]
     ],
@@ -612,7 +612,7 @@
         144
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         120
       ]
     ],
@@ -622,7 +622,7 @@
         145
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         121
       ]
     ],
@@ -632,7 +632,7 @@
         146
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         122
       ]
     ],
@@ -642,7 +642,7 @@
         147
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         123
       ]
     ],
@@ -652,7 +652,7 @@
         148
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         124
       ]
     ],
@@ -662,7 +662,7 @@
         149
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         125
       ]
     ],
@@ -672,7 +672,7 @@
         150
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         126
       ]
     ],
@@ -682,7 +682,7 @@
         151
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         127
       ]
     ],
@@ -692,7 +692,7 @@
         152
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         128
       ]
     ],
@@ -702,7 +702,7 @@
         158
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         134
       ]
     ],
@@ -712,7 +712,7 @@
         159
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         135
       ]
     ],
@@ -722,7 +722,7 @@
         160
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         136
       ]
     ],
@@ -732,7 +732,7 @@
         161
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         137
       ]
     ],
@@ -742,7 +742,7 @@
         162
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         138
       ]
     ],
@@ -752,7 +752,7 @@
         163
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         139
       ]
     ],
@@ -762,7 +762,7 @@
         164
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         140
       ]
     ],
@@ -772,7 +772,7 @@
         165
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         141
       ]
     ],
@@ -782,237 +782,237 @@
         166
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         142
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         12
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         15
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         13
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         16
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         14
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         17
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         15
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         18
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         16
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         19
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         17
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         20
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         18
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         21
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         19
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         22
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         20
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         23
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         21
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         24
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         22
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         25
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         23
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         26
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         24
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         27
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         25
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         28
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         26
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         29
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         27
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         30
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         28
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         31
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         29
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         32
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         30
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         33
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         31
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         34
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         32
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         35
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         33
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         36
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         34
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         37
       ],
       [
@@ -1022,11 +1022,11 @@
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         35
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         38
       ],
       [
@@ -1036,11 +1036,11 @@
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         36
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         39
       ],
       [
@@ -1050,11 +1050,11 @@
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         37
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         40
       ],
       [
@@ -1064,131 +1064,131 @@
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         38
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         41
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         39
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         42
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         40
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         43
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         51
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         49
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         52
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         50
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         53
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         51
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         54
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         52
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         70
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         63
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         98
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         82
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         99
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         83
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         100
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         84
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         101
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         85
       ]
     ],
     [
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/chatdev/code.py",
         102
       ],
       [
-        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/codes.py",
+        "/Users/somma/Documents/Projects/GitHub/WEB-AI-Startr.Team/strteam/ecl/code.py",
         86
       ]
     ],

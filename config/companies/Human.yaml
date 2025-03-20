@@ -107,7 +107,7 @@ process:
         user_role: Chief Technology Officer
         prompt: "According to the new user's task and our software designs listed\
           \ below: \nTask: \"{task}\".\nModality: \"{modality}\".\nProgramming Language:\
-          \ \"{language}\"\nCodes:\n\"{codes}\"\nUnimplemented File:\n\"{unimplemented_file}\"\
+          \ \"{language}\"\nCode:\n\"{code}\"\nUnimplemented File:\n\"{unimplemented_file}\"\
           \nIn our software, each file must strictly follow a markdown code block\
           \ format, where the following tokens must be replaced such that \"FILENAME\"\
           \ is the lowercase file name including the file extension, \"LANGUAGE\"\
@@ -118,7 +118,7 @@ process:
           \ of our developed software, you have to implement all methods in the {unimplemented_file}\
           \ file which contains a unimplemented class. Now, implement all methods\
           \ of the {unimplemented_file} and all other code needed, then output the\
-          \ fully implemented codes, strictly following the required format."
+          \ fully implemented code, strictly following the required format."
   - name: CodeReview
     type: RecursivePhase
     max_turns: 1
@@ -138,7 +138,7 @@ process:
         user_role: Programmer
         prompt: "According to the new user's task and our software designs: \nTask:\
           \ \"{task}\".\nModality: \"{modality}\".\nProgramming Language: \"{language}\"\
-          \nIdeas: \"{ideas}\"\nCodes:\n\"{codes}\"\nAs the {assistant_role}, to make\
+          \nIdeas: \"{ideas}\"\nCode:\n\"{code}\"\nAs the {assistant_role}, to make\
           \ the software directly operable without further coding, Startr.Team have\
           \ formulated the following regulations:\n1) all referenced classes should\
           \ be imported;\n2) all methods should be implemented;\n3) all methods need\
@@ -148,7 +148,7 @@ process:
           \ Make sure that user can interact with generated software without losing\
           \ any feature in the requirement;\nNow, you should check the above regulations\
           \ one by one and review the code in detail, propose one comment with the\
-          \ highest priority about the codes, and give me instructions on how to fix.\
+          \ highest priority about the code, and give me instructions on how to fix.\
           \ Tell me your comment with the highest priority and corresponding suggestions\
           \ on revision. If the code is perfect and you have no comment for any of\
           \ it, return only one line like \"<INFO> Finished\"."
@@ -161,8 +161,8 @@ process:
         prompt: "According to the new user's task, our designed product modality,\
           \ languages and ideas, our developed first-edition source code are listed\
           \ below: \nTask: \"{task}\".\nModality: \"{modality}\".\nProgramming Language:\
-          \ \"{language}\"\nIdeas: \"{ideas}\"\nCodes: \n\"{codes}\"\nComments on\
-          \ Codes:\n\"{comments}\"\nIn the software, each file must strictly follow\
+          \ \"{language}\"\nIdeas: \"{ideas}\"\nCode: \n\"{code}\"\nComments on\
+          \ Code:\n\"{comments}\"\nIn the software, each file must strictly follow\
           \ a markdown code block format, where the following tokens must be replaced\
           \ such that \"FILENAME\" is the lowercase file name including the file extension,\
           \ \"LANGUAGE\" in the programming language, \"DOCSTRING\" is a string literal\
@@ -193,8 +193,8 @@ process:
         prompt: "According to the new user's task, our designed product modality and\
           \ three creative ideas, our developed first-edition source code are listed\
           \ below: \nTask: \"{task}\".\nModality: \"{modality}\".\nProgramming Language:\
-          \ \"{language}\"\nIdeas: \"{ideas}\"\nCodes: \n\"{codes}\"\nComments on\
-          \ Codes:\n\"{comments}\"\nIn the software, each file must strictly follow\
+          \ \"{language}\"\nIdeas: \"{ideas}\"\nCode: \n\"{code}\"\nComments on\
+          \ Code:\n\"{comments}\"\nIn the software, each file must strictly follow\
           \ a markdown code block format, where the following tokens must be replaced\
           \ such that \"FILENAME\" is the lowercase file name including the file extension,\
           \ \"LANGUAGE\" in the programming language, \"DOCSTRING\" is a string literal\
@@ -223,8 +223,8 @@ process:
         assistant_role: Programmer
         user_role: Software Test Engineer
         prompt: "Our developed source code and corresponding test reports are listed\
-          \ below: \nProgramming Language: \"{language}\"\nSource Codes:\n\"{codes}\"\
-          \nTest Reports of Source Codes:\n\"{test_reports}\"\nAccording to my test\
+          \ below: \nProgramming Language: \"{language}\"\nSource Code:\n\"{code}\"\
+          \nTest Reports of Source Code:\n\"{test_reports}\"\nAccording to my test\
           \ reports, please locate and summarize the bugs that cause the problem."
       - name: TestModification
         type: SimplePhase
@@ -233,8 +233,8 @@ process:
         assistant_role: Programmer
         user_role: Software Test Engineer
         prompt: "Our developed source code and corresponding test reports are listed\
-          \ below: \nProgramming Language: \"{language}\"\nSource Codes:\n\"{codes}\"\
-          \nTest Reports of Source Codes:\n\"{test_reports}\"\nError Summary of Test\
+          \ below: \nProgramming Language: \"{language}\"\nSource Code:\n\"{code}\"\
+          \nTest Reports of Source Code:\n\"{test_reports}\"\nError Summary of Test\
           \ Reports:\n\"{error_summary}\"\nNote that each file must strictly follow\
           \ a markdown code block format, where the following tokens must be replaced\
           \ such that \"FILENAME\" is the lowercase file name including the file extension,\
@@ -258,7 +258,7 @@ process:
     user_role: Chief Technology Officer
     prompt: "The new user's task and project code is as follows: \n\nTask: \"{task}\"\
       .\nModality: \"{modality}\".\nProgramming Language: \"{language}\"\nIdeas: \"\
-      {ideas}\"\nCodes: \n\"{codes}\"\nAs the {assistant_role}, you should write a\
+      {ideas}\"\nCode: \n\"{code}\"\nAs the {assistant_role}, you should write a\
       \ requirements file, for example with npm and bun it would be a package.json\
       \ and for python a requirements.txt file, which is commonly used in Python projects\
       \ to specify the dependencies or packages required for the project to run properly.\
@@ -275,7 +275,7 @@ process:
     user_role: Chief Executive Officer
     prompt: "The new user's task, our developed code and required dependencies are\
       \ listed: \nTask: \"{task}\".\nModality: \"{modality}\".\nProgramming Language:\
-      \ \"{language}\"\nIdeas: \"{ideas}\"\nCodes: \n\"{codes}\"\nRequirements:\n\"\
+      \ \"{language}\"\nIdeas: \"{ideas}\"\nCode: \n\"{code}\"\nRequirements:\n\"\
       {requirements}\"\nAs the {assistant_role}, by using Markdown, you should write\
       \ a manual.md file which is a detailed user manual to use the software, including\
       \ introducing main functions of the software, how to install environment dependencies\

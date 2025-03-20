@@ -4,8 +4,8 @@ ArtDesign:
   - 'Our developed source code and corresponding test reports are listed below: '
   - 'Task: "{task}".'
   - 'Programming Language: "{language}"'
-  - 'Source Codes:'
-  - '"{codes}"'
+  - 'Source Code:'
+  - '"{code}"'
   - ''
   - '**Note** that each file must strictly follow a markdown code block format,'
   - where the following tokens must be replaced such that "FILENAME" is the lowercase
@@ -44,8 +44,8 @@ ArtIntegration:
     - "Our developed source code and corresponding test reports are listed below:"
     - "Task: '{task}'"
     - "Programming Language: '{language}'"
-    - "Source Codes:"
-    - "'{codes}'"
+    - "Source Code:"
+    - "'{code}'"
     - ""
     - "**Note:** Each file must follow the markdown code block format exactly."
     - "Replace the following tokens as described:"
@@ -109,8 +109,8 @@ CodeReviewComment:
   - 'Modality: "{modality}".'
   - 'Programming Language: "{language}"'
   - 'Ideas: "{ideas}"'
-  - 'Codes:'
-  - '"{codes}"'
+  - 'Code:'
+  - '"{code}"'
   - 'As the {assistant_role}, to make the software directly operable without further
     coding, Startr.Team have formulated the following rules:'
   - 1) all referenced classes should be imported;
@@ -136,9 +136,9 @@ CodeReviewModification:
   - 'Modality: "{modality}".'
   - 'Programming Language: "{language}"'
   - 'Ideas: "{ideas}"'
-  - 'Codes: '
-  - '"{codes}"'
-  - 'Comments on Codes:'
+  - 'Code: '
+  - '"{code}"'
+  - 'Comments on Code:'
   - '"{comments}"'
   - In the software, each file must strictly follow a markdown code block format,
   - 'where the following tokens must be replaced such that "FILENAME" is the lowercase
@@ -164,8 +164,8 @@ CodeThis:
   - 'Task: "{task}".'
   - 'Modality: "{modality}".'
   - 'Programming Language: "{language}"'
-  - 'Codes:'
-  - '"{codes}"'
+  - 'Code:'
+  - '"{code}"'
   - 'Unimplemented File:'
   - '"{unimplemented_file}"'
   - In our software, each file must strictly follow a markdown code block format,
@@ -183,7 +183,7 @@ CodeThis:
   - As the {assistant_role}, to satisfy the complete function of our developed software,
     you have to implement all methods in the {unimplemented_file} file which contains
     a unimplemented class. Now, implement all methods of the {unimplemented_file}
-    and all other code needed, then output the fully implemented codes, strictly following
+    and all other code needed, then output the fully implemented code, strictly following
     the required format.
   user_role_name: Chief Technology Officer
 Coding:
@@ -270,8 +270,8 @@ EnvironmentDescription:
   - 'Modality: "{modality}".'
   - 'Programming Language: "{language}"'
   - 'Ideas: "{ideas}"'
-  - 'Codes: '
-  - '"{codes}"'
+  - 'Code: '
+  - '"{code}"'
   - 'As the {assistant_role}, you should write a requirements.txt file, which is commonly
     used in Python projects to specify the dependencies or packages required for the
     project to run properly. It serves as a way to document and manage the project''s
@@ -292,8 +292,8 @@ Manual:
   - 'Modality: "{modality}".'
   - 'Programming Language: "{language}"'
   - 'Ideas: "{ideas}"'
-  - 'Codes: '
-  - '"{codes}"'
+  - 'Code: '
+  - '"{code}"'
   - 'Requirements:'
   - '"{requirements}"'
   - As our {assistant_role}, writing in well formated Markdown, you write a manual.md.
@@ -355,9 +355,9 @@ TestErrorSummary:
   phase_prompt:
   - 'Our developed source code and corresponding test reports are listed below: '
   - 'Programming Language: "{language}"'
-  - 'Source Codes:'
-  - '"{codes}"'
-  - 'Test Reports of Source Codes:'
+  - 'Source Code:'
+  - '"{code}"'
+  - 'Test Reports of Source Code:'
   - '"{test_reports}"'
   - According to my test reports, please locate and summarize the bugs that cause
     the problem.
@@ -367,9 +367,9 @@ TestModification:
   phase_prompt:
   - 'Our developed source code and corresponding test reports are listed below:'
   - 'Programming Language: "{language}"'
-  - 'Source Codes:'
-  - '"{codes}"'
-  - 'Test Reports of Source Codes:'
+  - 'Source Code:'
+  - '"{code}"'
+  - 'Test Reports of Source Code:'
   - '"{test_reports}"'
   - 'Error Summary of Test Reports:'
   - '"{error_summary}"'

@@ -54,7 +54,7 @@ def _colorized_log_method(self, level, msg, args,
                           stack_info=False, stacklevel=1):
     """
     A monkey-patched version of Logger._log to insert
-    ANSI color codes based on 'extra["role"]'.
+    ANSI color code based on 'extra["role"]'.
     """
     role = extra.get("role") if extra else None
     if role:

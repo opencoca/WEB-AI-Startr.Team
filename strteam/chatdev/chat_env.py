@@ -9,7 +9,7 @@ from typing import Dict
 import openai
 import requests
 
-from .codes import Codes
+from .code import Code
 from .documents import Documents
 from .roster import Roster
 from .utils import log_visualize
@@ -59,7 +59,7 @@ class ChatEnv:
     def __init__(self, chat_env_config: ChatEnvConfig):
         self.config = chat_env_config
         self.roster: Roster = Roster()
-        self.codes: Codes = Codes()
+        self.code: Code = Code()
         self.memory: Memory = Memory()
         self.proposed_images: Dict[str, str] = {}
         self.incorporated_images: Dict[str, str] = {}
@@ -92,7 +92,7 @@ class ChatEnv:
     def set_directory(self, directory):
         assert len(self.env_dict["directory"]) == 0
         self.env_dict["directory"] = directory
-        self.codes.directory = directory
+        self.code.directory = directory
         self.requirements.directory = directory
         self.manuals.directory = directory
 
@@ -178,17 +178,17 @@ class ChatEnv:
     def print_employees(self):
         self.roster._print_employees()
 
-    def update_codes(self, generated_content):
-        self.codes._update_codes(generated_content)
+    def update_code(self, generated_content):
+        self.code._update_code(generated_content)
 
-    def rewrite_codes(self, phase_info=None) -> None:
-        self.codes._rewrite_codes(self.config.git_management, phase_info)
+    def rewrite_code(self, phase_info=None) -> None:
+        self.code._rewrite_code(self.config.git_management, phase_info)
 
-    def get_codes(self) -> str:
-        return self.codes._get_codes()
+    def get_code(self) -> str:
+        return self.code._get_code()
 
     def _load_from_hardware(self, directory) -> None:
-        self.codes._load_from_hardware(directory)
+        self.code._load_from_hardware(directory)
 
     def _update_requirements(self, generated_content):
         self.requirements._update_docs(generated_content)
@@ -224,7 +224,7 @@ class ChatEnv:
             writer.write("{}:\n{}\n\n".format("Modality", self.env_dict["modality"]))
             writer.write("{}:\n{}\n\n".format("Ideas", self.env_dict["ideas"]))
             writer.write("{}:\n{}\n\n".format("Language", self.env_dict["language"]))
-            writer.write("{}:\n{}\n\n".format("Code_Version", self.codes.version))
+            writer.write("{}:\n{}\n\n".format("Code_Version", self.code.version))
             writer.write(
                 "{}:\n{}\n\n".format(
                     "Proposed_images", len(self.proposed_images.keys())
@@ -237,7 +237,7 @@ class ChatEnv:
             )
         print(os.path.join(directory, meta_filename), "Wrote")
 
-    def generate_images_from_codes(self):
+    def generate_images_from_code(self):
         def download(img_url, file_name):
             r = requests.get(img_url)
             filepath = os.path.join(self.env_dict["directory"], file_name)
@@ -248,8 +248,8 @@ class ChatEnv:
                 print("{} Downloaded".format(filepath))
 
         regex = r"(\w+.png)"
-        joined_codes = self.get_codes()
-        matches = re.finditer(regex, joined_codes, re.DOTALL)
+        joined_code = self.get_code()
+        matches = re.finditer(regex, joined_code, re.DOTALL)
         # matched_images = {}
         for match in matches:
             filename = match.group(1).strip()

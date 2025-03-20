@@ -29,7 +29,7 @@ class Node:
                 if filename.endswith(".py"):
                     codebooks[filename] = _format_code(open(os.path.join(directory, filename), "r", encoding="utf-8").read())
 
-        # Format Codes
+        # Format Code
         code = ""
         for filename in codebooks.keys():
             filepath = os.path.join(directory, filename)
@@ -158,7 +158,7 @@ class Graph:
                 if filename is not None and code is not None and len(filename) > 0 and len(code) > 0:
                     codebook[filename] = _format_code(code)
 
-        def get_codes(codebook):
+        def get_code(codebook):
             content = ""
             for filename in codebook.keys():
                 content += "{}\n```{}\n{}\n```\n\n".format(filename, "python" if filename.endswith(".py") else
@@ -198,9 +198,9 @@ class Graph:
 
             # construct node
             node = Node()
-            node.mID = hashlib.md5(get_codes(codebook).encode(encoding='UTF-8')).hexdigest()
+            node.mID = hashlib.md5(get_code(codebook).encode(encoding='UTF-8')).hexdigest()
             node.commitMessage = ""
-            node.code = get_codes(codebook)
+            node.code = get_code(codebook)
             node.version = float(len(fingerprints))
             if node.mID not in fingerprints:
                 fingerprints.add(node.mID)
@@ -246,7 +246,7 @@ class Graph:
             if "Chief Technology Officer: **[Start Chat]**".lower() in utterance:
                 instruction = "write one or multiple files and make sure that every detail of the architecture is implemented as code"
             elif "Code Reviewer: **[Start Chat]**".lower() in utterance:
-                instruction = utterance.split("Comments on Codes:".lower())[-1].split("In the software,".lower())[0]
+                instruction = utterance.split("Comments on Code:".lower())[-1].split("In the software,".lower())[0]
                 instruction = instruction.replace("<comment>".lower(), "")
             elif "Software Test Engineer: **[Start Chat]**".lower() in utterance:
                 if "Test Pass!".lower() in utterance:
