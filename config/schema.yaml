@@ -2,9 +2,8 @@ version: 1.0
 definitions:
   phase_base:
     type: object
-    required: ["name", "phaseType"]
+    required: ["phaseType"]
     properties:
-      name: { type: string }
       phaseType: 
         type: string
         enum: ["SimplePhase", "ComposedPhase"]
@@ -36,15 +35,17 @@ definitions:
         required: ["cycleNum", "Composition"]
         properties:
           cycleNum: { type: integer, minimum: 1 }
+          max_depth: { type: integer, minimum: 1 }
           Composition:
             type: array
-            items: { $ref: "#/definitions/simple_phase" }
+            items: 
+              type: object
+              additionalProperties:
+                $ref: "#/definitions/simple_phase"
 
   agent:
     type: object
-    required: ["role", "model"]
     properties:
-      role: { type: string }
       model: { type: string }
       temperature: { type: number, minimum: 0, maximum: 2, default: 0.7 }
       max_tokens: { type: integer, minimum: 1, default: 2048 }
@@ -53,26 +54,42 @@ definitions:
 
 required:
   - version
+  - company_name
+  - default_model
+  - phase_sequence
   - phases
   - agents
-  - default_model
-  - company_name
   - settings
 
 properties:
   version: { type: string }
   company_name: { type: string }
   default_model: { type: string }
-  background_prompt: { type: string }
+  background_prompt: 
+    oneOf:
+      - { type: string }
+      - { type: array, items: { type: string } }
+  
+  phase_sequence:
+    type: array
+    items: { type: string }
+    
   phases:
     type: array
     items:
-      oneOf:
-        - $ref: "#/definitions/simple_phase"
-        - $ref: "#/definitions/composed_phase"
+      type: object
+      additionalProperties:
+        oneOf:
+          - $ref: "#/definitions/simple_phase"
+          - $ref: "#/definitions/composed_phase"
+          
   agents:
     type: array
-    items: { $ref: "#/definitions/agent" }
+    items:
+      type: object
+      additionalProperties:
+        $ref: "#/definitions/agent"
+        
   settings:
     type: object
     properties:

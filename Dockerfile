@@ -35,7 +35,7 @@ RUN pip install --no-build-isolation numpy
 RUN python -m pip install -r requirements.txt
 
 # Install the project as a module for the new directory structure
-RUN pip install -e .
+#RUN pip install -e .
 
 # Set default environment variables (these will be overridden when running with -e)
 # Instead of hardcoding placeholders, use ARG with defaults that can be overridden

@@ -1,9 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="startr-team",
-    version="0.1.0",
+    name="strteam",
+    version="0.1",
     packages=find_packages(),
+    install_requires=[
+        "pyyaml",
+        # Add other dependencies
+    ],
     description="An AI-powered software development framework",
     author="Startr.LLC & CAMEL-AI.org",
     author_email="info@startr.cloud",
@@ -17,4 +21,4 @@ setup(
     ],
     python_requires=">=3.11",
     include_package_data=True,
-) 
+)

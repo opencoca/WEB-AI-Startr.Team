@@ -1,0 +1,44 @@
+default_model: gpt-4o-mini
+
+openai:
+  enabled: true
+  module_path: providers.openai
+  class_name: OpenaiProvider
+  default_max_tokens: 1024
+  default_temperature: 0.7
+  models:
+    - gpt-4o-mini
+    - gpt-4o
+
+anthropic:
+  enabled: true
+  module_path: providers.anthropic
+  class_name: AnthropicProvider
+  default_max_tokens: 1024
+  default_temperature: 0.7
+  models:
+    - claude-2
+    - claude-instant-1
+
+ollama:
+  enabled: true
+  module_path: providers.ollama
+  class_name: OllamaProvider
+  default_max_tokens: 1024
+  default_temperature: 0.7
+  models:
+    - ollama-1
+    - ollama-2
+
+grok:
+  enabled: true
+  module_path: providers.grok
+  class_name: GrokProvider
+  default_max_tokens: 1024
+  default_temperature: 0.7
+  models:
+    - grok-1
+    - grok-2
+    - grok-3
+    - grok-4
+    - grok-5
