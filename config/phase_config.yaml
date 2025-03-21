@@ -16,7 +16,7 @@ phase_sequence:
 
 # Phase definitions
 phases:
-  - name: DemandAnalysis
+  - DemandAnalysis:
     phaseType: SimplePhase
     max_turn_step: 3
     need_reflect: true
@@ -28,7 +28,7 @@ phases:
     outputs:
       - modality
 
-  - name: ChooseLanguage
+  - ChooseLanguage:
     phaseType: SimplePhase
     max_turn_step: 2
     need_reflect: true
@@ -41,7 +41,7 @@ phases:
     outputs:
       - language
 
-  - name: Coding
+  - Coding:
     phaseType: SimplePhase
     max_turn_step: 1
     need_reflect: false
@@ -55,12 +55,12 @@ phases:
     outputs:
       - code
 
-  - name: CodeReview
+  - CodeReview:
     phaseType: ComposedPhase
     cycleNum: 3
     max_depth: 3
     Composition:
-      - name: CodeReviewComment
+      - CodeReviewComment:
         phaseType: SimplePhase
         max_turn_step: 1
         need_reflect: false
@@ -74,7 +74,7 @@ phases:
         outputs:
           - review_comments
 
-      - name: CodeReviewModification
+      - CodeReviewModification:
         phaseType: SimplePhase
         max_turn_step: 1
         need_reflect: false
@@ -87,12 +87,12 @@ phases:
         outputs:
           - modified_code
 
-  - name: Test
+  - Test:
     phaseType: ComposedPhase
     cycleNum: 3
     max_depth: 3
     Composition:
-      - name: TestErrorSummary
+      - TestErrorSummary:
         phaseType: SimplePhase
         max_turn_step: 1
         need_reflect: false
@@ -106,7 +106,7 @@ phases:
           - test_report
           - error_summary
 
-      - name: TestModification
+      - TestModification:
         phaseType: SimplePhase
         max_turn_step: 1
         need_reflect: false
@@ -119,7 +119,7 @@ phases:
         outputs:
           - fixed_code
 
-  - name: EnvironmentDescription
+  - EnvironmentDescription:
     phaseType: SimplePhase
     max_turn_step: 1
     need_reflect: true
@@ -135,39 +135,27 @@ phases:
 
 # Agent configurations
 agents:
-  - role: Chief Executive Officer
+  - Chief Executive Officer:
     model: gpt-4o-mini
     temperature: 0.7
     system_message: "You are the CEO responsible for overall project direction and final decisions."
 
-  - role: Chief Product Officer
-    model: gpt-4o-mini
-    temperature: 0.7
+  - Chief Product Officer:
     system_message: "You analyze requirements and determine the best product approach."
 
-  - role: Chief Technology Officer
-    model: gpt-4o-mini
-    temperature: 0.7
+  - Chief Technology Officer:
     system_message: "You make technical decisions and guide the development process."
 
-  - role: Programmer
-    model: gpt-4o-mini
-    temperature: 0.7
+  - Programmer:
     system_message: "You write clean, efficient code following best practices."
 
-  - role: Code Reviewer
-    model: gpt-4o-mini
-    temperature: 0.7
+  - Code Reviewer:
     system_message: "You review code for quality, bugs, and improvements."
 
-  - role: Software Test Engineer
-    model: gpt-4o-mini
-    temperature: 0.7
+  - Software Test Engineer:
     system_message: "You test code and identify potential issues."
 
-  - role: DevOps Engineer
-    model: gpt-4o-mini
-    temperature: 0.7
+  - DevOps Engineer:
     system_message: "You handle deployment and environment configuration."
 
 # Global settings
