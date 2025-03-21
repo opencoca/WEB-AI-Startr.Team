@@ -3,62 +3,51 @@ background_prompt: Startr.Team is a software company powered by multiple intelli
   officer, chief technology officer, etc, with a multi-agent organizational structure
   and the mission of 'changing the digital world through programming'.
 chain:
-- phase: DemandAnalysis
-  max_turn_step: -1
-  need_reflect: 'True'
-  phaseType: SimplePhase
-- phase: ChooseLanguage
-  max_turn_step: -1
-  need_reflect: 'True'
-  phaseType: SimplePhase
-- phase: Coding
-  max_turn_step: 1
-  need_reflect: 'False'
-  phaseType: SimplePhase
-- Composition:
-  - max_turn_step: 1
+  DemandAnalysis:
+    max_turn_step: 1
+    need_reflect: 'True'
+    phaseType: SimplePhase
+
+  ChooseLanguage:
+    max_turn_step: -1
+    need_reflect: 'True'
+    phaseType: SimplePhase
+
+  Coding:
+    max_turn_step: -1
+    need_reflect: 'True'
+    phaseType: SimplePhase
+
+  CodeReview:
+    max_turn_step: -1
+    need_reflect: 'True'
+    phaseType: SimplePhase
+
+  Test:
+    max_turn_step: -1
+    need_reflect: 'True'
+    phaseType: SimplePhase
+
+  CodeThisProject:
+    phaseType: ComposedPhase
+    max_turn_step: 1
     need_reflect: 'False'
     phase: CodeThis
     phaseType: SimplePhase
-  cycleNum: 10
-  phase: CodeThisProject
-  phaseType: ComposedPhase
-- Composition:
-  - max_turn_step: 1
+  CodeThis:
+    max_turn_step: 1
     need_reflect: 'False'
-    phase: CodeReviewComment
-    phaseType: SimplePhase
-  - max_turn_step: 1
+    phaseType: ComposedPhase
+    phase: CodeThisProject
+  CodeReviewComment:
+    max_turn_step: 1
     need_reflect: 'False'
-    phase: CodeReviewModification
     phaseType: SimplePhase
-  cycleNum: 3
-  phase: CodeReview
-  phaseType: ComposedPhase
-- Composition:
-  - max_turn_step: 1
+  CodeReviewModification:
+    max_turn_step: 1
     need_reflect: 'False'
-    phase: TestErrorSummary
     phaseType: SimplePhase
-  - max_turn_step: 1
-    need_reflect: 'False'
-    phase: TestModification
-    phaseType: SimplePhase
-  cycleNum: 3
-  phase: Test
-  phaseType: ComposedPhase
-- phase: EnvironmentDescription
-  max_turn_step: 1
-  need_reflect: 'True'
-  phaseType: SimplePhase
-- phase: Manual
-  max_turn_step: 1
-  need_reflect: 'False'
-  phaseType: SimplePhase
-clear_structure: 'True'
-git_management: 'False'
-gui_design: 'True'
-incremental_develop: 'False'
+
 recruits:
   - Chief Executive Officer
   - Counselor
@@ -69,6 +58,11 @@ recruits:
   - Code Reviewer
   - Software Test Engineer
   - Chief Creative Officer
+
 self_improve: 'False'
 web_spider: 'False'
 with_memory: 'False'
+clear_structure: 'True'
+git_management: 'False'
+gui_design: 'True'
+incremental_develop: 'False'
