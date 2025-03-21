@@ -37,11 +37,9 @@ definitions:
           cycleNum: { type: integer, minimum: 1 }
           max_depth: { type: integer, minimum: 1 }
           Composition:
-            type: array
-            items: 
-              type: object
-              additionalProperties:
-                $ref: "#/definitions/simple_phase"
+            type: object
+            additionalProperties:
+              $ref: "#/definitions/simple_phase"
 
   agent:
     type: object
@@ -75,29 +73,25 @@ properties:
     items: { type: string }
     
   phases:
-    type: array
-    items:
-      type: object
-      additionalProperties:
-        oneOf:
-          - $ref: "#/definitions/simple_phase"
-          - $ref: "#/definitions/composed_phase"
+    type: object
+    additionalProperties:
+      oneOf:
+        - $ref: "#/definitions/simple_phase"
+        - $ref: "#/definitions/composed_phase"
           
   agents:
-    type: array
-    items:
-      type: object
-      additionalProperties:
-        $ref: "#/definitions/agent"
+    type: object
+    additionalProperties:
+      $ref: "#/definitions/agent"
         
   settings:
     type: object
     properties:
       clear_structure: { type: boolean, default: true }
       gui_design: { type: boolean, default: false }
-      git_management: { type: boolean, default: false }
+      git_management: { type: boolean, default: true }
       incremental_develop: { type: boolean, default: false }
-      self_improve: { type: boolean, default: false }
-      with_memory: { type: boolean, default: false }
+      self_improve: { type: boolean, default: true }
+      with_memory: { type: boolean, default: true }
       web_spider: { type: boolean, default: false }
     additionalProperties: false
